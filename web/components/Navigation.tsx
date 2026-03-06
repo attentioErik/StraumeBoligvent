@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useEffect, useState } from 'react'
 
 const navLinks = [
@@ -57,36 +58,21 @@ export default function Navigation() {
             flexShrink: 0,
           }}
         >
-          <div
-            style={{
-              position: 'absolute',
-              width: 16,
-              height: 16,
-              border: '2.5px solid rgba(20,16,8,0.5)',
-              borderRadius: '50%',
-            }}
-          />
-          <div
-            style={{
-              position: 'absolute',
-              width: 4,
-              height: 4,
-              background: 'var(--ink)',
-              borderRadius: '50%',
-            }}
-          />
+          <div style={{ position: 'absolute', width: 16, height: 16, border: '2.5px solid rgba(20,16,8,0.5)', borderRadius: '50%' }} />
+          <div style={{ position: 'absolute', width: 4, height: 4, background: 'var(--ink)', borderRadius: '50%' }} />
         </div>
-        <span
-          style={{
-            fontFamily: 'Lato, sans-serif',
-            fontWeight: 700,
-            fontSize: '0.95rem',
-            letterSpacing: '0.01em',
-            color: 'var(--ink)',
-          }}
-        >
-          Straume Boligvent
+        <span style={{ fontFamily: 'Lato, sans-serif', fontWeight: 700, fontSize: '0.95rem', letterSpacing: '0.01em', color: 'var(--ink)', whiteSpace: 'nowrap' }}>
+          Straume <span style={{ color: 'var(--amber)' }}>Boligvent</span>
         </span>
+        <span style={{ color: 'var(--lm)', fontSize: '1rem', fontWeight: 300, lineHeight: 1, flexShrink: 0 }}>|</span>
+        <Image
+          src="https://ucarecdn.com/09cfc539-0376-4f05-a8a6-113d3739a405/Straume_Tekniske_AS_Lys.png"
+          alt="Straume Tekniske AS"
+          height={16}
+          width={100}
+          style={{ objectFit: 'contain', objectPosition: 'left', filter: 'brightness(0) saturate(100%)', opacity: 0.55, flexShrink: 0 }}
+          unoptimized
+        />
       </Link>
 
       {/* Desktop nav links */}

@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import type { SiteSettings } from '@/lib/types'
 
 interface FooterProps {
@@ -48,28 +49,27 @@ export default function Footer({ settings }: FooterProps) {
       >
         {/* Brand column */}
         <div>
-          <div
-            style={{
-              fontSize: '0.7rem',
-              fontWeight: 700,
-              letterSpacing: '0.22em',
-              textTransform: 'uppercase',
-              color: 'var(--sec)',
-              marginBottom: 10,
-            }}
-          >
-            Straume Tekniske
-          </div>
-          <div
-            style={{
-              fontFamily: 'Playfair Display, serif',
-              fontSize: '1.2rem',
-              fontWeight: 700,
-              color: 'var(--ink)',
-              marginBottom: 12,
-            }}
-          >
-            Straume Boligvent
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+            <div
+              style={{
+                fontFamily: 'Playfair Display, serif',
+                fontSize: '1.15rem',
+                fontWeight: 700,
+                color: 'var(--ink)',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              Straume <span style={{ color: 'var(--amber)' }}>Boligvent</span>
+            </div>
+            <span style={{ color: 'var(--lm)', fontSize: '1rem', fontWeight: 300, lineHeight: 1 }}>|</span>
+            <Image
+              src="https://ucarecdn.com/09cfc539-0376-4f05-a8a6-113d3739a405/Straume_Tekniske_AS_Lys.png"
+              alt="Straume Tekniske AS"
+              height={14}
+              width={88}
+              style={{ objectFit: 'contain', objectPosition: 'left', filter: 'brightness(0) saturate(100%)', opacity: 0.45, flexShrink: 0 }}
+              unoptimized
+            />
           </div>
           <div
             style={{
@@ -85,7 +85,7 @@ export default function Footer({ settings }: FooterProps) {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {[
               { lbl: 'TLF', val: settings?.phone || '561 26 800' },
-              { lbl: 'E', val: settings?.email || 'service@straumetekniske.no' },
+              { lbl: 'E', val: settings?.email || 'ordre@straumetekniske.no' },
               { lbl: 'ADR', val: settings?.address || 'Idrettsveien 93, 5353 Straume' },
             ].map((row) => (
               <div key={row.lbl} style={{ display: 'flex', gap: 12 }}>
@@ -227,7 +227,7 @@ export default function Footer({ settings }: FooterProps) {
         className="footer-bottom"
       >
         <span>© {year} Straume Tekniske AS</span>
-        <span>{settings?.orgNumber ? `Org.nr ${settings.orgNumber}` : 'Org.nr 000 000 000'}</span>
+        <span>{settings?.orgNumber ? `Org.nr ${settings.orgNumber}` : 'Org.nr 998 766 834'}</span>
       </div>
 
       <style>{`

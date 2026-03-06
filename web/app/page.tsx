@@ -548,12 +548,12 @@ export default async function Home() {
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                 {[
-                  { lbl: 'Tlf', val: settings?.phone || '561 26 800' },
-                  { lbl: 'Epost', val: settings?.email || 'service@straumetekniske.no' },
+                  { lbl: 'Telefon', val: settings?.phone || '561 26 800' },
+                  { lbl: 'E-post', val: settings?.email || 'ordre@straumetekniske.no' },
                   { lbl: 'Adresse', val: settings?.address || 'Idrettsveien 93, 5353 Straume' },
                 ].map((row) => (
                   <div key={row.lbl} style={{ display: 'flex', gap: 18, alignItems: 'flex-start' }}>
-                    <span style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--sec)', width: 52, flexShrink: 0, paddingTop: 3 }}>
+                    <span style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--sec)', width: 64, flexShrink: 0, paddingTop: 3 }}>
                       {row.lbl}
                     </span>
                     <span style={{ fontSize: '0.875rem', color: 'var(--body)', lineHeight: 1.6 }}>{row.val}</span>

@@ -14,6 +14,13 @@ export const metadata: Metadata = {
   },
   description:
     'Komplett leveranse innen ventilasjon i Bergen og omegn. Service, kanalrens, innregulering og montasje.',
+  icons: {
+    icon: [
+      { url: 'https://ucarecdn.com/1d19609f-0002-4148-a926-a35653ed9d88/Logo_Sosiale_medier_Lys.png', sizes: '32x32', type: 'image/png' },
+      { url: 'https://ucarecdn.com/1d19609f-0002-4148-a926-a35653ed9d88/Logo_Sosiale_medier_Lys.png', sizes: '256x256', type: 'image/png' },
+    ],
+    apple: 'https://ucarecdn.com/1d19609f-0002-4148-a926-a35653ed9d88/Logo_Sosiale_medier_Lys.png',
+  },
   openGraph: {
     siteName: 'Straume Boligvent',
     locale: 'nb_NO',

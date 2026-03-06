@@ -16,7 +16,7 @@ export default async function KontaktPage() {
   ])
 
   const phone = settings?.phone || '561 26 800'
-  const email = settings?.email || 'service@straumetekniske.no'
+  const email = settings?.email || 'ordre@straumetekniske.no'
   const address = settings?.address || 'Idrettsveien 93, 5353 Straume'
 
   return (
