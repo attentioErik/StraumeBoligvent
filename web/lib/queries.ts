@@ -145,3 +145,68 @@ export const articlePathsQuery = groq`
 export const referenceProjectPathsQuery = groq`
   *[_type == "referenceProject" && defined(slug.current)] { "slug": slug.current }
 `
+
+// ─── REFERANSER ───
+export const referanserQuery = groq`
+  *[_type == "referanse" && publisert == true] | order(utfortAr desc) {
+    _id,
+    title,
+    slug,
+    kunde,
+    kategori,
+    kortBeskrivelse,
+    hovedbilde,
+    utfortAr,
+    tjenester
+  }
+`
+
+export const referanseBySlugQuery = groq`
+  *[_type == "referanse" && slug.current == $slug][0] {
+    ...,
+    "forrige": *[_type == "referanse" && publisert == true && utfortAr < ^.utfortAr] | order(utfortAr desc)[0] { title, slug },
+    "neste": *[_type == "referanse" && publisert == true && utfortAr > ^.utfortAr] | order(utfortAr asc)[0] { title, slug }
+  }
+`
+
+export const referansePathsQuery = groq`
+  *[_type == "referanse" && publisert == true && defined(slug.current)] { "slug": slug.current }
+`
+
+// ─── ANSATTE ───
+export const ansatteQuery = groq`
+  *[_type == "ansatt"] | order(rekkefolge asc) {
+    _id,
+    navn,
+    rolle,
+    bilde,
+    bio,
+    epost,
+    telefon
+  }
+`
+
+// ─── OM OSS (singleton) ───
+export const omOssQuery = groq`
+  *[_type == "omOss"][0] {
+    heroTittel,
+    heroTekst,
+    historieBlokker,
+    verdier,
+    tallOgFakta,
+    sertifiseringer
+  }
+`
+
+// ─── BORETTSLAG LANDING (singleton) ───
+export const borettslagLandingQuery = groq`
+  *[_type == "borettslagLanding"][0] {
+    heroTittel,
+    heroUnderTittel,
+    utfordringer,
+    tjenester,
+    prosessSteg,
+    hvordforOss,
+    faq
+  }
+`

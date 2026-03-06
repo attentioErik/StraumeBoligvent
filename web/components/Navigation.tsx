@@ -5,10 +5,10 @@ import { useEffect, useState } from 'react'
 
 const navLinks = [
   { href: '/#tjenester', label: 'Tjenester' },
-  { href: '/#prosess', label: 'Slik jobber vi' },
-  { href: '/#boligeiere', label: 'Borettslag' },
+  { href: '/borettslag', label: 'Borettslag' },
+  { href: '/referanser', label: 'Referanser' },
   { href: '/blog', label: 'Artikler' },
-  { href: '/#om-oss', label: 'Om oss' },
+  { href: '/om-oss', label: 'Om oss' },
 ]
 
 export default function Navigation() {

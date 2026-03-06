@@ -67,3 +67,51 @@ export interface FAQ {
   answer: PortableTextBlock[]
   service?: { title: string; slug: { current: string } }
 }
+
+export interface Referanse {
+  _id: string
+  title: string
+  slug: { current: string }
+  publisert?: boolean
+  kunde?: string
+  kategori?: string
+  kortBeskrivelse?: string
+  beskrivelse?: PortableTextBlock[]
+  hovedbilde?: SanityImage & { alt?: string }
+  galleri?: Array<SanityImage & { alt?: string }>
+  utfortAr?: number
+  tjenester?: string[]
+  kundesitat?: { sitat: string; person: string }
+  forrige?: { title: string; slug: { current: string } }
+  neste?: { title: string; slug: { current: string } }
+}
+
+export interface Ansatt {
+  _id: string
+  navn: string
+  rolle?: string
+  bilde?: SanityImage
+  bio?: string
+  epost?: string
+  telefon?: string
+  rekkefolge?: number
+}
+
+export interface OmOss {
+  heroTittel?: string
+  heroTekst?: string
+  historieBlokker?: PortableTextBlock[]
+  verdier?: Array<{ tittel: string; beskrivelse: string; ikon?: string }>
+  tallOgFakta?: Array<{ verdi: string; label: string }>
+  sertifiseringer?: Array<{ navn: string; logo?: SanityImage; beskrivelse?: string }>
+}
+
+export interface BorettslagLanding {
+  heroTittel?: string
+  heroUnderTittel?: string
+  utfordringer?: string[]
+  tjenester?: Array<{ tittel: string; beskrivelse: string }>
+  prosessSteg?: Array<{ tittel: string; beskrivelse: string }>
+  hvordforOss?: string[]
+  faq?: Array<{ sporsmal: string; svar: string }>
+}

@@ -19,17 +19,24 @@ export default defineConfig({
             S.listItem()
               .title('Nettstedsinnstillinger')
               .id('siteSettings')
-              .child(
-                S.document()
-                  .schemaType('siteSettings')
-                  .documentId('siteSettings')
-              ),
+              .child(S.document().schemaType('siteSettings').documentId('siteSettings')),
+            S.listItem()
+              .title('Om oss')
+              .id('omOss')
+              .child(S.document().schemaType('omOss').documentId('omOss')),
+            S.listItem()
+              .title('Borettslag-landingsside')
+              .id('borettslagLanding')
+              .child(S.document().schemaType('borettslagLanding').documentId('borettslagLanding')),
             S.divider(),
             S.listItem()
               .title('Tjenester')
               .child(S.documentTypeList('service').title('Tjenester')),
             S.listItem()
-              .title('Referanseprosjekter')
+              .title('Referanser')
+              .child(S.documentTypeList('referanse').title('Referanser')),
+            S.listItem()
+              .title('Referanseprosjekter (eldre)')
               .child(S.documentTypeList('referenceProject').title('Referanseprosjekter')),
             S.listItem()
               .title('Artikler')
@@ -37,6 +44,9 @@ export default defineConfig({
             S.listItem()
               .title('FAQ')
               .child(S.documentTypeList('faq').title('Vanlige spørsmål')),
+            S.listItem()
+              .title('Ansatte')
+              .child(S.documentTypeList('ansatt').title('Ansatte')),
           ]),
     }),
     visionTool(),
