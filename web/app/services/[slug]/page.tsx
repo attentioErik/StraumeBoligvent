@@ -132,7 +132,7 @@ export default async function ServicePage({ params }: Props) {
       {/* ─── MAIN CONTENT ─── */}
       <section style={{ background: 'var(--white)', padding: '80px 5%' }}>
         <div
-          className="inner"
+          className="inner service-grid"
           style={{
             display: 'grid',
             gridTemplateColumns: '1fr 340px',
@@ -273,9 +273,7 @@ export default async function ServicePage({ params }: Props) {
 
         <style>{`
           @media (max-width: 980px) {
-            .inner > div { grid-template-columns: 1fr !important; }
-          }
-          @media (max-width: 640px) {
+            .service-grid { grid-template-columns: 1fr !important; gap: 48px !important; }
             .service-cta-col { position: static !important; }
           }
         `}</style>
