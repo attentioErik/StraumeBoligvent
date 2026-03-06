@@ -293,7 +293,7 @@ export default async function BorettslagPage() {
       {/* ─── CTA ─── */}
       <section style={{ background: 'var(--warm)', padding: '80px 5%' }}>
         <div className="inner" style={{ maxWidth: 640, textAlign: 'center', margin: '0 auto' }}>
-          <div className="slabel reveal" style={{ textAlign: 'center' }}>Kom i gang</div>
+          <div className="slabel reveal" style={{ justifyContent: 'center' }}>Kom i gang</div>
           <h2 className="stitle reveal" style={{ textAlign: 'center' }}>Klar for en uforpliktende prat?</h2>
           <p className="sdesc reveal" style={{ textAlign: 'center', marginBottom: 40 }}>
             Ring oss eller send en forespørsel – vi hjelper styret med å finne riktig løsning.

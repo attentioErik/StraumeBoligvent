@@ -44,23 +44,6 @@ export default function Navigation() {
     >
       {/* Logo */}
       <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
-        <div
-          style={{
-            width: 32,
-            height: 32,
-            background: 'var(--amber)',
-            borderRadius: 6,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            position: 'relative',
-            overflow: 'hidden',
-            flexShrink: 0,
-          }}
-        >
-          <div style={{ position: 'absolute', width: 16, height: 16, border: '2.5px solid rgba(20,16,8,0.5)', borderRadius: '50%' }} />
-          <div style={{ position: 'absolute', width: 4, height: 4, background: 'var(--ink)', borderRadius: '50%' }} />
-        </div>
         <span style={{ fontFamily: 'Lato, sans-serif', fontWeight: 700, fontSize: '0.95rem', letterSpacing: '0.01em', color: 'var(--ink)', whiteSpace: 'nowrap' }}>
           Straume <span style={{ color: 'var(--amber)' }}>Boligvent</span>
         </span>
@@ -70,7 +53,7 @@ export default function Navigation() {
           alt="Straume Tekniske AS"
           height={16}
           width={100}
-          style={{ objectFit: 'contain', objectPosition: 'left', filter: 'brightness(0) saturate(100%)', opacity: 0.55, flexShrink: 0 }}
+          style={{ objectFit: 'contain', objectPosition: 'left', flexShrink: 0 }}
           unoptimized
         />
       </Link>
