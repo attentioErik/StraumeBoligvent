@@ -12,6 +12,7 @@ import { PortableText } from '@portabletext/react'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import ContactForm from '@/components/ContactForm'
+import { servicesQuery } from '@/lib/queries'
 import ProjectCard from '@/components/ProjectCard'
 import FaqSection from '@/components/FaqSection'
 import type { Metadata } from 'next'
@@ -41,9 +42,10 @@ export default async function ServicePage({ params }: Props) {
 
   if (!service) notFound()
 
-  const [projects, faqs] = await Promise.all([
+  const [projects, faqs, allServices] = await Promise.all([
     client.fetch<ReferenceProject[]>(projectsByServiceQuery, { serviceId: service._id }).catch(() => []),
     client.fetch<FAQ[]>(faqByServiceQuery, { serviceId: service._id }).catch(() => []),
+    client.fetch<Service[]>(servicesQuery).catch(() => []),
   ])
 
   return (
@@ -314,7 +316,7 @@ export default async function ServicePage({ params }: Props) {
           <p className="sdesc" style={{ marginBottom: 40 }}>
             Fyll ut skjemaet så tar vi kontakt innen én virkedag.
           </p>
-          <ContactForm />
+          <ContactForm services={allServices} defaultService={service.slug.current} />
         </div>
       </section>
     </>

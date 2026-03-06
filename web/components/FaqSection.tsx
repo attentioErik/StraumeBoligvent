@@ -102,21 +102,23 @@ export default function FaqSection({ faqs }: FaqSectionProps) {
 
                   <div
                     style={{
-                      maxHeight: isOpen ? 400 : 0,
-                      overflow: 'hidden',
-                      transition: 'max-height 0.4s cubic-bezier(0.4,0,0.2,1)',
+                      display: 'grid',
+                      gridTemplateRows: isOpen ? '1fr' : '0fr',
+                      transition: 'grid-template-rows 0.35s cubic-bezier(0.4,0,0.2,1)',
                     }}
                   >
-                    <div
-                      style={{
-                        fontSize: '0.9rem',
-                        color: 'var(--muted)',
-                        lineHeight: 1.8,
-                        paddingBottom: 24,
-                        fontWeight: 300,
-                      }}
-                    >
-                      <PortableText value={item.answer} />
+                    <div style={{ overflow: 'hidden', minHeight: 0 }}>
+                      <div
+                        style={{
+                          fontSize: '0.9rem',
+                          color: 'var(--muted)',
+                          lineHeight: 1.8,
+                          paddingBottom: 24,
+                          fontWeight: 300,
+                        }}
+                      >
+                        <PortableText value={item.answer} />
+                      </div>
                     </div>
                   </div>
                 </div>

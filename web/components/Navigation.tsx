@@ -109,51 +109,55 @@ export default function Navigation() {
       </button>
 
       {/* Mobile dropdown */}
-      {menuOpen && (
-        <div
-          style={{
-            position: 'absolute',
-            top: 68,
-            left: 0,
-            right: 0,
-            background: 'rgba(253,252,249,0.98)',
-            borderBottom: '1px solid var(--ll)',
-            padding: '16px 5%',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 4,
-          }}
-        >
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={() => setMenuOpen(false)}
-              style={{
-                fontSize: '0.95rem',
-                fontWeight: 400,
-                color: 'var(--body)',
-                textDecoration: 'none',
-                padding: '12px 0',
-                borderBottom: '1px solid var(--ll)',
-              }}
-            >
-              {link.label}
-            </Link>
-          ))}
+      <div
+        style={{
+          position: 'absolute',
+          top: 68,
+          left: 0,
+          right: 0,
+          background: 'rgba(253,252,249,0.98)',
+          borderBottom: menuOpen ? '1px solid var(--ll)' : 'none',
+          backdropFilter: 'blur(16px)',
+          padding: '16px 5%',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 4,
+          opacity: menuOpen ? 1 : 0,
+          visibility: menuOpen ? 'visible' : 'hidden',
+          transform: menuOpen ? 'translateY(0)' : 'translateY(-8px)',
+          transition: 'opacity 0.22s ease, transform 0.22s ease, visibility 0.22s',
+          pointerEvents: menuOpen ? 'auto' : 'none',
+        }}
+      >
+        {navLinks.map((link) => (
           <Link
-            href="/kontakt"
+            key={link.href}
+            href={link.href}
             onClick={() => setMenuOpen(false)}
-            className="btn-amber"
-            style={{ marginTop: 12, justifyContent: 'center' }}
+            style={{
+              fontSize: '0.95rem',
+              fontWeight: 400,
+              color: 'var(--body)',
+              textDecoration: 'none',
+              padding: '12px 0',
+              borderBottom: '1px solid var(--ll)',
+            }}
           >
-            Ta kontakt
+            {link.label}
           </Link>
-        </div>
-      )}
+        ))}
+        <Link
+          href="/kontakt"
+          onClick={() => setMenuOpen(false)}
+          className="btn-amber"
+          style={{ marginTop: 12, justifyContent: 'center' }}
+        >
+          Ta kontakt
+        </Link>
+      </div>
 
       <style>{`
-        @media (max-width: 640px) {
+        @media (max-width: 980px) {
           .nav-links { display: none !important; }
           .mobile-menu-btn { display: flex !important; }
         }

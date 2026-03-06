@@ -5,15 +5,16 @@ import type { Service } from '@/lib/types'
 
 interface ContactFormProps {
   services?: Service[]
+  defaultService?: string
 }
 
-export default function ContactForm({ services }: ContactFormProps) {
+export default function ContactForm({ services, defaultService }: ContactFormProps) {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [form, setForm] = useState({
     name: '',
     phone: '',
     email: '',
-    service: '',
+    service: defaultService ?? '',
     message: '',
   })
 
