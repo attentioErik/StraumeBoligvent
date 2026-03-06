@@ -67,7 +67,7 @@ export default function Footer({ settings }: FooterProps) {
               alt="Straume Tekniske AS"
               height={14}
               width={88}
-              style={{ objectFit: 'contain', objectPosition: 'left', filter: 'none', opacity: 0.45, flexShrink: 0 }}
+              style={{ objectFit: 'contain', objectPosition: 'left', opacity: 1, flexShrink: 0 }}
               unoptimized
             />
           </div>
