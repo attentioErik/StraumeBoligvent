@@ -249,21 +249,3 @@ h2, h3 { font-family: 'Playfair Display', Georgia, serif; }
   }
 }
 
-/* ─── STICKY MOBILE CTA BAR ─── */
-.sticky-cta-bar { display: none; }
-
-@media (max-width: 980px) {
-  .sticky-cta-bar {
-    display: flex;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 199;
-    height: 60px;
-    background: var(--white);
-    border-top: 1px solid var(--ll);
-    box-shadow: 0 -4px 20px rgba(20,16,8,0.08);
-  }
-  body { padding-bottom: 60px; }
-}

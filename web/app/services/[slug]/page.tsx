@@ -209,7 +209,7 @@ export default async function ServicePage({ params }: Props) {
           </div>
 
           {/* Right: CTA card */}
-          <div style={{ position: 'sticky', top: 100 }}>
+          <div className="service-cta-col" style={{ position: 'sticky', top: 100 }}>
             <div
               style={{
                 background: 'var(--off)',
@@ -274,6 +274,9 @@ export default async function ServicePage({ params }: Props) {
         <style>{`
           @media (max-width: 980px) {
             .inner > div { grid-template-columns: 1fr !important; }
+          }
+          @media (max-width: 640px) {
+            .service-cta-col { position: static !important; }
           }
         `}</style>
       </section>
