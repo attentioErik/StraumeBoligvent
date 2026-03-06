@@ -139,21 +139,18 @@ export default async function OmOssPage() {
               style={{
                 width: '100%',
                 aspectRatio: '4/5',
-                background: 'linear-gradient(145deg, #ddd6c8 0%, #b8ae9e 100%)',
                 borderRadius: 6,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
+                overflow: 'hidden',
                 boxShadow: '0 16px 48px rgba(20,16,8,0.1)',
                 position: 'relative',
-                overflow: 'hidden',
               }}
             >
-              <svg width="48" height="48" viewBox="0 0 48 48" fill="none" style={{ opacity: 0.3 }}>
-                <circle cx="24" cy="24" r="18" stroke="#2e2820" strokeWidth="1.5" />
-                <circle cx="24" cy="24" r="8" stroke="#2e2820" strokeWidth="1.5" />
-                <circle cx="24" cy="24" r="2.5" fill="#2e2820" />
-              </svg>
+              <Image
+                src="https://ucarecdn.com/cefe0ad5-6084-4a58-ad08-658cb6256067/straumetekniskeravneberghaugen09.avif"
+                alt="Straume Tekniske"
+                fill
+                style={{ objectFit: 'cover' }}
+              />
               <div style={{ position: 'absolute', bottom: 0, right: 0, background: 'var(--amber)', padding: '22px 28px', borderRadius: '6px 0 6px 0' }}>
                 <div style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.5rem', fontWeight: 700, color: 'var(--ink)' }}>Straume</div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--adark)', marginTop: 5, fontWeight: 700, letterSpacing: '0.04em' }}>Del av Straume Tekniske AS</div>

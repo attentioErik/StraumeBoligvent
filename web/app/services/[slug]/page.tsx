@@ -57,45 +57,38 @@ export default async function ServicePage({ params }: Props) {
         }}
       >
         <div className="inner">
-          <Link
-            href="/#tjenester"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 8,
-              fontSize: '0.82rem',
-              color: 'var(--muted)',
-              textDecoration: 'none',
-              marginBottom: 32,
-              transition: 'color 0.2s',
-            }}
-          >
-            ← Tilbake til tjenester
-          </Link>
-          <div
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 8,
-              background: 'var(--abg)',
-              border: '1px solid var(--amid)',
-              borderRadius: 100,
-              padding: '6px 16px 6px 10px',
-              marginBottom: 24,
-            }}
-          >
+          <div style={{ display: 'flex', alignItems: 'center', gap: 20, marginBottom: 28, flexWrap: 'wrap' }}>
+            <Link
+              href="/#tjenester"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                fontSize: '0.82rem',
+                color: 'var(--muted)',
+                textDecoration: 'none',
+                transition: 'color 0.2s',
+                flexShrink: 0,
+              }}
+            >
+              ← Tilbake til tjenester
+            </Link>
             <div
               style={{
-                width: 7,
-                height: 7,
-                borderRadius: '50%',
-                background: 'var(--amber)',
-                boxShadow: '0 0 0 3px rgba(240,165,0,0.2)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                background: 'var(--abg)',
+                border: '1px solid var(--amid)',
+                borderRadius: 100,
+                padding: '6px 16px 6px 10px',
               }}
-            />
-            <span style={{ fontSize: '0.78rem', fontWeight: 700, letterSpacing: '0.06em', color: 'var(--adark)' }}>
-              Tjeneste
-            </span>
+            >
+              <div style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--amber)', boxShadow: '0 0 0 3px rgba(240,165,0,0.2)' }} />
+              <span style={{ fontSize: '0.78rem', fontWeight: 700, letterSpacing: '0.06em', color: 'var(--adark)' }}>
+                Tjeneste
+              </span>
+            </div>
           </div>
           <h1
             style={{

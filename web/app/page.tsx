@@ -9,6 +9,7 @@ import {
 } from '@/lib/queries'
 import type { SiteSettings, Service, ReferenceProject, FAQ } from '@/lib/types'
 
+import Image from 'next/image'
 import Hero from '@/components/Hero'
 import ServiceCard from '@/components/ServiceCard'
 import ReviewCard from '@/components/ReviewCard'
@@ -351,20 +352,18 @@ export default async function Home() {
                 style={{
                   width: '100%',
                   aspectRatio: '4/3',
-                  background: 'linear-gradient(145deg, #ddd6c8 0%, #b8ae9e 100%)',
                   borderRadius: 6,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                  overflow: 'hidden',
                   boxShadow: '0 16px 48px rgba(20,16,8,0.1)',
                   position: 'relative',
                 }}
               >
-                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" style={{ opacity: 0.3 }}>
-                  <circle cx="24" cy="24" r="18" stroke="#2e2820" strokeWidth="1.5" />
-                  <circle cx="24" cy="24" r="8" stroke="#2e2820" strokeWidth="1.5" />
-                  <circle cx="24" cy="24" r="2.5" fill="#2e2820" />
-                </svg>
+                <Image
+                  src="https://ucarecdn.com/dc624f56-8c72-4b43-8818-149be7a94947/hf_20260224_115140_8d1fc521c6fe470eabf2fe55099a1570.jpeg"
+                  alt="For deg som eier bolig"
+                  fill
+                  style={{ objectFit: 'cover' }}
+                />
                 <div
                   style={{
                     position: 'absolute',
@@ -403,21 +402,18 @@ export default async function Home() {
                 style={{
                   width: '100%',
                   aspectRatio: '4/5',
-                  background: 'linear-gradient(145deg, #ddd6c8 0%, #b8ae9e 100%)',
                   borderRadius: 6,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                  overflow: 'hidden',
                   boxShadow: '0 16px 48px rgba(20,16,8,0.1)',
                   position: 'relative',
-                  overflow: 'hidden',
                 }}
               >
-                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" style={{ opacity: 0.3 }}>
-                  <circle cx="24" cy="24" r="18" stroke="#2e2820" strokeWidth="1.5" />
-                  <circle cx="24" cy="24" r="8" stroke="#2e2820" strokeWidth="1.5" />
-                  <circle cx="24" cy="24" r="2.5" fill="#2e2820" />
-                </svg>
+                <Image
+                  src="https://ucarecdn.com/3cebd723-9ca8-4376-b03d-c3f0df6ebad4/DSC03897.jpg"
+                  alt="Om Straume Boligvent"
+                  fill
+                  style={{ objectFit: 'cover' }}
+                />
                 <div
                   style={{
                     position: 'absolute',

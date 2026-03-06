@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import type { SiteSettings } from '@/lib/types'
 
 interface HeroProps {
@@ -143,32 +144,14 @@ export default function Hero({ settings }: HeroProps) {
               boxShadow: '0 24px 64px rgba(20,16,8,0.14)',
             }}
           >
-            {/* Placeholder image – replace with next/image + Sanity when image is added */}
-            <div
-              style={{
-                width: '100%',
-                aspectRatio: '4/3',
-                background: 'linear-gradient(145deg, #ddd6c8 0%, #b8ae9e 100%)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <svg
-                width="64"
-                height="64"
-                viewBox="0 0 64 64"
-                fill="none"
-                style={{ opacity: 0.3 }}
-              >
-                <circle cx="32" cy="32" r="28" stroke="#2e2820" strokeWidth="2" />
-                <circle cx="32" cy="32" r="14" stroke="#2e2820" strokeWidth="2" />
-                <circle cx="32" cy="32" r="4" fill="#2e2820" />
-                <line x1="32" y1="4" x2="32" y2="18" stroke="#2e2820" strokeWidth="2" />
-                <line x1="32" y1="46" x2="32" y2="60" stroke="#2e2820" strokeWidth="2" />
-                <line x1="4" y1="32" x2="18" y2="32" stroke="#2e2820" strokeWidth="2" />
-                <line x1="46" y1="32" x2="60" y2="32" stroke="#2e2820" strokeWidth="2" />
-              </svg>
+            <div style={{ width: '100%', aspectRatio: '4/3', position: 'relative' }}>
+              <Image
+                src="https://ucarecdn.com/6cc61d81-b2bf-479a-9788-bd64ef95bda3/hf_20260224_115355_7dfea640c8064601919f0871635df4e8.jpeg"
+                alt="Ventilasjonsservice"
+                fill
+                style={{ objectFit: 'cover' }}
+                priority
+              />
             </div>
 
             {/* Stats card overlay */}
