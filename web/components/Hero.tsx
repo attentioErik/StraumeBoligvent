@@ -14,10 +14,10 @@ const trustItems = [
 ]
 
 export default function Hero({ settings }: HeroProps) {
-  const title = settings?.heroTitle || 'Komplett leveranse innen ventilasjon'
+  const title = settings?.heroTitle || 'Ventilasjonsservice i Bergen – én leverandør, fullt ansvar'
   const desc =
     settings?.heroDescription ||
-    'Vi leverer service, rens, innregulering og montasje – og tar ansvar fra start til slutt. Én leverandør, fullt ansvar.'
+    'Service, rens, innregulering og montasje. Vi tar ansvar fra start til slutt.'
   const pill = settings?.heroPill || 'Bergen og omegn · Siden 2012'
 
   return (
@@ -124,7 +124,7 @@ export default function Hero({ settings }: HeroProps) {
             {desc}
           </p>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: 28 }}>
+          <div className="hero-cta" style={{ display: 'flex', alignItems: 'center', gap: 28 }}>
             <Link href="/kontakt" className="btn-amber">
               Ta kontakt
             </Link>
@@ -135,7 +135,7 @@ export default function Hero({ settings }: HeroProps) {
         </div>
 
         {/* Right: image + stats card */}
-        <div style={{ position: 'relative' }}>
+        <div className="hero-img-col" style={{ position: 'relative' }}>
           <div
             style={{
               borderRadius: 8,
@@ -206,6 +206,7 @@ export default function Hero({ settings }: HeroProps) {
 
       {/* Trust bar */}
       <div
+        className="trust-bar"
         style={{
           maxWidth: 1160,
           margin: '0 auto',
@@ -222,6 +223,7 @@ export default function Hero({ settings }: HeroProps) {
         {trustItems.map((item) => (
           <div
             key={item}
+            className="trust-item"
             style={{
               display: 'flex',
               alignItems: 'center',
@@ -259,6 +261,11 @@ export default function Hero({ settings }: HeroProps) {
       <style>{`
         @media (max-width: 980px) {
           .hero-inner { grid-template-columns: 1fr !important; gap: 48px !important; }
+        }
+        @media (max-width: 640px) {
+          #hero { min-height: auto !important; padding-bottom: 48px !important; }
+          #hero h1 { font-size: clamp(2rem, 8vw, 3rem) !important; }
+          .trust-bar { margin-top: 40px !important; padding: '16px 0' !important; }
         }
       `}</style>
     </section>

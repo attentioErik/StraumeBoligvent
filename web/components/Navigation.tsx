@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
+import { usePathname } from 'next/navigation'
 
 const navLinks = [
   { href: '/#tjenester', label: 'Tjenester' },
@@ -15,6 +16,8 @@ const navLinks = [
 export default function Navigation() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const pathname = usePathname()
+  const showStickyBar = pathname !== '/kontakt' && pathname !== '/inngang'
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20)
@@ -23,6 +26,7 @@ export default function Navigation() {
   }, [])
 
   return (
+    <>
     <nav
       style={{
         position: 'fixed',
@@ -163,5 +167,49 @@ export default function Navigation() {
         }
       `}</style>
     </nav>
+
+    {/* Sticky bottom CTA bar – mobile only */}
+    {showStickyBar && (
+      <div className="sticky-cta-bar">
+        <a
+          href="tel:56126800"
+          style={{
+            flex: 1,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 8,
+            fontSize: '0.84rem',
+            fontWeight: 700,
+            color: 'var(--ink)',
+            textDecoration: 'none',
+            borderRight: '1px solid var(--ll)',
+            background: 'var(--off)',
+          }}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.8a19.79 19.79 0 01-3.07-8.67A2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/>
+          </svg>
+          Ring 561 26 800
+        </a>
+        <Link
+          href="/kontakt"
+          style={{
+            flex: 1,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '0.84rem',
+            fontWeight: 700,
+            color: 'var(--ink)',
+            textDecoration: 'none',
+            background: 'var(--amber)',
+          }}
+        >
+          Send forespørsel
+        </Link>
+      </div>
+    )}
+    </>
   )
 }

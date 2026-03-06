@@ -214,3 +214,56 @@ h2, h3 { font-family: 'Playfair Display', Georgia, serif; }
 .prose li { font-size: 0.95rem; color: var(--body); line-height: 1.8; margin-bottom: 0.25rem; }
 .prose strong { font-weight: 700; color: var(--ink); }
 .prose a { color: var(--adark); text-decoration: underline; }
+
+/* ─── MOBILE OPTIMIZATIONS ─── */
+@media (max-width: 640px) {
+  section:not(#hero) {
+    padding-top: 64px !important;
+    padding-bottom: 64px !important;
+  }
+
+  .btn-amber, .btn-ghost {
+    min-height: 48px;
+  }
+
+  .hero-cta {
+    flex-direction: column !important;
+    gap: 12px !important;
+    align-items: stretch !important;
+  }
+  .hero-cta .btn-amber,
+  .hero-cta .btn-ghost {
+    justify-content: center;
+  }
+
+  .hero-img-col { display: none !important; }
+
+  .trust-bar {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12px !important;
+  }
+  .trust-item {
+    padding-right: 0 !important;
+    flex-shrink: 1 !important;
+  }
+}
+
+/* ─── STICKY MOBILE CTA BAR ─── */
+.sticky-cta-bar { display: none; }
+
+@media (max-width: 980px) {
+  .sticky-cta-bar {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 199;
+    height: 60px;
+    background: var(--white);
+    border-top: 1px solid var(--ll);
+    box-shadow: 0 -4px 20px rgba(20,16,8,0.08);
+  }
+  body { padding-bottom: 60px; }
+}

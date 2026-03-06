@@ -192,7 +192,7 @@ export default async function Home() {
           >
             <div>
               <div className="slabel">Hva vi gjør</div>
-              <h2 className="stitle">Tjenester</h2>
+              <h2 className="stitle">Tjenester for bolig og borettslag</h2>
               <p className="sdesc">Fra enkelt filterbytte til full montasje og utskifting av anlegg.</p>
             </div>
           </div>
@@ -324,6 +324,44 @@ export default async function Home() {
         `}</style>
       </section>
 
+      {/* ─── ANMELDELSER ─── */}
+      <section id="anmeldelser" style={{ background: 'var(--white)', padding: '108px 5%' }}>
+        <div className="inner">
+          <div className="slabel reveal">Erfaringer</div>
+          <h2 className="stitle reveal">Hva kundene i Bergen sier</h2>
+          <div
+            className="reviews-grid"
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3, 1fr)',
+              gap: 24,
+              marginTop: 60,
+            }}
+          >
+            {REVIEWS.map((r) => (
+              <ReviewCard key={r.name} text={r.text} name={r.name} role={r.role} />
+            ))}
+          </div>
+        </div>
+        <style>{`
+          @media (max-width: 980px) { .reviews-grid { grid-template-columns: 1fr 1fr !important; } }
+          @media (max-width: 640px) {
+            .reviews-grid {
+              display: flex !important;
+              overflow-x: auto !important;
+              scroll-snap-type: x mandatory !important;
+              -webkit-overflow-scrolling: touch !important;
+              scrollbar-width: none !important;
+              gap: 16px !important;
+              padding: 4px 5% 16px !important;
+              margin: 0 -5% !important;
+            }
+            .reviews-grid::-webkit-scrollbar { display: none; }
+            .reviews-grid > * { flex: 0 0 85% !important; scroll-snap-align: start !important; }
+          }
+        `}</style>
+      </section>
+
       {/* ─── BOLIGEIERE ─── */}
       <section id="boligeiere" style={{ background: 'var(--warm)', padding: '108px 5%' }}>
         <div className="inner">
@@ -433,10 +471,10 @@ export default async function Home() {
               <div className="slabel">Om oss</div>
               <h2 className="stitle">Lokal fagkunnskap.<br />Langsiktige relasjoner.</h2>
               <p style={{ fontSize: '0.925rem', color: 'var(--muted)', lineHeight: 1.8, marginBottom: 16, fontWeight: 300 }}>
-                Straume Boligvent er en spesialisert tjeneste fra Straume Tekniske AS, etablert i 2012 med bred erfaring innen tekniske installasjoner.
+                Spesialisert ventilasjon siden 2012 – del av Straume Tekniske AS.
               </p>
               <p style={{ fontSize: '0.925rem', color: 'var(--muted)', lineHeight: 1.8, marginBottom: 16, fontWeight: 300 }}>
-                Vi samarbeider tett med Straume Tekniske, noe som gir oss tilgang til et bredt fagmiljø – bak én kontaktperson og ett ansvar.
+                Én kontaktperson, fullt ansvar, bredt fagmiljø i ryggen.
               </p>
               <div className="checklist">
                 {[
@@ -460,36 +498,11 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ─── ANMELDELSER ─── */}
-      <section id="anmeldelser" style={{ background: 'var(--white)', padding: '108px 5%' }}>
-        <div className="inner">
-          <div className="slabel reveal">Erfaringer</div>
-          <h2 className="stitle reveal">Kundene sier</h2>
-          <div
-            className="reviews-grid"
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
-              gap: 24,
-              marginTop: 60,
-            }}
-          >
-            {REVIEWS.map((r) => (
-              <ReviewCard key={r.name} text={r.text} name={r.name} role={r.role} />
-            ))}
-          </div>
-        </div>
-        <style>{`
-          @media (max-width: 980px) { .reviews-grid { grid-template-columns: 1fr 1fr !important; } }
-          @media (max-width: 640px) { .reviews-grid { grid-template-columns: 1fr !important; } }
-        `}</style>
-      </section>
-
       {/* ─── PROSJEKTER ─── */}
       <section id="prosjekter" style={{ background: 'var(--warm)', padding: '108px 5%' }}>
         <div className="inner">
           <div className="slabel reveal">Referanser</div>
-          <h2 className="stitle reveal">Utførte prosjekter</h2>
+          <h2 className="stitle reveal">Referanser fra Bergen og omegn</h2>
           <p className="sdesc reveal">
             Et utvalg av arbeid vi har gjennomført for boligeiere og borettslag i Bergen og omegn.
           </p>
@@ -548,15 +561,19 @@ export default async function Home() {
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                 {[
-                  { lbl: 'Telefon', val: settings?.phone || '561 26 800' },
-                  { lbl: 'E-post', val: settings?.email || 'ordre@straumetekniske.no' },
-                  { lbl: 'Adresse', val: settings?.address || 'Idrettsveien 93, 5353 Straume' },
+                  { lbl: 'Telefon', val: settings?.phone || '561 26 800', href: `tel:${(settings?.phone || '561 26 800').replace(/\s/g, '')}` },
+                  { lbl: 'E-post', val: settings?.email || 'ordre@straumetekniske.no', href: `mailto:${settings?.email || 'ordre@straumetekniske.no'}` },
+                  { lbl: 'Adresse', val: settings?.address || 'Idrettsveien 93, 5353 Straume', href: undefined },
                 ].map((row) => (
                   <div key={row.lbl} style={{ display: 'flex', gap: 18, alignItems: 'flex-start' }}>
                     <span style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--sec)', width: 64, flexShrink: 0, paddingTop: 3 }}>
                       {row.lbl}
                     </span>
-                    <span style={{ fontSize: '0.875rem', color: 'var(--body)', lineHeight: 1.6 }}>{row.val}</span>
+                    {row.href ? (
+                      <a href={row.href} style={{ fontSize: '0.875rem', color: 'var(--adark)', fontWeight: 700, textDecoration: 'none', lineHeight: 1.6 }}>{row.val}</a>
+                    ) : (
+                      <span style={{ fontSize: '0.875rem', color: 'var(--body)', lineHeight: 1.6 }}>{row.val}</span>
+                    )}
                   </div>
                 ))}
               </div>
