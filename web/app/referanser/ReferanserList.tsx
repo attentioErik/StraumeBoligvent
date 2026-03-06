@@ -3,18 +3,18 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import type { Referanse } from '@/lib/types'
+import type { ReferenceProject } from '@/lib/types'
 import { urlFor } from '@/lib/sanity'
 
 interface Props {
-  referanser: Referanse[]
+  referanser: ReferenceProject[]
 }
 
 export default function ReferanserList({ referanser }: Props) {
-  const kategorier = ['Alle', ...Array.from(new Set(referanser.map((r) => r.kategori).filter(Boolean) as string[]))]
+  const kategorier = ['Alle', ...Array.from(new Set(referanser.map((r) => r.category).filter(Boolean) as string[]))]
   const [aktiv, setAktiv] = useState('Alle')
 
-  const filtrert = aktiv === 'Alle' ? referanser : referanser.filter((r) => r.kategori === aktiv)
+  const filtrert = aktiv === 'Alle' ? referanser : referanser.filter((r) => r.category === aktiv)
 
   if (referanser.length === 0) {
     return (
@@ -88,10 +88,10 @@ export default function ReferanserList({ referanser }: Props) {
                 overflow: 'hidden',
               }}
             >
-              {ref.hovedbilde ? (
+              {ref.image ? (
                 <Image
-                  src={urlFor(ref.hovedbilde).width(640).height(400).url()}
-                  alt={ref.hovedbilde.alt || ref.title}
+                  src={urlFor(ref.image).width(640).height(400).url()}
+                  alt={ref.title}
                   fill
                   style={{ objectFit: 'cover' }}
                 />
@@ -102,7 +102,7 @@ export default function ReferanserList({ referanser }: Props) {
                   <circle cx="32" cy="20" r="4" stroke="#706860" strokeWidth="1.5" />
                 </svg>
               )}
-              {ref.kategori && (
+              {ref.category && (
                 <div
                   style={{
                     position: 'absolute',
@@ -118,62 +118,30 @@ export default function ReferanserList({ referanser }: Props) {
                     borderRadius: 2,
                   }}
                 >
-                  {ref.kategori}
-                </div>
-              )}
-              {ref.utfortAr && (
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: 14,
-                    right: 14,
-                    background: 'rgba(20,16,8,0.6)',
-                    color: '#e8dfc8',
-                    fontSize: '0.63rem',
-                    fontWeight: 700,
-                    padding: '5px 10px',
-                    borderRadius: 2,
-                  }}
-                >
-                  {ref.utfortAr}
+                  {ref.category}
                 </div>
               )}
             </div>
 
             {/* Content */}
             <div style={{ padding: '26px 28px 30px' }}>
-              {ref.kunde && (
+              {ref.serviceType && (
                 <div style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'var(--adark)', marginBottom: 8 }}>
-                  {ref.kunde}
+                  {ref.serviceType}
                 </div>
               )}
               <div style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.1rem', fontWeight: 700, color: 'var(--ink)', marginBottom: 10, lineHeight: 1.25 }}>
                 {ref.title}
               </div>
-              {ref.kortBeskrivelse && (
+              {ref.description && (
                 <p style={{ fontSize: '0.845rem', color: 'var(--muted)', lineHeight: 1.65, fontWeight: 300, marginBottom: 12 }}>
-                  {ref.kortBeskrivelse}
+                  {ref.description}
                 </p>
               )}
-              {ref.tjenester && ref.tjenester.length > 0 && (
-                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', borderTop: '1px solid var(--ll)', paddingTop: 14 }}>
-                  {ref.tjenester.map((t) => (
-                    <span
-                      key={t}
-                      style={{
-                        fontSize: '0.68rem',
-                        color: 'var(--adark)',
-                        background: 'var(--abg)',
-                        border: '1px solid var(--amid)',
-                        borderRadius: 100,
-                        padding: '3px 10px',
-                        fontWeight: 600,
-                      }}
-                    >
-                      {t}
-                    </span>
-                  ))}
-                </div>
+              {ref.detail && (
+                <p style={{ fontSize: '0.8rem', color: 'var(--sec)', borderTop: '1px solid var(--ll)', paddingTop: 14, lineHeight: 1.65 }}>
+                  {ref.detail}
+                </p>
               )}
             </div>
           </Link>

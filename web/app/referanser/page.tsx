@@ -1,6 +1,8 @@
+export const revalidate = 60
+
 import { client } from '@/lib/sanity'
-import { referanserQuery } from '@/lib/queries'
-import type { Referanse } from '@/lib/types'
+import { referenceProjectsQuery } from '@/lib/queries'
+import type { ReferenceProject } from '@/lib/types'
 import type { Metadata } from 'next'
 import ReferanserList from './ReferanserList'
 
@@ -10,7 +12,7 @@ export const metadata: Metadata = {
 }
 
 export default async function ReferanserPage() {
-  const referanser = await client.fetch<Referanse[]>(referanserQuery).catch(() => [])
+  const referanser = await client.fetch<ReferenceProject[]>(referenceProjectsQuery).catch(() => [])
 
   return (
     <>
@@ -30,7 +32,7 @@ export default async function ReferanserPage() {
             }}
           >
             <div style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--amber)', boxShadow: '0 0 0 3px rgba(240,165,0,0.2)' }} />
-            <span style={{ fontSize: '0.78rem', fontWeight: 700, letterSpacing: '0.06em', color: 'var(--adark)' }}>Utføre prosjekter</span>
+            <span style={{ fontSize: '0.78rem', fontWeight: 700, letterSpacing: '0.06em', color: 'var(--adark)' }}>Utførte prosjekter</span>
           </div>
           <h1
             style={{

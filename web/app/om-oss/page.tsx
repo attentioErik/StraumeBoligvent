@@ -1,3 +1,5 @@
+export const revalidate = 60
+
 import { client, urlFor } from '@/lib/sanity'
 import { omOssQuery, ansatteQuery } from '@/lib/queries'
 import type { OmOss, Ansatt } from '@/lib/types'

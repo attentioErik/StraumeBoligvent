@@ -34,10 +34,7 @@ export default defineConfig({
               .child(S.documentTypeList('service').title('Tjenester')),
             S.listItem()
               .title('Referanser')
-              .child(S.documentTypeList('referanse').title('Referanser')),
-            S.listItem()
-              .title('Referanseprosjekter (eldre)')
-              .child(S.documentTypeList('referenceProject').title('Referanseprosjekter')),
+              .child(S.documentTypeList('referenceProject').title('Referanser')),
             S.listItem()
               .title('Artikler')
               .child(S.documentTypeList('article').title('Artikler')),

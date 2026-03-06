@@ -1,3 +1,5 @@
+export const revalidate = 60
+
 import { client } from '@/lib/sanity'
 import { borettslagLandingQuery } from '@/lib/queries'
 import type { BorettslagLanding } from '@/lib/types'

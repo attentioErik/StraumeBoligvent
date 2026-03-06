@@ -1,8 +1,8 @@
 export const dynamic = 'force-dynamic'
 
 import { client, urlFor } from '@/lib/sanity'
-import { referanseBySlugQuery, referansePathsQuery } from '@/lib/queries'
-import type { Referanse } from '@/lib/types'
+import { referenceProjectBySlugQuery, referenceProjectPathsQuery } from '@/lib/queries'
+import type { ReferenceProject } from '@/lib/types'
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -14,20 +14,20 @@ interface Props {
 }
 
 export async function generateStaticParams() {
-  const paths = await client.fetch<{ slug: string }[]>(referansePathsQuery).catch(() => [])
+  const paths = await client.fetch<{ slug: string }[]>(referenceProjectPathsQuery).catch(() => [])
   return paths.map((p) => ({ slug: p.slug }))
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
-  const ref = await client.fetch<Referanse>(referanseBySlugQuery, { slug }).catch(() => null)
+  const ref = await client.fetch<ReferenceProject>(referenceProjectBySlugQuery, { slug }).catch(() => null)
   if (!ref) return {}
-  return { title: ref.title, description: ref.kortBeskrivelse }
+  return { title: ref.title, description: ref.description }
 }
 
 export default async function ReferansePage({ params }: Props) {
   const { slug } = await params
-  const ref = await client.fetch<Referanse>(referanseBySlugQuery, { slug }).catch(() => null)
+  const ref = await client.fetch<ReferenceProject>(referenceProjectBySlugQuery, { slug }).catch(() => null)
 
   if (!ref) notFound()
 
@@ -44,7 +44,7 @@ export default async function ReferansePage({ params }: Props) {
           </Link>
 
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 24 }}>
-            {ref.kategori && (
+            {ref.category && (
               <span
                 style={{
                   display: 'inline-block',
@@ -58,12 +58,12 @@ export default async function ReferansePage({ params }: Props) {
                   borderRadius: 2,
                 }}
               >
-                {ref.kategori}
+                {ref.category}
               </span>
             )}
-            {ref.utfortAr && (
+            {ref.serviceType && (
               <span style={{ display: 'inline-flex', alignItems: 'center', fontSize: '0.78rem', color: 'var(--muted)', fontWeight: 400 }}>
-                {ref.utfortAr}
+                {ref.serviceType}
               </span>
             )}
           </div>
@@ -82,48 +82,41 @@ export default async function ReferansePage({ params }: Props) {
           >
             {ref.title}
           </h1>
-
-          {ref.kunde && (
-            <p style={{ fontSize: '0.9rem', color: 'var(--adark)', fontWeight: 600, marginBottom: 16, letterSpacing: '0.04em' }}>
-              {ref.kunde}
-            </p>
-          )}
-          {ref.kortBeskrivelse && (
+          {ref.description && (
             <p style={{ fontSize: '1.05rem', lineHeight: 1.78, color: 'var(--muted)', fontWeight: 300, maxWidth: 600 }}>
-              {ref.kortBeskrivelse}
+              {ref.description}
             </p>
           )}
 
-          {ref.tjenester && ref.tjenester.length > 0 && (
-            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 24 }}>
-              {ref.tjenester.map((t) => (
-                <span
-                  key={t}
-                  style={{
-                    fontSize: '0.72rem',
-                    color: 'var(--adark)',
-                    background: 'var(--abg)',
-                    border: '1px solid var(--amid)',
-                    borderRadius: 100,
-                    padding: '4px 12px',
-                    fontWeight: 600,
-                  }}
-                >
-                  {t}
-                </span>
-              ))}
+          {ref.service && (
+            <div style={{ marginTop: 24 }}>
+              <Link
+                href={`/services/${ref.service.slug.current}`}
+                style={{
+                  fontSize: '0.72rem',
+                  color: 'var(--adark)',
+                  background: 'var(--abg)',
+                  border: '1px solid var(--amid)',
+                  borderRadius: 100,
+                  padding: '4px 12px',
+                  fontWeight: 600,
+                  textDecoration: 'none',
+                }}
+              >
+                {ref.service.title}
+              </Link>
             </div>
           )}
         </div>
       </section>
 
       {/* ─── HOVEDBILDE ─── */}
-      {ref.hovedbilde && (
-        <section style={{ background: 'var(--dark)', padding: '0' }}>
+      {ref.image && (
+        <section style={{ background: 'var(--dark)', padding: 0 }}>
           <div style={{ position: 'relative', width: '100%', height: 480, maxHeight: '55vw' }}>
             <Image
-              src={urlFor(ref.hovedbilde).width(1600).height(900).url()}
-              alt={ref.hovedbilde.alt || ref.title}
+              src={urlFor(ref.image).width(1600).height(900).url()}
+              alt={ref.title}
               fill
               style={{ objectFit: 'cover' }}
               priority
@@ -140,53 +133,27 @@ export default async function ReferansePage({ params }: Props) {
         >
           {/* Venstre: beskrivelse */}
           <div>
-            {ref.beskrivelse && ref.beskrivelse.length > 0 && (
-              <div className="prose" style={{ marginBottom: 56 }}>
-                <PortableText value={ref.beskrivelse} />
+            {ref.detail && (
+              <p style={{ fontSize: '1.05rem', lineHeight: 1.8, color: 'var(--body)', marginBottom: 40, fontWeight: 300 }}>
+                {ref.detail}
+              </p>
+            )}
+
+            {ref.results && ref.results.length > 0 && (
+              <div className="prose" style={{ marginBottom: 48 }}>
+                <PortableText value={ref.results} />
               </div>
             )}
 
-            {/* Galleri */}
-            {ref.galleri && ref.galleri.length > 0 && (
-              <div>
-                <div className="slabel">Bilder</div>
-                <div
-                  className="galleri-grid"
-                  style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 16, marginTop: 24 }}
-                >
-                  {ref.galleri.map((bilde, i) => (
-                    <div
-                      key={i}
-                      style={{
-                        position: 'relative',
-                        aspectRatio: '4/3',
-                        borderRadius: 4,
-                        overflow: 'hidden',
-                        background: 'var(--ll)',
-                      }}
-                    >
-                      <Image
-                        src={urlFor(bilde).width(800).height(600).url()}
-                        alt={bilde.alt || `Bilde ${i + 1}`}
-                        fill
-                        style={{ objectFit: 'cover' }}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Kundesitat */}
-            {ref.kundesitat && (
+            {/* Testimonial */}
+            {ref.testimonial && (
               <div
                 style={{
                   borderLeft: '3px solid var(--amber)',
-                  paddingLeft: 28,
-                  marginTop: 56,
                   background: 'var(--abg)',
                   padding: '28px 28px 28px 32px',
                   borderRadius: '0 6px 6px 0',
+                  marginTop: 40,
                 }}
               >
                 <p
@@ -199,10 +166,11 @@ export default async function ReferansePage({ params }: Props) {
                     marginBottom: 16,
                   }}
                 >
-                  &ldquo;{ref.kundesitat.sitat}&rdquo;
+                  &ldquo;{ref.testimonial.quote}&rdquo;
                 </p>
                 <p style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--adark)', letterSpacing: '0.06em' }}>
-                  — {ref.kundesitat.person}
+                  — {ref.testimonial.author}
+                  {ref.testimonial.role && <span style={{ fontWeight: 400, color: 'var(--muted)' }}>, {ref.testimonial.role}</span>}
                 </p>
               </div>
             )}
@@ -256,38 +224,18 @@ export default async function ReferansePage({ params }: Props) {
         <style>{`
           @media (max-width: 980px) {
             .ref-content-grid { grid-template-columns: 1fr !important; }
-            .galleri-grid { grid-template-columns: 1fr !important; }
           }
         `}</style>
       </section>
 
-      {/* ─── FORRIGE / NESTE ─── */}
-      {(ref.forrige || ref.neste) && (
-        <section style={{ background: 'var(--off)', borderTop: '1px solid var(--ll)', padding: '48px 5%' }}>
-          <div className="inner" style={{ display: 'flex', justifyContent: 'space-between', gap: 24, flexWrap: 'wrap' }}>
-            {ref.forrige ? (
-              <Link
-                href={`/referanser/${ref.forrige.slug.current}`}
-                style={{ textDecoration: 'none', display: 'flex', flexDirection: 'column', gap: 6 }}
-              >
-                <span style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--muted)' }}>← Forrige</span>
-                <span style={{ fontFamily: 'Playfair Display, serif', fontWeight: 700, color: 'var(--ink)', fontSize: '0.95rem' }}>{ref.forrige.title}</span>
-              </Link>
-            ) : (
-              <div />
-            )}
-            {ref.neste && (
-              <Link
-                href={`/referanser/${ref.neste.slug.current}`}
-                style={{ textDecoration: 'none', display: 'flex', flexDirection: 'column', gap: 6, textAlign: 'right' }}
-              >
-                <span style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--muted)' }}>Neste →</span>
-                <span style={{ fontFamily: 'Playfair Display, serif', fontWeight: 700, color: 'var(--ink)', fontSize: '0.95rem' }}>{ref.neste.title}</span>
-              </Link>
-            )}
-          </div>
-        </section>
-      )}
+      {/* ─── TILBAKE ─── */}
+      <section style={{ background: 'var(--off)', borderTop: '1px solid var(--ll)', padding: '32px 5%' }}>
+        <div className="inner">
+          <Link href="/referanser" style={{ fontSize: '0.84rem', color: 'var(--muted)', textDecoration: 'none' }}>
+            ← Tilbake til alle referanser
+          </Link>
+        </div>
+      </section>
     </>
   )
 }
