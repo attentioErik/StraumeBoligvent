@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Next.js
+web/.next/
+web/out/
+web/.vercel/
+
+# Environment variables — NEVER commit these
+web/.env.local
+web/.env*.local
+sanity/.env
+sanity/.env*.local
+studio-straume-boligvent/.env
+studio-straume-boligvent/.env*.local
+
+# Build output
+web/tsconfig.tsbuildinfo
+sanity/.sanity/
+studio-straume-boligvent/.sanity/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
