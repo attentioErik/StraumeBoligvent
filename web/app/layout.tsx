@@ -6,6 +6,7 @@ import ScrollReveal from '@/components/ScrollReveal'
 import { client } from '@/lib/sanity'
 import { siteSettingsQuery } from '@/lib/queries'
 import type { SiteSettings } from '@/lib/types'
+import Script from 'next/script'
 
 export const metadata: Metadata = {
   title: {
@@ -40,6 +41,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <main>{children}</main>
         <Footer settings={settings} />
         <ScrollReveal />
+        {/* BusinessBooster chatbot */}
+        <Script id="bb-config" strategy="beforeInteractive">{`
+          window.bbConfig = { clientId: "38c8383e-c7c1-4be9-a0db-17764b5566a8", agentId: "7df4adaf-8168-4101-ace9-718b96d94141" };
+        `}</Script>
+        <Script src="https://booster-engine.vercel.app/api/widget" strategy="afterInteractive" />
       </body>
     </html>
   )
