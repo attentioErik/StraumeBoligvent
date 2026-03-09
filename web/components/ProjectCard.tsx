@@ -10,7 +10,7 @@ interface ProjectCardProps {
 export default function ProjectCard({ project }: ProjectCardProps) {
   return (
     <Link
-      href={`/referanser/${project.slug.current}`}
+      href="/galleri"
       className="pcard reveal"
       style={{
         background: 'var(--white)',

@@ -19,12 +19,14 @@ const services = [
 const company = [
   { label: 'Om oss', href: '/om-oss' },
   { label: 'Borettslag', href: '/borettslag' },
-  { label: 'Referanser', href: '/referanser' },
+  { label: 'Galleri', href: '/galleri' },
   { label: 'Artikler', href: '/blog' },
   { label: 'Kontakt', href: '/kontakt' },
 ]
 
 const suppliers = ['Systemair', 'Flexit', 'Swegon', 'Ventiståhl']
+
+const certifications = ['Miljøsertifisert', 'EKOM Autorisasjon', 'Sentral Godkjent']
 
 export default function Footer({ settings }: FooterProps) {
   const year = new Date().getFullYear()
@@ -211,11 +213,51 @@ export default function Footer({ settings }: FooterProps) {
         </div>
       </div>
 
+      {/* Certifications */}
+      <div
+        style={{
+          maxWidth: 1160,
+          margin: '48px auto 0',
+          paddingTop: 28,
+          borderTop: '1px solid var(--ll)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 12,
+          flexWrap: 'wrap',
+        }}
+      >
+        <span style={{ fontSize: '0.62rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--sec)', marginRight: 4 }}>
+          Sertifiseringer
+        </span>
+        {certifications.map((cert) => (
+          <span
+            key={cert}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              fontSize: '0.78rem',
+              color: 'var(--muted)',
+              fontWeight: 400,
+              padding: '5px 14px',
+              background: 'var(--white)',
+              border: '1px solid var(--ll)',
+              borderRadius: 100,
+            }}
+          >
+            <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="var(--amber)" strokeWidth="2">
+              <path d="M16.67 5L7.5 14.17 3.33 10" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            {cert}
+          </span>
+        ))}
+      </div>
+
       {/* Bottom bar */}
       <div
         style={{
           maxWidth: 1160,
-          margin: '52px auto 0',
+          margin: '24px auto 0',
           paddingTop: 24,
           borderTop: '1px solid var(--ll)',
           display: 'flex',

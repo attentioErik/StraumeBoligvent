@@ -501,10 +501,10 @@ export default async function Home() {
       {/* ─── PROSJEKTER ─── */}
       <section id="prosjekter" style={{ background: 'var(--warm)', padding: '108px 5%' }}>
         <div className="inner">
-          <div className="slabel reveal">Referanser</div>
-          <h2 className="stitle reveal">Referanser fra Bergen og omegn</h2>
+          <div className="slabel reveal">Galleri</div>
+          <h2 className="stitle reveal">Bilder fra oppdrag i Bergen og omegn</h2>
           <p className="sdesc reveal">
-            Et utvalg av arbeid vi har gjennomført for boligeiere og borettslag i Bergen og omegn.
+            Et utvalg bilder fra arbeid vi har utført for boligeiere og borettslag i Bergen og omegn.
           </p>
           <div
             className="proj-grid"

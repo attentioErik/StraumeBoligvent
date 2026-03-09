@@ -1,6 +1,6 @@
 export const dynamic = 'force-dynamic'
 
-import { client } from '@/lib/sanity'
+import { client, urlFor } from '@/lib/sanity'
 import {
   serviceBySlugQuery,
   servicePathsQuery,
@@ -10,6 +10,7 @@ import {
 import type { Service, ReferenceProject, FAQ } from '@/lib/types'
 import { PortableText } from '@portabletext/react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import ContactForm from '@/components/ContactForm'
 import { servicesQuery } from '@/lib/queries'
@@ -54,7 +55,7 @@ export default async function ServicePage({ params }: Props) {
       <section
         style={{
           background: 'var(--off)',
-          padding: '120px 5% 80px',
+          padding: '120px 5% 0',
           borderBottom: '1px solid var(--ll)',
         }}
       >
@@ -92,41 +93,124 @@ export default async function ServicePage({ params }: Props) {
               </span>
             </div>
           </div>
-          <h1
+
+          <div className="service-hero-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'center', paddingBottom: 64 }}>
+            {/* Left: text */}
+            <div>
+              <h1
+                style={{
+                  fontFamily: 'Playfair Display, serif',
+                  fontSize: 'clamp(2.4rem, 4vw, 3.6rem)',
+                  fontWeight: 800,
+                  lineHeight: 1.08,
+                  color: 'var(--ink)',
+                  letterSpacing: '-0.02em',
+                  marginBottom: 24,
+                }}
+              >
+                {service.title}
+              </h1>
+              <p
+                style={{
+                  fontSize: '1.05rem',
+                  lineHeight: 1.78,
+                  color: 'var(--muted)',
+                  fontWeight: 300,
+                  maxWidth: 480,
+                  marginBottom: 32,
+                }}
+              >
+                {service.description}
+              </p>
+
+              {/* Google rating */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 36 }}>
+                <div style={{ display: 'flex', gap: 2 }}>
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <svg key={star} width="18" height="18" viewBox="0 0 20 20" fill={star <= 4 ? 'var(--amber)' : 'none'} stroke="var(--amber)" strokeWidth="1.5">
+                      <path d="M10 1.5l2.47 5.01 5.53.8-4 3.9.94 5.49L10 14.27 5.06 16.7 6 11.21l-4-3.9 5.53-.8L10 1.5z" />
+                      {star === 5 && (
+                        <defs>
+                          <linearGradient id="halfStar">
+                            <stop offset="80%" stopColor="var(--amber)" />
+                            <stop offset="80%" stopColor="transparent" />
+                          </linearGradient>
+                        </defs>
+                      )}
+                      {star === 5 && <path d="M10 1.5l2.47 5.01 5.53.8-4 3.9.94 5.49L10 14.27 5.06 16.7 6 11.21l-4-3.9 5.53-.8L10 1.5z" fill="url(#halfStar)" />}
+                    </svg>
+                  ))}
+                </div>
+                <span style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--ink)' }}>4,9/5</span>
+                <span style={{ fontSize: '0.8rem', color: 'var(--muted)', fontWeight: 300 }}>
+                  — Betrodd av over 300 kunder i Bergensregionen
+                </span>
+              </div>
+
+              <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap' }}>
+                <Link href="/kontakt" className="btn-amber">
+                  Få tilbud
+                </Link>
+                <a href="tel:56126800" className="btn-ghost">
+                  Ring 561 26 800 →
+                </a>
+              </div>
+            </div>
+
+            {/* Right: hero image */}
+            {service.image && (
+              <div style={{ borderRadius: 8, overflow: 'hidden', boxShadow: '0 24px 64px rgba(20,16,8,0.14)' }}>
+                <div style={{ width: '100%', aspectRatio: '4/3', position: 'relative' }}>
+                  <Image
+                    src={urlFor(service.image).width(800).height(600).url()}
+                    alt={service.title}
+                    fill
+                    style={{ objectFit: 'cover' }}
+                    priority
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Partner logos */}
+          <div
             style={{
-              fontFamily: 'Playfair Display, serif',
-              fontSize: 'clamp(2.4rem, 4vw, 3.6rem)',
-              fontWeight: 800,
-              lineHeight: 1.08,
-              color: 'var(--ink)',
-              letterSpacing: '-0.02em',
-              maxWidth: 720,
-              marginBottom: 24,
+              borderTop: '1px solid var(--ll)',
+              padding: '24px 0',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 12,
+              flexWrap: 'wrap',
             }}
           >
-            {service.title}
-          </h1>
-          <p
-            style={{
-              fontSize: '1.05rem',
-              lineHeight: 1.78,
-              color: 'var(--muted)',
-              fontWeight: 300,
-              maxWidth: 560,
-              marginBottom: 40,
-            }}
-          >
-            {service.description}
-          </p>
-          <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap' }}>
-            <Link href="/kontakt" className="btn-amber">
-              Få tilbud
-            </Link>
-            <a href="tel:56126800" className="btn-ghost">
-              Ring 561 26 800 →
-            </a>
+            <span style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--sec)', marginRight: 8 }}>
+              Samarbeidspartnere
+            </span>
+            {['Swegon', 'Flexit', 'Ventistål', 'Systemair'].map((partner) => (
+              <span
+                key={partner}
+                style={{
+                  fontSize: '0.82rem',
+                  color: 'var(--muted)',
+                  fontWeight: 400,
+                  padding: '6px 16px',
+                  background: 'var(--white)',
+                  border: '1px solid var(--ll)',
+                  borderRadius: 100,
+                }}
+              >
+                {partner}
+              </span>
+            ))}
           </div>
         </div>
+
+        <style>{`
+          @media (max-width: 980px) {
+            .service-hero-grid { grid-template-columns: 1fr !important; gap: 40px !important; }
+          }
+        `}</style>
       </section>
 
       {/* ─── MAIN CONTENT ─── */}
@@ -283,8 +367,8 @@ export default async function ServicePage({ params }: Props) {
       {projects.length > 0 && (
         <section style={{ background: 'var(--warm)', padding: '80px 5%' }}>
           <div className="inner">
-            <div className="slabel">Referanser</div>
-            <h2 className="stitle">Relaterte prosjekter</h2>
+            <div className="slabel">Galleri</div>
+            <h2 className="stitle">Bilder fra lignende oppdrag</h2>
             <div
               style={{
                 display: 'grid',
