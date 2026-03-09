@@ -173,37 +173,6 @@ export default async function ServicePage({ params }: Props) {
             )}
           </div>
 
-          {/* Partner logos */}
-          <div
-            style={{
-              borderTop: '1px solid var(--ll)',
-              padding: '24px 0',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 12,
-              flexWrap: 'wrap',
-            }}
-          >
-            <span style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--sec)', marginRight: 8 }}>
-              Samarbeidspartnere
-            </span>
-            {['Swegon', 'Flexit', 'Ventistål', 'Systemair'].map((partner) => (
-              <span
-                key={partner}
-                style={{
-                  fontSize: '0.82rem',
-                  color: 'var(--muted)',
-                  fontWeight: 400,
-                  padding: '6px 16px',
-                  background: 'var(--white)',
-                  border: '1px solid var(--ll)',
-                  borderRadius: 100,
-                }}
-              >
-                {partner}
-              </span>
-            ))}
-          </div>
         </div>
 
         <style>{`

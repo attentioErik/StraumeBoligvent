@@ -1,6 +1,6 @@
 export const revalidate = 60
 
-import { client } from '@/lib/sanity'
+import { client, urlFor } from '@/lib/sanity'
 import {
   siteSettingsQuery,
   servicesQuery,
@@ -13,7 +13,6 @@ import Image from 'next/image'
 import Hero from '@/components/Hero'
 import ServiceCard from '@/components/ServiceCard'
 import ReviewCard from '@/components/ReviewCard'
-import ProjectCard from '@/components/ProjectCard'
 import FaqSection from '@/components/FaqSection'
 import ContactForm from '@/components/ContactForm'
 import Link from 'next/link'
@@ -498,8 +497,8 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ─── PROSJEKTER ─── */}
-      <section id="prosjekter" style={{ background: 'var(--warm)', padding: '108px 5%' }}>
+      {/* ─── GALLERI ─── */}
+      <section id="galleri" style={{ background: 'var(--warm)', padding: '108px 5%' }}>
         <div className="inner">
           <div className="slabel reveal">Galleri</div>
           <h2 className="stitle reveal">Bilder fra oppdrag i Bergen og omegn</h2>
@@ -507,22 +506,46 @@ export default async function Home() {
             Et utvalg bilder fra arbeid vi har utført for boligeiere og borettslag i Bergen og omegn.
           </p>
           <div
-            className="proj-grid"
+            className="gallery-home-grid"
             style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(3, 1fr)',
-              gap: 24,
+              gap: 16,
               marginTop: 60,
             }}
           >
-            {displayProjects.slice(0, 3).map((p) => (
-              <ProjectCard key={p._id} project={p} />
+            {displayProjects.filter((p) => p.image).slice(0, 6).map((p) => (
+              <Link
+                key={p._id}
+                href="/galleri"
+                className="gallery-home-item reveal"
+                style={{
+                  position: 'relative',
+                  aspectRatio: '4/3',
+                  borderRadius: 6,
+                  overflow: 'hidden',
+                  display: 'block',
+                }}
+              >
+                <Image
+                  src={urlFor(p.image!).width(640).height(480).url()}
+                  alt={p.title}
+                  fill
+                  style={{ objectFit: 'cover', transition: 'transform 0.3s' }}
+                />
+              </Link>
             ))}
+          </div>
+          <div style={{ textAlign: 'center', marginTop: 40 }}>
+            <Link href="/galleri" className="btn-ghost">
+              Se hele galleriet →
+            </Link>
           </div>
         </div>
         <style>{`
-          @media (max-width: 980px) { .proj-grid { grid-template-columns: 1fr 1fr !important; } }
-          @media (max-width: 640px) { .proj-grid { grid-template-columns: 1fr !important; } }
+          .gallery-home-item:hover img { transform: scale(1.05); }
+          @media (max-width: 980px) { .gallery-home-grid { grid-template-columns: 1fr 1fr !important; } }
+          @media (max-width: 640px) { .gallery-home-grid { grid-template-columns: 1fr !important; } }
         `}</style>
       </section>
 

@@ -118,11 +118,35 @@ export default function Hero({ settings }: HeroProps) {
               color: 'var(--muted)',
               fontWeight: 300,
               maxWidth: 440,
-              marginBottom: 40,
+              marginBottom: 24,
             }}
           >
             {desc}
           </p>
+
+          {/* Google rating */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 36, flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', gap: 2 }}>
+              {[1, 2, 3, 4, 5].map((star) => (
+                <svg key={star} width="18" height="18" viewBox="0 0 20 20" fill={star <= 4 ? 'var(--amber)' : 'none'} stroke="var(--amber)" strokeWidth="1.5">
+                  <path d="M10 1.5l2.47 5.01 5.53.8-4 3.9.94 5.49L10 14.27 5.06 16.7 6 11.21l-4-3.9 5.53-.8L10 1.5z" />
+                  {star === 5 && (
+                    <defs>
+                      <linearGradient id="heroHalfStar">
+                        <stop offset="80%" stopColor="var(--amber)" />
+                        <stop offset="80%" stopColor="transparent" />
+                      </linearGradient>
+                    </defs>
+                  )}
+                  {star === 5 && <path d="M10 1.5l2.47 5.01 5.53.8-4 3.9.94 5.49L10 14.27 5.06 16.7 6 11.21l-4-3.9 5.53-.8L10 1.5z" fill="url(#heroHalfStar)" />}
+                </svg>
+              ))}
+            </div>
+            <span style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--ink)' }}>4,9/5</span>
+            <span style={{ fontSize: '0.8rem', color: 'var(--muted)', fontWeight: 300 }}>
+              — Betrodd av over 300 kunder i Bergensregionen
+            </span>
+          </div>
 
           <div className="hero-cta" style={{ display: 'flex', alignItems: 'center', gap: 28 }}>
             <Link href="/kontakt" className="btn-amber">
@@ -255,6 +279,42 @@ export default function Hero({ settings }: HeroProps) {
             </div>
             {item}
           </div>
+        ))}
+      </div>
+
+      {/* Partner logos */}
+      <div
+        className="partner-bar"
+        style={{
+          maxWidth: 1160,
+          margin: '0 auto',
+          width: '100%',
+          borderTop: '1px solid var(--ll)',
+          padding: '24px 0',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 12,
+          flexWrap: 'wrap',
+        }}
+      >
+        <span style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--sec)', marginRight: 8 }}>
+          Samarbeidspartnere
+        </span>
+        {['Swegon', 'Flexit', 'Ventistål', 'Systemair'].map((partner) => (
+          <span
+            key={partner}
+            style={{
+              fontSize: '0.82rem',
+              color: 'var(--muted)',
+              fontWeight: 400,
+              padding: '6px 16px',
+              background: 'var(--off)',
+              border: '1px solid var(--ll)',
+              borderRadius: 100,
+            }}
+          >
+            {partner}
+          </span>
         ))}
       </div>
 
