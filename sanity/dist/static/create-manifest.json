@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "createdAt": "2026-03-11T13:08:01.097Z",
+  "createdAt": "2026-03-11T14:29:59.555Z",
   "workspaces": [
     {
       "name": "straume-boligvent",
@@ -12,7 +12,7 @@
       "mediaLibrary": {
         "enabled": false
       },
-      "schema": "0b8aaeee.create-schema.json",
+      "schema": "92d4a44f.create-schema.json",
       "tools": "1041128a.create-tools.json"
     }
   ]
