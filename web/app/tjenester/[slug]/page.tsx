@@ -627,7 +627,7 @@ export default async function ServicePage({ params }: Props) {
               {service.relatedServices!.map((s) => (
                 <Link
                   key={s._id}
-                  href={`/services/${s.slug.current}`}
+                  href={`/tjenester/${s.slug.current}`}
                   style={{
                     background: 'var(--off)',
                     border: '1px solid var(--ll)',

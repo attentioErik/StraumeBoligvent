@@ -12,6 +12,16 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: 'ucarecdn.com' },
     ],
   },
+
+  async redirects() {
+    return [
+      {
+        source: '/services/:slug',
+        destination: '/tjenester/:slug',
+        permanent: true,
+      },
+    ]
+  },
 }
 
 export default nextConfig

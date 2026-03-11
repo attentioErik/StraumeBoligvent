@@ -18,7 +18,7 @@ const ICONS = [
 export default function ServiceCard({ service, index }: ServiceCardProps) {
   return (
     <Link
-      href={`/services/${service.slug.current}`}
+      href={`/tjenester/${service.slug.current}`}
       style={{
         padding: '40px 36px',
         borderRight: '1px solid var(--ll)',

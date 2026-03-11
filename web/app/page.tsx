@@ -12,29 +12,10 @@ import type { SiteSettings, Service, ReferenceProject, FAQ } from '@/lib/types'
 import Image from 'next/image'
 import Hero from '@/components/Hero'
 import ServiceCard from '@/components/ServiceCard'
-import ReviewCard from '@/components/ReviewCard'
 import FaqSection from '@/components/FaqSection'
 import ContactForm from '@/components/ContactForm'
 import Link from 'next/link'
-
-// Static fallback reviews
-const REVIEWS = [
-  {
-    text: 'Tok raskt tak i et komplekst problem som forrige firma ikke fulgte opp. Profesjonelt og grundig fra start til slutt.',
-    name: 'Svetlana Jakšić',
-    role: 'Boligeier, Bergen',
-  },
-  {
-    text: 'Ryddig service, god kommunikasjon og tydelig tilbakemelding på anleggets tilstand. Bruker dem fast.',
-    name: 'Jan Olsen',
-    role: 'Eiendomsforvalter',
-  },
-  {
-    text: 'Serviceavtalen fungerer utmerket. Styret får alltid dokumentasjon etter på – enkelt og oversiktlig.',
-    name: 'Arne Dahl',
-    role: 'Styreleder, borettslag',
-  },
-]
+import Script from 'next/script'
 
 // Static fallback projects
 const FALLBACK_PROJECTS: ReferenceProject[] = [
@@ -326,37 +307,11 @@ export default async function Home() {
         <div className="inner">
           <div className="slabel reveal">Erfaringer</div>
           <h2 className="stitle reveal">Hva kundene i Bergen sier</h2>
-          <div
-            className="reviews-grid"
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
-              gap: 24,
-              marginTop: 60,
-            }}
-          >
-            {REVIEWS.map((r) => (
-              <ReviewCard key={r.name} text={r.text} name={r.name} role={r.role} />
-            ))}
+          <div style={{ marginTop: 60 }}>
+            <Script src="https://elfsightcdn.com/platform.js" strategy="lazyOnload" />
+            <div className="elfsight-app-f72eef5c-9e8b-40c6-904b-dd6484fdcb3d" data-elfsight-app-lazy></div>
           </div>
         </div>
-        <style>{`
-          @media (max-width: 980px) { .reviews-grid { grid-template-columns: 1fr 1fr !important; } }
-          @media (max-width: 640px) {
-            .reviews-grid {
-              display: flex !important;
-              overflow-x: auto !important;
-              scroll-snap-type: x mandatory !important;
-              -webkit-overflow-scrolling: touch !important;
-              scrollbar-width: none !important;
-              gap: 16px !important;
-              padding: 4px 5% 16px !important;
-              margin: 0 -5% !important;
-            }
-            .reviews-grid::-webkit-scrollbar { display: none; }
-            .reviews-grid > * { flex: 0 0 85% !important; scroll-snap-align: start !important; }
-          }
-        `}</style>
       </section>
 
       {/* ─── BOLIGEIERE ─── */}
