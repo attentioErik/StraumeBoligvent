@@ -414,7 +414,7 @@ export default async function Home() {
                     borderRadius: '6px 0 6px 0',
                   }}
                 >
-                  <div style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.5rem', fontWeight: 700, color: 'var(--ink)' }}>Straume</div>
+                  <div style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.5rem', fontWeight: 700, color: 'var(--ink)' }}>Boligvent</div>
                   <div style={{ fontSize: '0.75rem', color: 'var(--adark)', marginTop: 5, fontWeight: 700, letterSpacing: '0.04em' }}>Del av Straume Tekniske AS</div>
                 </div>
               </div>
