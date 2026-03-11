@@ -676,8 +676,8 @@ export default async function ServicePage({ params }: Props) {
         </section>
       )}
 
-      {/* ─── FAQ ─── */}
-      {faqs.length > 0 && <FaqSection faqs={faqs} />}
+      {/* ─── FAQ ─── (skjult inntil videre) */}
+      {/* {faqs.length > 0 && <FaqSection faqs={faqs} />} */}
 
       {/* ─── CTA ─── */}
       <section style={{ background: 'var(--amber)', padding: '80px 5%', textAlign: 'center' }}>

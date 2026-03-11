@@ -505,8 +505,8 @@ export default async function Home() {
         `}</style>
       </section>
 
-      {/* ─── FAQ ─── */}
-      <FaqSection faqs={displayFaqs} />
+      {/* ─── FAQ ─── (skjult inntil videre) */}
+      {/* <FaqSection faqs={displayFaqs} /> */}
 
       {/* ─── KONTAKT ─── */}
       <section id="kontakt" style={{ background: 'var(--warm)', padding: '108px 5%' }}>
