@@ -12,6 +12,12 @@ export const service = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: 'heroTitle',
+      title: 'Sidetittel (H1)',
+      type: 'string',
+      description: 'Overskrift på tjenestesiden. Bruker "Tittel" om feltet er tomt.',
+    }),
+    defineField({
       name: 'slug',
       title: 'Slug',
       type: 'slug',

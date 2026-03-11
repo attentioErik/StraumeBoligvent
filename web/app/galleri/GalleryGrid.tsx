@@ -9,13 +9,20 @@ interface Props {
   projects: ReferenceProject[]
 }
 
+interface GalleryImage {
+  image: NonNullable<ReferenceProject['galleri']>[0]
+  projectTitle: string
+}
+
 export default function GalleryGrid({ projects }: Props) {
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null)
 
-  // Filter to only projects with images
-  const withImages = projects.filter((p) => p.image)
+  // Flatten all images from all projects
+  const allImages: GalleryImage[] = projects.flatMap((p) =>
+    (p.galleri || []).map((img) => ({ image: img, projectTitle: p.title }))
+  )
 
-  if (withImages.length === 0) {
+  if (allImages.length === 0) {
     return (
       <div style={{ textAlign: 'center', padding: '80px 0', color: 'var(--muted)' }}>
         <p>Ingen bilder publisert ennå.</p>
@@ -34,9 +41,9 @@ export default function GalleryGrid({ projects }: Props) {
           gap: 16,
         }}
       >
-        {withImages.map((project, idx) => (
+        {allImages.map((item, idx) => (
           <button
-            key={project._id}
+            key={idx}
             onClick={() => setSelectedIdx(idx)}
             style={{
               position: 'relative',
@@ -51,8 +58,8 @@ export default function GalleryGrid({ projects }: Props) {
             className="gallery-item"
           >
             <Image
-              src={urlFor(project.image!).width(640).height(480).url()}
-              alt={project.title}
+              src={urlFor(item.image).width(640).height(480).url()}
+              alt={item.image.alt || item.projectTitle}
               fill
               style={{ objectFit: 'cover', transition: 'transform 0.3s' }}
             />
@@ -72,12 +79,11 @@ export default function GalleryGrid({ projects }: Props) {
               }}
             >
               <span style={{ fontSize: '0.95rem', fontWeight: 700, color: '#fff', lineHeight: 1.3 }}>
-                {project.title}
+                {item.projectTitle}
               </span>
-              {project.category && (
+              {item.image.alt && (
                 <span style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.7)', fontWeight: 400, marginTop: 4 }}>
-                  {project.category}
-                  {project.serviceType ? ` · ${project.serviceType}` : ''}
+                  {item.image.alt}
                 </span>
               )}
             </div>
@@ -142,7 +148,7 @@ export default function GalleryGrid({ projects }: Props) {
           )}
 
           {/* Next */}
-          {selectedIdx < withImages.length - 1 && (
+          {selectedIdx < allImages.length - 1 && (
             <button
               onClick={(e) => { e.stopPropagation(); setSelectedIdx(selectedIdx + 1) }}
               style={{
@@ -169,19 +175,19 @@ export default function GalleryGrid({ projects }: Props) {
           >
             <div style={{ position: 'relative', width: '100%', aspectRatio: '16/10' }}>
               <Image
-                src={urlFor(withImages[selectedIdx].image!).width(1400).height(875).url()}
-                alt={withImages[selectedIdx].title}
+                src={urlFor(allImages[selectedIdx].image).width(1400).height(875).url()}
+                alt={allImages[selectedIdx].image.alt || allImages[selectedIdx].projectTitle}
                 fill
                 style={{ objectFit: 'contain', borderRadius: 4 }}
               />
             </div>
             <div style={{ textAlign: 'center', marginTop: 16 }}>
               <span style={{ fontSize: '1rem', fontWeight: 700, color: '#fff' }}>
-                {withImages[selectedIdx].title}
+                {allImages[selectedIdx].projectTitle}
               </span>
-              {withImages[selectedIdx].category && (
+              {allImages[selectedIdx].image.alt && (
                 <span style={{ fontSize: '0.84rem', color: 'rgba(255,255,255,0.6)', marginLeft: 12 }}>
-                  {withImages[selectedIdx].category}
+                  {allImages[selectedIdx].image.alt}
                 </span>
               )}
             </div>

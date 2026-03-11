@@ -8,6 +8,8 @@ interface ProjectCardProps {
 }
 
 export default function ProjectCard({ project }: ProjectCardProps) {
+  const firstImage = project.galleri?.[0]
+
   return (
     <Link
       href="/galleri"
@@ -34,10 +36,10 @@ export default function ProjectCard({ project }: ProjectCardProps) {
           overflow: 'hidden',
         }}
       >
-        {project.image ? (
+        {firstImage ? (
           <Image
-            src={urlFor(project.image).width(600).height(376).url()}
-            alt={project.title}
+            src={urlFor(firstImage).width(600).height(376).url()}
+            alt={firstImage.alt || project.title}
             fill
             style={{ objectFit: 'cover' }}
           />
@@ -48,83 +50,21 @@ export default function ProjectCard({ project }: ProjectCardProps) {
             <circle cx="32" cy="20" r="4" stroke="#706860" strokeWidth="1.5" />
           </svg>
         )}
-
-        {/* Category tag */}
-        {project.category && (
-          <div
-            style={{
-              position: 'absolute',
-              top: 14,
-              left: 14,
-              background: 'var(--amber)',
-              color: 'var(--ink)',
-              fontSize: '0.63rem',
-              fontWeight: 700,
-              letterSpacing: '0.14em',
-              textTransform: 'uppercase',
-              padding: '5px 10px',
-              borderRadius: 2,
-            }}
-          >
-            {project.category}
-          </div>
-        )}
       </div>
 
       {/* Content */}
       <div style={{ padding: '26px 28px 30px' }}>
-        {project.serviceType && (
-          <div
-            style={{
-              fontSize: '0.65rem',
-              fontWeight: 700,
-              letterSpacing: '0.16em',
-              textTransform: 'uppercase',
-              color: 'var(--adark)',
-              marginBottom: 9,
-            }}
-          >
-            {project.serviceType}
-          </div>
-        )}
         <div
           style={{
             fontFamily: 'Playfair Display, serif',
             fontSize: '1.15rem',
             fontWeight: 700,
             color: 'var(--ink)',
-            marginBottom: 10,
             lineHeight: 1.2,
           }}
         >
           {project.title}
         </div>
-        {project.description && (
-          <p
-            style={{
-              fontSize: '0.845rem',
-              color: 'var(--muted)',
-              lineHeight: 1.65,
-              marginBottom: 14,
-              fontWeight: 300,
-            }}
-          >
-            {project.description}
-          </p>
-        )}
-        {project.detail && (
-          <p
-            style={{
-              fontSize: '0.8rem',
-              color: 'var(--sec)',
-              borderTop: '1px solid var(--ll)',
-              paddingTop: 14,
-              lineHeight: 1.65,
-            }}
-          >
-            {project.detail}
-          </p>
-        )}
       </div>
 
       <style>{`

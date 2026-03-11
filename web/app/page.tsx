@@ -42,28 +42,16 @@ const FALLBACK_PROJECTS: ReferenceProject[] = [
     _id: '1',
     title: 'Utskifting av aggregat – Enebolig',
     slug: { current: 'utskifting-aggregat-enebolig' },
-    category: 'Enebolig',
-    serviceType: 'Utskifting av aggregat',
-    description: 'Utskifting av eldre ventilasjonsaggregat til nytt energieffektivt anlegg.',
-    detail: 'Full demontering, montering, innregulering og dokumentert funksjonstest.',
   },
   {
     _id: '2',
     title: 'Borettslag – Serviceavtale og oppfølging',
     slug: { current: 'borettslag-serviceavtale' },
-    category: 'Borettslag',
-    serviceType: 'Serviceavtale',
-    description: 'Løpende service og vedlikehold av felles ventilasjonsanlegg.',
-    detail: 'Fast kontroll, dokumentasjon til styret og planlagt utskifting ved behov.',
   },
   {
     _id: '3',
     title: 'Kanalrens og innregulering',
     slug: { current: 'kanalrens-innregulering' },
-    category: 'Kanalrens',
-    serviceType: 'Kanalrens og innregulering',
-    description: 'Rengjøring av kanaler og komponenter. Måling og justering av luftmengder.',
-    detail: 'Korrekt balanse og stabil drift dokumentert med målerapport.',
   },
 ]
 
@@ -524,9 +512,12 @@ export default async function Home() {
               marginTop: 60,
             }}
           >
-            {displayProjects.filter((p) => p.image).slice(0, 6).map((p) => (
+            {displayProjects
+              .flatMap((p) => (p.galleri || []).map((img) => ({ img, title: p.title, id: p._id })))
+              .slice(0, 6)
+              .map((item, idx) => (
               <Link
-                key={p._id}
+                key={`${item.id}-${idx}`}
                 href="/galleri"
                 className="gallery-home-item reveal"
                 style={{
@@ -538,8 +529,8 @@ export default async function Home() {
                 }}
               >
                 <Image
-                  src={urlFor(p.image!).width(640).height(480).url()}
-                  alt={p.title}
+                  src={urlFor(item.img).width(640).height(480).url()}
+                  alt={item.img.alt || item.title}
                   fill
                   style={{ objectFit: 'cover', transition: 'transform 0.3s' }}
                 />

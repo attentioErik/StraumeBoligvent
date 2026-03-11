@@ -20,6 +20,7 @@ export interface SiteSettings {
 export interface Service {
   _id: string
   title: string
+  heroTitle?: string
   slug: { current: string }
   number?: string
   description: string
@@ -51,17 +52,7 @@ export interface ReferenceProject {
   _id: string
   title: string
   slug: { current: string }
-  category?: string
-  serviceType?: string
-  description?: string
-  detail?: string
-  image?: SanityImage
-  results?: PortableTextBlock[]
-  testimonial?: {
-    quote: string
-    author: string
-    role: string
-  }
+  galleri?: Array<SanityImage & { alt?: string }>
   service?: { title: string; slug: { current: string } }
 }
 

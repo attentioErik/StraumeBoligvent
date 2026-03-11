@@ -33,6 +33,7 @@ export const serviceBySlugQuery = groq`
   *[_type == "service" && slug.current == $slug][0] {
     _id,
     title,
+    heroTitle,
     slug,
     number,
     description,
@@ -65,11 +66,7 @@ export const referenceProjectsQuery = groq`
     _id,
     title,
     slug,
-    category,
-    serviceType,
-    description,
-    detail,
-    image,
+    galleri,
     "service": service->{ title, slug }
   }
 `
@@ -79,13 +76,7 @@ export const referenceProjectBySlugQuery = groq`
     _id,
     title,
     slug,
-    category,
-    serviceType,
-    description,
-    detail,
-    image,
-    results,
-    testimonial,
+    galleri,
     "service": service->{ title, slug }
   }
 `
@@ -95,10 +86,7 @@ export const projectsByServiceQuery = groq`
     _id,
     title,
     slug,
-    category,
-    serviceType,
-    description,
-    image
+    galleri
   }
 `
 

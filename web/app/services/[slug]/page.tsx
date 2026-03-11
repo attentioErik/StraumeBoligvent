@@ -118,7 +118,7 @@ export default async function ServicePage({ params }: Props) {
                   marginBottom: 24,
                 }}
               >
-                {service.title}
+                {service.heroTitle || service.title}
               </h1>
               <p
                 style={{
