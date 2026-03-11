@@ -40,7 +40,22 @@ export const serviceBySlugQuery = groq`
     image,
     benefits,
     process,
-    highlighted
+    highlighted,
+    introText,
+    whyTitle,
+    whyText,
+    whySymptoms,
+    whenTitle,
+    whenNote,
+    whenItems,
+    includedTitle,
+    includedSubtitle,
+    includedSteps,
+    benefitsTitle,
+    benefitsText,
+    benefitsList,
+    practicalBlocks,
+    "relatedServices": relatedServices[]->{ _id, title, slug }
   }
 `
 

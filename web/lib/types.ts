@@ -29,6 +29,22 @@ export interface Service {
   process?: { title: string; description: string }[]
   highlighted?: boolean
   order?: number
+  // New section fields
+  introText?: PortableTextBlock[]
+  whyTitle?: string
+  whyText?: PortableTextBlock[]
+  whySymptoms?: string[]
+  whenTitle?: string
+  whenNote?: string
+  whenItems?: string[]
+  includedTitle?: string
+  includedSubtitle?: string
+  includedSteps?: { title: string; description: string }[]
+  benefitsTitle?: string
+  benefitsText?: string
+  benefitsList?: string[]
+  practicalBlocks?: { title: string; content: PortableTextBlock[] }[]
+  relatedServices?: { _id: string; title: string; slug: { current: string } }[]
 }
 
 export interface ReferenceProject {

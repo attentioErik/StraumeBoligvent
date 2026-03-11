@@ -104,6 +104,11 @@ export default async function KontaktPage() {
                   val: address,
                   href: undefined,
                 },
+                {
+                  lbl: 'Åpent',
+                  val: 'Man–Fre 08:00–16:00 · Lør 09:00–15:00',
+                  href: undefined,
+                },
               ].map((row) => (
                 <div
                   key={row.lbl}
@@ -155,7 +160,6 @@ export default async function KontaktPage() {
             <div style={{ marginTop: 40 }}>
               {[
                 'Tydelig pris før oppstart',
-                'Dokumentasjon etter hvert besøk',
                 'Kun nødvendige tiltak',
                 'Svar innen 24 timer',
               ].map((item) => (

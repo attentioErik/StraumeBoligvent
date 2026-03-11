@@ -6,9 +6,16 @@ interface ServiceCardProps {
   index: number
 }
 
-export default function ServiceCard({ service, index }: ServiceCardProps) {
-  const num = service.number || String(index + 1).padStart(2, '0')
+const ICONS = [
+  <svg key="i0" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>,
+  <svg key="i1" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/><circle cx="12" cy="12" r="3"/></svg>,
+  <svg key="i2" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20V10m0 0l-3 3m3-3l3 3"/><path d="M12 4V2"/><path d="M4 14h16"/><rect x="2" y="6" width="20" height="12" rx="2"/></svg>,
+  <svg key="i3" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 6v12"/><path d="M2 12h20"/><path d="M6 2v4m12-4v4"/></svg>,
+  <svg key="i4" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 12l2 2 4-4"/><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/><path d="M12 6v1m0 10v1"/></svg>,
+  <svg key="i5" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>,
+]
 
+export default function ServiceCard({ service, index }: ServiceCardProps) {
   return (
     <Link
       href={`/services/${service.slug.current}`}
@@ -37,17 +44,8 @@ export default function ServiceCard({ service, index }: ServiceCardProps) {
           transition: 'height 0.3s ease',
         }}
       />
-      <div
-        style={{
-          fontFamily: 'Playfair Display, serif',
-          fontSize: '0.75rem',
-          fontWeight: 700,
-          color: 'var(--amid)',
-          marginBottom: 20,
-          letterSpacing: '0.1em',
-        }}
-      >
-        {num}
+      <div style={{ marginBottom: 20 }}>
+        {ICONS[index % ICONS.length]}
       </div>
       <div
         style={{

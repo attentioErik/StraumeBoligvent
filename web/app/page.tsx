@@ -224,15 +224,15 @@ export default async function Home() {
               className="services-grid"
             >
               {[
-                { num: '01', name: 'Service og vedlikehold', desc: 'Filterbytte, kontroll av luftmengder, varmegjenvinner, vifter og styresystem.' },
-                { num: '02', name: 'Kanalrens', desc: 'Rengjøring av vifte, motor, kanaler og kjøkkenavtrekk. Måling og justering.' },
-                { num: '03', name: 'Innregulering', desc: 'Riktig luftmengde i alle rom. Optimalisering av tilluft og avtrekk for lavere energibruk.' },
-                { num: '04', name: 'Montasje og utskifting', desc: 'Montasje av aggregat, ventilasjonsanlegg og avtrekksvifter for bolig og næring.' },
-                { num: '05', name: 'Serviceavtale', desc: 'Fast avtale med dokumentasjon og oppfølging. Anbefalt for borettslag og sameier.' },
-                { num: '06', name: 'For borettslag og næring', desc: 'Tilpassede løsninger for sameier, borettslag og mindre næringsbygg. Tydelig dokumentasjon til styret.', hl: true },
+                { icon: (<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>), name: 'Service og vedlikehold', desc: 'Filterbytte, kontroll av luftmengder, varmegjenvinner, vifter og styresystem.' },
+                { icon: (<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/><circle cx="12" cy="12" r="3"/></svg>), name: 'Kanalrens', desc: 'Rengjøring av vifte, motor, kanaler og kjøkkenavtrekk. Måling og justering.' },
+                { icon: (<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20V10m0 0l-3 3m3-3l3 3"/><path d="M12 4V2"/><path d="M4 14h16"/><rect x="2" y="6" width="20" height="12" rx="2"/></svg>), name: 'Innregulering', desc: 'Riktig luftmengde i alle rom. Optimalisering av tilluft og avtrekk for lavere energibruk.' },
+                { icon: (<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 6v12"/><path d="M2 12h20"/><path d="M6 2v4m12-4v4"/></svg>), name: 'Montasje og utskifting', desc: 'Montasje av aggregat, ventilasjonsanlegg og avtrekksvifter for bolig og næring.' },
+                { icon: (<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 12l2 2 4-4"/><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/><path d="M12 6v1m0 10v1"/></svg>), name: 'Serviceavtale', desc: 'Fast avtale med oppfølging. Anbefalt for borettslag og sameier.' },
+                { icon: (<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>), name: 'For borettslag og næring', desc: 'Tilpassede løsninger for sameier, borettslag og mindre næringsbygg.', hl: true },
               ].map((s, i) => (
                 <div
-                  key={s.num}
+                  key={s.name}
                   className={`scard reveal${s.hl ? ' hl' : ''}`}
                   style={{
                     padding: '40px 36px',
@@ -245,7 +245,7 @@ export default async function Home() {
                   }}
                 >
                   <div className="scard-bar" style={{ position: 'absolute', top: 0, left: 0, width: 3, height: 0, background: 'var(--amber)', transition: 'height 0.3s ease' }} />
-                  <div style={{ fontFamily: 'Playfair Display, serif', fontSize: '0.75rem', fontWeight: 700, color: 'var(--amid)', marginBottom: 20, letterSpacing: '0.1em' }}>{s.num}</div>
+                  <div style={{ marginBottom: 20 }}>{s.icon}</div>
                   <div style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.05rem', fontWeight: 700, color: 'var(--ink)', marginBottom: 12, lineHeight: 1.2 }}>{s.name}</div>
                   <p style={{ fontSize: '0.855rem', color: 'var(--muted)', lineHeight: 1.7, fontWeight: 300 }}>{s.desc}</p>
                 </div>
@@ -253,6 +253,11 @@ export default async function Home() {
             </div>
           )}
         </div>
+          <div style={{ textAlign: 'center', marginTop: 48 }}>
+            <Link href="/kontakt" className="btn-amber">
+              Kontakt oss for tilbud
+            </Link>
+          </div>
         <style>{`
           .services-grid .scard:nth-child(3n) { border-right: none !important; }
           .services-grid .scard:nth-child(n+4) { border-bottom: none !important; }
@@ -270,12 +275,12 @@ export default async function Home() {
       </section>
 
       {/* ─── PROSESS ─── */}
-      <section id="prosess" style={{ background: 'var(--dark)', padding: '108px 5%' }}>
+      <section id="prosess" style={{ background: '#1e1a12', padding: '108px 5%' }}>
         <div className="inner">
           <div className="slabel reveal" style={{ color: 'var(--amid)' }}>Arbeidsmetode</div>
           <h2 className="stitle reveal" style={{ color: '#f5f0e8' }}>Slik jobber vi</h2>
-          <p className="sdesc reveal" style={{ color: '#6a6050' }}>
-            Vi følger en fast struktur på alle oppdrag – fra første kontakt til ferdig dokumentasjon.
+          <p className="sdesc reveal" style={{ color: '#a89e90' }}>
+            Alle oppdrag gjennomføres etter en fast arbeidsmetode – fra kartlegging til oppfølging.
           </p>
           <div
             className="process-grid"
@@ -284,36 +289,41 @@ export default async function Home() {
               gridTemplateColumns: 'repeat(4, 1fr)',
               gap: 1,
               marginTop: 60,
-              background: 'var(--dark3)',
+              background: '#302a1e',
               borderRadius: 6,
               overflow: 'hidden',
             }}
           >
             {[
-              { num: '01', name: 'Kartlegging', desc: 'Vi går gjennom anlegget og lytter til dine erfaringer for å få full oversikt før vi starter.' },
-              { num: '02', name: 'Gjennomføring', desc: 'Service, rens eller montasje utføres fagmessig og effektivt etter avtalte spesifikasjoner.' },
-              { num: '03', name: 'Kontroll og dokumentasjon', desc: 'Alle målinger og tiltak dokumenteres. Borettslag og sameier får rapport til styret.' },
-              { num: '04', name: 'Oppfølging', desc: 'Vi følger opp kundene over tid. Vi selger ikke engangsoppdrag – vi bygger relasjoner.' },
+              { num: '01', name: 'Kartlegging', desc: 'Vi kontrollerer resultatet av arbeidet og gir tilbakemelding på anleggets tilstand og eventuelle tiltak.' },
+              { num: '02', name: 'Utførelse', desc: 'Service, kanalrens eller montasje utføres etter avtalt arbeid.' },
+              { num: '03', name: 'Kontroll', desc: 'Vi kontrollerer resultatet av arbeidet og gir tilbakemelding på anleggets tilstand og eventuelle tiltak.' },
+              { num: '04', name: 'Oppfølging', desc: 'Vi følger opp kundene over tid og gir anbefalinger for videre vedlikehold.' },
             ].map((step) => (
               <div
                 key={step.num}
                 className="pstep reveal"
                 style={{
-                  background: 'var(--dark2)',
+                  background: '#272114',
                   padding: '48px 36px',
                   position: 'relative',
                   transition: 'background 0.25s',
                 }}
               >
                 <div style={{ fontFamily: 'Playfair Display, serif', fontSize: '3rem', fontWeight: 700, color: 'var(--amber)', lineHeight: 1, marginBottom: 28, opacity: 0.9 }}>{step.num}</div>
-                <div style={{ fontFamily: 'Playfair Display, serif', fontSize: '1rem', fontWeight: 700, color: '#e8dfc8', marginBottom: 14 }}>{step.name}</div>
-                <p style={{ fontSize: '0.845rem', color: '#7a6e5e', lineHeight: 1.7, fontWeight: 300 }}>{step.desc}</p>
+                <div style={{ fontFamily: 'Playfair Display, serif', fontSize: '1rem', fontWeight: 700, color: '#f0e8d8', marginBottom: 14 }}>{step.name}</div>
+                <p style={{ fontSize: '0.845rem', color: '#a89e90', lineHeight: 1.7, fontWeight: 300 }}>{step.desc}</p>
               </div>
             ))}
           </div>
+          <div style={{ textAlign: 'center', marginTop: 48 }}>
+            <Link href="/kontakt" className="btn-amber">
+              Ta kontakt
+            </Link>
+          </div>
         </div>
         <style>{`
-          .pstep:hover { background: #2e2818 !important; }
+          .pstep:hover { background: #322a1c !important; }
           @media (max-width: 980px) {
             .process-grid { grid-template-columns: 1fr 1fr !important; }
           }
@@ -480,7 +490,7 @@ export default async function Home() {
                   'Sertifiserte teknikere med dokumentert kompetanse',
                   'Erfaring med Flexit, Systemair og Ventiståhl',
                   'Komplett leveranse – service til montasje',
-                  'Tydelig dokumentasjon til borettslag og sameier',
+                  'Tilpasset oppfølging for borettslag og sameier',
                   'Langsiktig oppfølging – ikke engangsoppdrag',
                 ].map((item) => (
                   <div key={item} className="citem">
@@ -587,6 +597,7 @@ export default async function Home() {
                   { lbl: 'Telefon', val: settings?.phone || '561 26 800', href: `tel:${(settings?.phone || '561 26 800').replace(/\s/g, '')}` },
                   { lbl: 'E-post', val: settings?.email || 'ordre@straumetekniske.no', href: `mailto:${settings?.email || 'ordre@straumetekniske.no'}` },
                   { lbl: 'Adresse', val: settings?.address || 'Idrettsveien 93, 5353 Straume', href: undefined },
+                  { lbl: 'Åpent', val: 'Man–Fre 08:00–16:00 · Lør 09:00–15:00', href: undefined },
                 ].map((row) => (
                   <div key={row.lbl} style={{ display: 'flex', gap: 18, alignItems: 'flex-start' }}>
                     <span style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--sec)', width: 64, flexShrink: 0, paddingTop: 3 }}>

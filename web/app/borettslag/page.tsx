@@ -57,7 +57,7 @@ export default async function BorettslagPage() {
       {/* ─── HERO ─── */}
       <section
         style={{
-          background: 'var(--dark)',
+          background: '#1e1a12',
           padding: '120px 5% 100px',
           position: 'relative',
           overflow: 'hidden',
@@ -93,7 +93,7 @@ export default async function BorettslagPage() {
           >
             {p.heroTittel}
           </h1>
-          <p style={{ fontSize: '1.05rem', lineHeight: 1.78, color: '#7a6e5e', fontWeight: 300, maxWidth: 580, marginBottom: 48 }}>
+          <p style={{ fontSize: '1.05rem', lineHeight: 1.78, color: '#a89e90', fontWeight: 300, maxWidth: 580, marginBottom: 48 }}>
             {p.heroUnderTittel}
           </p>
           <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
@@ -185,27 +185,27 @@ export default async function BorettslagPage() {
 
       {/* ─── PROSESS ─── */}
       {p.prosessSteg && p.prosessSteg.length > 0 && (
-        <section style={{ background: 'var(--dark)', padding: '80px 5%' }}>
+        <section style={{ background: '#1e1a12', padding: '80px 5%' }}>
           <div className="inner">
             <div className="slabel reveal" style={{ color: 'var(--amid)' }}>Arbeidsmetode</div>
             <h2 className="stitle reveal" style={{ color: '#f5f0e8' }}>Slik samarbeider vi</h2>
             <div
               className="brl-prosess"
-              style={{ display: 'grid', gridTemplateColumns: `repeat(${p.prosessSteg.length}, 1fr)`, gap: 1, marginTop: 56, background: 'var(--dark3)', borderRadius: 6, overflow: 'hidden' }}
+              style={{ display: 'grid', gridTemplateColumns: `repeat(${p.prosessSteg.length}, 1fr)`, gap: 1, marginTop: 56, background: '#302a1e', borderRadius: 6, overflow: 'hidden' }}
             >
               {p.prosessSteg.map((steg, i) => (
                 <div
                   key={i}
                   className="reveal"
-                  style={{ background: 'var(--dark2)', padding: '40px 32px' }}
+                  style={{ background: '#272114', padding: '40px 32px' }}
                 >
                   <div style={{ fontFamily: 'Playfair Display, serif', fontSize: '2.5rem', fontWeight: 700, color: 'var(--amber)', lineHeight: 1, marginBottom: 24 }}>
                     {String(i + 1).padStart(2, '0')}
                   </div>
-                  <div style={{ fontFamily: 'Playfair Display, serif', fontSize: '0.95rem', fontWeight: 700, color: '#e8dfc8', marginBottom: 12 }}>
+                  <div style={{ fontFamily: 'Playfair Display, serif', fontSize: '0.95rem', fontWeight: 700, color: '#f0e8d8', marginBottom: 12 }}>
                     {steg.tittel}
                   </div>
-                  <p style={{ fontSize: '0.845rem', color: '#7a6e5e', lineHeight: 1.65, fontWeight: 300 }}>{steg.beskrivelse}</p>
+                  <p style={{ fontSize: '0.845rem', color: '#a89e90', lineHeight: 1.65, fontWeight: 300 }}>{steg.beskrivelse}</p>
                 </div>
               ))}
             </div>
