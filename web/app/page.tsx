@@ -281,7 +281,7 @@ export default async function Home() {
               { nummer: '04', tittel: 'Oppfølging', beskrivelse: 'Vi følger opp kundene over tid og gir anbefalinger for videre vedlikehold.' },
             ]).map((step) => (
               <div
-                key={step.num}
+                key={step.nummer}
                 className="pstep reveal"
                 style={{
                   background: '#272114',
