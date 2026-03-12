@@ -108,9 +108,28 @@ export interface OmOss {
   heroTittel?: string
   heroTekst?: string
   historieBlokker?: PortableTextBlock[]
+  historieBilde?: SanityImage
+  bildeBadgeTittel?: string
+  bildeBadgeTekst?: string
+  historieLabel?: string
+  historieTittel?: string
+  verdierLabel?: string
+  verdierTittel?: string
+  teamLabel?: string
+  teamTittel?: string
+  sertifiseringerLabel?: string
+  sertifiseringerTittel?: string
   verdier?: Array<{ tittel: string; beskrivelse: string; ikon?: string }>
   tallOgFakta?: Array<{ verdi: string; label: string }>
   sertifiseringer?: Array<{ navn: string; logo?: SanityImage; beskrivelse?: string }>
+  ctaLabel?: string
+  ctaTittel?: string
+  ctaTekst?: string
+  ctaKnapp1Tekst?: string
+  ctaKnapp1Lenke?: string
+  ctaKnapp2Tekst?: string
+  ctaKnapp2Lenke?: string
+  seoDescription?: string
 }
 
 export interface BorettslagLanding {

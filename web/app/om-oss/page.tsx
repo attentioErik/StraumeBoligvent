@@ -8,9 +8,12 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { PortableText } from '@portabletext/react'
 
-export const metadata: Metadata = {
-  title: 'Om oss',
-  description: 'Lokal fagkunnskap og langsiktige relasjoner. Straume Boligvent er en spesialisert tjeneste fra Straume Tekniske AS.',
+export async function generateMetadata(): Promise<Metadata> {
+  const omOss = await client.fetch<OmOss>(omOssQuery).catch(() => null)
+  return {
+    title: 'Om oss',
+    description: omOss?.seoDescription ?? 'Lokal fagkunnskap og langsiktige relasjoner. Straume Boligvent er en spesialisert tjeneste fra Straume Tekniske AS.',
+  }
 }
 
 const FALLBACK_TALL = [
@@ -114,8 +117,8 @@ export default async function OmOssPage() {
           style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 80, alignItems: 'center' }}
         >
           <div className="reveal">
-            <div className="slabel">Vår historie</div>
-            <h2 className="stitle">Hvem er vi?</h2>
+            <div className="slabel">{omOss?.historieLabel ?? 'Vår historie'}</div>
+            <h2 className="stitle">{omOss?.historieTittel ?? 'Hvem er vi?'}</h2>
             {omOss?.historieBlokker && omOss.historieBlokker.length > 0 ? (
               <div className="prose" style={{ marginTop: 24 }}>
                 <PortableText value={omOss.historieBlokker} />
@@ -146,14 +149,16 @@ export default async function OmOssPage() {
               }}
             >
               <Image
-                src="https://ucarecdn.com/cefe0ad5-6084-4a58-ad08-658cb6256067/straumetekniskeravneberghaugen09.avif"
+                src={omOss?.historieBilde
+                  ? urlFor(omOss.historieBilde).width(800).height(1000).url()
+                  : 'https://ucarecdn.com/cefe0ad5-6084-4a58-ad08-658cb6256067/straumetekniskeravneberghaugen09.avif'}
                 alt="Straume Tekniske"
                 fill
                 style={{ objectFit: 'cover' }}
               />
               <div style={{ position: 'absolute', bottom: 0, right: 0, background: 'var(--amber)', padding: '22px 28px', borderRadius: '6px 0 6px 0' }}>
-                <div style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.5rem', fontWeight: 700, color: 'var(--ink)' }}>Straume</div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--adark)', marginTop: 5, fontWeight: 700, letterSpacing: '0.04em' }}>Del av Straume Tekniske AS</div>
+                <div style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.5rem', fontWeight: 700, color: 'var(--ink)' }}>{omOss?.bildeBadgeTittel ?? 'Straume'}</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--adark)', marginTop: 5, fontWeight: 700, letterSpacing: '0.04em' }}>{omOss?.bildeBadgeTekst ?? 'Del av Straume Tekniske AS'}</div>
               </div>
             </div>
           </div>
@@ -166,8 +171,8 @@ export default async function OmOssPage() {
       {/* ─── VERDIER ─── */}
       <section style={{ background: 'var(--off)', padding: '80px 5%' }}>
         <div className="inner">
-          <div className="slabel reveal">Hva vi tror på</div>
-          <h2 className="stitle reveal">Verdier</h2>
+          <div className="slabel reveal">{omOss?.verdierLabel ?? 'Hva vi tror på'}</div>
+          <h2 className="stitle reveal">{omOss?.verdierTittel ?? 'Verdier'}</h2>
           <div
             className="verdier-grid"
             style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 28, marginTop: 48 }}
@@ -203,8 +208,8 @@ export default async function OmOssPage() {
       {ansatte.length > 0 && (
         <section style={{ background: 'var(--white)', padding: '80px 5%' }}>
           <div className="inner">
-            <div className="slabel reveal">Menneskene bak</div>
-            <h2 className="stitle reveal">Teamet vårt</h2>
+            <div className="slabel reveal">{omOss?.teamLabel ?? 'Menneskene bak'}</div>
+            <h2 className="stitle reveal">{omOss?.teamTittel ?? 'Teamet vårt'}</h2>
             <div
               className="team-grid"
               style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 28, marginTop: 56 }}
@@ -284,8 +289,8 @@ export default async function OmOssPage() {
       {omOss?.sertifiseringer && omOss.sertifiseringer.length > 0 && (
         <section style={{ background: 'var(--off)', padding: '60px 5%' }}>
           <div className="inner">
-            <div className="slabel reveal" style={{ justifyContent: 'center' }}>Kompetanse</div>
-            <h2 className="stitle reveal" style={{ textAlign: 'center' }}>Sertifiseringer</h2>
+            <div className="slabel reveal" style={{ justifyContent: 'center' }}>{omOss?.sertifiseringerLabel ?? 'Kompetanse'}</div>
+            <h2 className="stitle reveal" style={{ textAlign: 'center' }}>{omOss?.sertifiseringerTittel ?? 'Sertifiseringer'}</h2>
             <div style={{ display: 'flex', justifyContent: 'center', gap: 32, flexWrap: 'wrap', marginTop: 40 }}>
               {omOss.sertifiseringer.map((s, i) => (
                 <div
@@ -312,14 +317,14 @@ export default async function OmOssPage() {
       {/* ─── CTA ─── */}
       <section style={{ background: 'var(--warm)', padding: '80px 5%' }}>
         <div className="inner" style={{ maxWidth: 640, textAlign: 'center', margin: '0 auto' }}>
-          <div className="slabel reveal" style={{ justifyContent: 'center' }}>Kom i gang</div>
-          <h2 className="stitle reveal" style={{ textAlign: 'center' }}>Ta kontakt</h2>
+          <div className="slabel reveal" style={{ justifyContent: 'center' }}>{omOss?.ctaLabel ?? 'Kom i gang'}</div>
+          <h2 className="stitle reveal" style={{ textAlign: 'center' }}>{omOss?.ctaTittel ?? 'Ta kontakt'}</h2>
           <p className="sdesc reveal" style={{ textAlign: 'center', marginBottom: 40 }}>
-            Vi er tilgjengelige for en uforpliktende prat om ditt anlegg.
+            {omOss?.ctaTekst ?? 'Vi er tilgjengelige for en uforpliktende prat om ditt anlegg.'}
           </p>
           <div className="reveal" style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link href="/kontakt" className="btn-amber">Send forespørsel</Link>
-            <Link href="/referanser" className="btn-ghost">Se referanser →</Link>
+            <Link href={omOss?.ctaKnapp1Lenke ?? '/kontakt'} className="btn-amber">{omOss?.ctaKnapp1Tekst ?? 'Send forespørsel'}</Link>
+            <Link href={omOss?.ctaKnapp2Lenke ?? '/referanser'} className="btn-ghost">{omOss?.ctaKnapp2Tekst ?? 'Se referanser →'}</Link>
           </div>
         </div>
       </section>

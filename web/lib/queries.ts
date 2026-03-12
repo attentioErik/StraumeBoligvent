@@ -195,9 +195,28 @@ export const omOssQuery = groq`
     heroTittel,
     heroTekst,
     historieBlokker,
+    historieBilde,
+    bildeBadgeTittel,
+    bildeBadgeTekst,
+    historieLabel,
+    historieTittel,
+    verdierLabel,
+    verdierTittel,
+    teamLabel,
+    teamTittel,
+    sertifiseringerLabel,
+    sertifiseringerTittel,
     verdier,
     tallOgFakta,
-    sertifiseringer
+    sertifiseringer,
+    ctaLabel,
+    ctaTittel,
+    ctaTekst,
+    ctaKnapp1Tekst,
+    ctaKnapp1Lenke,
+    ctaKnapp2Tekst,
+    ctaKnapp2Lenke,
+    seoDescription
   }
 `
 
