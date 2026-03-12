@@ -189,6 +189,57 @@ export const ansatteQuery = groq`
   }
 `
 
+// ─── FORSIDE (singleton) ───
+export const forsideQuery = groq`
+  *[_type == "forside"][0] {
+    seoTittel,
+    seoDescription,
+    heroBilde,
+    heroStats,
+    trustItems,
+    partnerLabel,
+    partnere,
+    googleRating,
+    heroCta1Tekst,
+    heroCta2Tekst,
+    tjenesterLabel,
+    tjenesterTittel,
+    tjenesterBeskrivelse,
+    tjenesterCtaTekst,
+    prosessLabel,
+    prosessTittel,
+    prosessBeskrivelse,
+    prosessSteg,
+    prosessCtaTekst,
+    anmeldelserLabel,
+    anmeldelserTittel,
+    boligeierLabel,
+    boligeierTittel,
+    boligeierBeskrivelse,
+    boligeierSjekkpunkter,
+    boligeierNotat,
+    boligeierBilde,
+    boligeierBadge,
+    omOssLabel,
+    omOssTittel,
+    omOssAvsnitt1,
+    omOssAvsnitt2,
+    omOssSjekkpunkter,
+    omOssBilde,
+    omOssBadgeTittel,
+    omOssBadgeTekst,
+    omOssCtaTekst,
+    galleriLabel,
+    galleriTittel,
+    galleriBeskrivelse,
+    galleriCtaTekst,
+    kontaktLabel,
+    kontaktTittel,
+    kontaktBeskrivelse,
+    kontaktApningstider
+  }
+`
+
 // ─── OM OSS (singleton) ───
 export const omOssQuery = groq`
   *[_type == "omOss"][0] {

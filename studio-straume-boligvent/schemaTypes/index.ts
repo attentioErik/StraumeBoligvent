@@ -7,9 +7,11 @@ import { referanse } from './referanse'
 import { ansatt } from './ansatt'
 import { omOss } from './omOss'
 import { borettslagLanding } from './borettslagLanding'
+import { forside } from './forside'
 
 export const schemaTypes = [
   siteSettings,
+  forside,
   service,
   referenceProject,
   article,

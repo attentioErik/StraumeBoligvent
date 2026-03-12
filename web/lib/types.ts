@@ -132,6 +132,54 @@ export interface OmOss {
   seoDescription?: string
 }
 
+export interface Forside {
+  seoTittel?: string
+  seoDescription?: string
+  heroBilde?: SanityImage
+  heroStats?: Array<{ verdi: string; label: string }>
+  trustItems?: string[]
+  partnerLabel?: string
+  partnere?: string[]
+  googleRating?: string
+  heroCta1Tekst?: string
+  heroCta2Tekst?: string
+  tjenesterLabel?: string
+  tjenesterTittel?: string
+  tjenesterBeskrivelse?: string
+  tjenesterCtaTekst?: string
+  prosessLabel?: string
+  prosessTittel?: string
+  prosessBeskrivelse?: string
+  prosessSteg?: Array<{ nummer: string; tittel: string; beskrivelse: string }>
+  prosessCtaTekst?: string
+  anmeldelserLabel?: string
+  anmeldelserTittel?: string
+  boligeierLabel?: string
+  boligeierTittel?: string
+  boligeierBeskrivelse?: string
+  boligeierSjekkpunkter?: string[]
+  boligeierNotat?: string
+  boligeierBilde?: SanityImage
+  boligeierBadge?: string
+  omOssLabel?: string
+  omOssTittel?: string
+  omOssAvsnitt1?: string
+  omOssAvsnitt2?: string
+  omOssSjekkpunkter?: string[]
+  omOssBilde?: SanityImage
+  omOssBadgeTittel?: string
+  omOssBadgeTekst?: string
+  omOssCtaTekst?: string
+  galleriLabel?: string
+  galleriTittel?: string
+  galleriBeskrivelse?: string
+  galleriCtaTekst?: string
+  kontaktLabel?: string
+  kontaktTittel?: string
+  kontaktBeskrivelse?: string
+  kontaktApningstider?: string
+}
+
 export interface BorettslagLanding {
   heroTittel?: string
   heroUnderTittel?: string

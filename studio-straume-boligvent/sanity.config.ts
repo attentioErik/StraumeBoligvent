@@ -21,6 +21,10 @@ export default defineConfig({
               .id('siteSettings')
               .child(S.document().schemaType('siteSettings').documentId('siteSettings')),
             S.listItem()
+              .title('Forside')
+              .id('forside')
+              .child(S.document().schemaType('forside').documentId('forside')),
+            S.listItem()
               .title('Om oss')
               .id('omOss')
               .child(S.document().schemaType('omOss').documentId('omOss')),

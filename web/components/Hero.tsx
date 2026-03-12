@@ -1,24 +1,27 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import type { SiteSettings } from '@/lib/types'
+import type { SiteSettings, Forside } from '@/lib/types'
+import { urlFor } from '@/lib/sanity'
 
 interface HeroProps {
   settings?: SiteSettings | null
+  forside?: Forside | null
 }
 
-const trustItems = [
+const DEFAULT_TRUST = [
   'Tydelig pris før oppstart',
   'Langsiktig oppfølging',
   'Kun nødvendige tiltak',
   'Svar innen 24 timer',
 ]
 
-export default function Hero({ settings }: HeroProps) {
+export default function Hero({ settings, forside }: HeroProps) {
   const title = settings?.heroTitle || 'Ventilasjonsservice i Bergen – én leverandør, fullt ansvar'
   const desc =
     settings?.heroDescription ||
     'Service, rens, innregulering og montasje. Vi tar ansvar fra start til slutt.'
   const pill = settings?.heroPill || 'Bergen og omegn · Siden 2012'
+  const trustItems = forside?.trustItems ?? DEFAULT_TRUST
 
   return (
     <section
@@ -148,15 +151,15 @@ export default function Hero({ settings }: HeroProps) {
                 </svg>
               ))}
             </div>
-            <span style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--ink)' }}>4,9/5</span>
+            <span style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--ink)' }}>{forside?.googleRating ?? '4,9/5'}</span>
           </div>
 
           <div className="hero-cta" style={{ display: 'flex', alignItems: 'center', gap: 28 }}>
             <Link href="/kontakt" className="btn-amber">
-              Ta kontakt
+              {forside?.heroCta1Tekst ?? 'Ta kontakt'}
             </Link>
             <Link href="/#tjenester" className="btn-ghost">
-              Se tjenester <span className="arrow">→</span>
+              {forside?.heroCta2Tekst ?? 'Se tjenester'} <span className="arrow">→</span>
             </Link>
           </div>
         </div>
@@ -173,7 +176,9 @@ export default function Hero({ settings }: HeroProps) {
           >
             <div style={{ width: '100%', aspectRatio: '4/3', position: 'relative' }}>
               <Image
-                src="https://ucarecdn.com/6cc61d81-b2bf-479a-9788-bd64ef95bda3/hf_20260224_115355_7dfea640c8064601919f0871635df4e8.jpeg"
+                src={forside?.heroBilde
+                  ? urlFor(forside.heroBilde).width(1200).height(900).url()
+                  : 'https://ucarecdn.com/6cc61d81-b2bf-479a-9788-bd64ef95bda3/hf_20260224_115355_7dfea640c8064601919f0871635df4e8.jpeg'}
                 alt="Ventilasjonsservice"
                 fill
                 style={{ objectFit: 'cover' }}
@@ -197,11 +202,11 @@ export default function Hero({ settings }: HeroProps) {
                 borderRight: '1px solid var(--ll)',
               }}
             >
-              {[
-                { num: '12+', lbl: 'År i bransjen' },
-                { num: '1 dag', lbl: 'Responstid' },
-              ].map((s) => (
-                <div key={s.lbl}>
+              {(forside?.heroStats ?? [
+                { verdi: '12+', label: 'År i bransjen' },
+                { verdi: '1 dag', label: 'Responstid' },
+              ]).map((s) => (
+                <div key={s.label}>
                   <div
                     style={{
                       fontFamily: 'Playfair Display, serif',
@@ -211,7 +216,7 @@ export default function Hero({ settings }: HeroProps) {
                       lineHeight: 1,
                     }}
                   >
-                    {s.num}
+                    {s.verdi}
                   </div>
                   <div
                     style={{
@@ -222,7 +227,7 @@ export default function Hero({ settings }: HeroProps) {
                       letterSpacing: '0.04em',
                     }}
                   >
-                    {s.lbl}
+                    {s.label}
                   </div>
                 </div>
               ))}
@@ -301,9 +306,9 @@ export default function Hero({ settings }: HeroProps) {
         }}
       >
         <span style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--sec)', marginRight: 8 }}>
-          Samarbeidspartnere
+          {forside?.partnerLabel ?? 'Samarbeidspartnere'}
         </span>
-        {['Swegon', 'Flexit', 'Ventistål', 'Systemair'].map((partner) => (
+        {(forside?.partnere ?? ['Swegon', 'Flexit', 'Ventistål', 'Systemair']).map((partner) => (
           <span
             key={partner}
             style={{

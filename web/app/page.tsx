@@ -6,8 +6,10 @@ import {
   servicesQuery,
   referenceProjectsQuery,
   faqQuery,
+  forsideQuery,
 } from '@/lib/queries'
-import type { SiteSettings, Service, ReferenceProject, FAQ } from '@/lib/types'
+import type { SiteSettings, Service, ReferenceProject, FAQ, Forside } from '@/lib/types'
+import type { Metadata } from 'next'
 
 import Image from 'next/image'
 import Hero from '@/components/Hero'
@@ -16,6 +18,14 @@ import FaqSection from '@/components/FaqSection'
 import ContactForm from '@/components/ContactForm'
 import Link from 'next/link'
 import Script from 'next/script'
+
+export async function generateMetadata(): Promise<Metadata> {
+  const forside = await client.fetch<Forside>(forsideQuery).catch(() => null)
+  return {
+    title: forside?.seoTittel ?? 'Straume Boligvent — Ventilasjon for bolig og næring',
+    description: forside?.seoDescription ?? 'Komplett leveranse innen ventilasjon i Bergen og omegn. Service, kanalrens, innregulering og montasje.',
+  }
+}
 
 // Static fallback projects
 const FALLBACK_PROJECTS: ReferenceProject[] = [
@@ -131,11 +141,12 @@ const FALLBACK_FAQS: FAQ[] = [
 ]
 
 export default async function Home() {
-  const [settings, services, projects, faqs] = await Promise.all([
+  const [settings, services, projects, faqs, forside] = await Promise.all([
     client.fetch<SiteSettings>(siteSettingsQuery).catch(() => null),
     client.fetch<Service[]>(servicesQuery).catch(() => []),
     client.fetch<ReferenceProject[]>(referenceProjectsQuery).catch(() => []),
     client.fetch<FAQ[]>(faqQuery).catch(() => []),
+    client.fetch<Forside>(forsideQuery).catch(() => null),
   ])
 
   const displayProjects = projects.length > 0 ? projects : FALLBACK_PROJECTS
@@ -143,7 +154,7 @@ export default async function Home() {
 
   return (
     <>
-      <Hero settings={settings} />
+      <Hero settings={settings} forside={forside} />
 
       {/* ─── TJENESTER ─── */}
       <section id="tjenester" style={{ background: 'var(--off)', padding: '108px 5%' }}>
@@ -159,9 +170,9 @@ export default async function Home() {
             className="stitle-row"
           >
             <div>
-              <div className="slabel">Hva vi gjør</div>
-              <h2 className="stitle">Tjenester for bolig og borettslag</h2>
-              <p className="sdesc">Fra enkelt filterbytte til full montasje og utskifting av anlegg.</p>
+              <div className="slabel">{forside?.tjenesterLabel ?? 'Hva vi gjør'}</div>
+              <h2 className="stitle">{forside?.tjenesterTittel ?? 'Tjenester for bolig og borettslag'}</h2>
+              <p className="sdesc">{forside?.tjenesterBeskrivelse ?? 'Fra enkelt filterbytte til full montasje og utskifting av anlegg.'}</p>
             </div>
           </div>
 
@@ -224,7 +235,7 @@ export default async function Home() {
         </div>
           <div style={{ textAlign: 'center', marginTop: 48 }}>
             <Link href="/kontakt" className="btn-amber">
-              Kontakt oss for tilbud
+              {forside?.tjenesterCtaTekst ?? 'Kontakt oss for tilbud'}
             </Link>
           </div>
         <style>{`
@@ -246,10 +257,10 @@ export default async function Home() {
       {/* ─── PROSESS ─── */}
       <section id="prosess" style={{ background: '#1e1a12', padding: '108px 5%' }}>
         <div className="inner">
-          <div className="slabel reveal" style={{ color: 'var(--amid)' }}>Arbeidsmetode</div>
-          <h2 className="stitle reveal" style={{ color: '#f5f0e8' }}>Slik jobber vi</h2>
+          <div className="slabel reveal" style={{ color: 'var(--amid)' }}>{forside?.prosessLabel ?? 'Arbeidsmetode'}</div>
+          <h2 className="stitle reveal" style={{ color: '#f5f0e8' }}>{forside?.prosessTittel ?? 'Slik jobber vi'}</h2>
           <p className="sdesc reveal" style={{ color: '#a89e90' }}>
-            Alle oppdrag gjennomføres etter en fast arbeidsmetode – fra kartlegging til oppfølging.
+            {forside?.prosessBeskrivelse ?? 'Alle oppdrag gjennomføres etter en fast arbeidsmetode – fra kartlegging til oppfølging.'}
           </p>
           <div
             className="process-grid"
@@ -263,12 +274,12 @@ export default async function Home() {
               overflow: 'hidden',
             }}
           >
-            {[
-              { num: '01', name: 'Kartlegging', desc: 'Vi kontrollerer resultatet av arbeidet og gir tilbakemelding på anleggets tilstand og eventuelle tiltak.' },
-              { num: '02', name: 'Utførelse', desc: 'Service, kanalrens eller montasje utføres etter avtalt arbeid.' },
-              { num: '03', name: 'Kontroll', desc: 'Vi kontrollerer resultatet av arbeidet og gir tilbakemelding på anleggets tilstand og eventuelle tiltak.' },
-              { num: '04', name: 'Oppfølging', desc: 'Vi følger opp kundene over tid og gir anbefalinger for videre vedlikehold.' },
-            ].map((step) => (
+            {(forside?.prosessSteg ?? [
+              { nummer: '01', tittel: 'Kartlegging', beskrivelse: 'Vi kontrollerer resultatet av arbeidet og gir tilbakemelding på anleggets tilstand og eventuelle tiltak.' },
+              { nummer: '02', tittel: 'Utførelse', beskrivelse: 'Service, kanalrens eller montasje utføres etter avtalt arbeid.' },
+              { nummer: '03', tittel: 'Kontroll', beskrivelse: 'Vi kontrollerer resultatet av arbeidet og gir tilbakemelding på anleggets tilstand og eventuelle tiltak.' },
+              { nummer: '04', tittel: 'Oppfølging', beskrivelse: 'Vi følger opp kundene over tid og gir anbefalinger for videre vedlikehold.' },
+            ]).map((step) => (
               <div
                 key={step.num}
                 className="pstep reveal"
@@ -279,15 +290,15 @@ export default async function Home() {
                   transition: 'background 0.25s',
                 }}
               >
-                <div style={{ fontFamily: 'Playfair Display, serif', fontSize: '3rem', fontWeight: 700, color: 'var(--amber)', lineHeight: 1, marginBottom: 28, opacity: 0.9 }}>{step.num}</div>
-                <div style={{ fontFamily: 'Playfair Display, serif', fontSize: '1rem', fontWeight: 700, color: '#f0e8d8', marginBottom: 14 }}>{step.name}</div>
-                <p style={{ fontSize: '0.845rem', color: '#a89e90', lineHeight: 1.7, fontWeight: 300 }}>{step.desc}</p>
+                <div style={{ fontFamily: 'Playfair Display, serif', fontSize: '3rem', fontWeight: 700, color: 'var(--amber)', lineHeight: 1, marginBottom: 28, opacity: 0.9 }}>{step.nummer}</div>
+                <div style={{ fontFamily: 'Playfair Display, serif', fontSize: '1rem', fontWeight: 700, color: '#f0e8d8', marginBottom: 14 }}>{step.tittel}</div>
+                <p style={{ fontSize: '0.845rem', color: '#a89e90', lineHeight: 1.7, fontWeight: 300 }}>{step.beskrivelse}</p>
               </div>
             ))}
           </div>
           <div style={{ textAlign: 'center', marginTop: 48 }}>
             <Link href="/kontakt" className="btn-amber">
-              Ta kontakt
+              {forside?.prosessCtaTekst ?? 'Ta kontakt'}
             </Link>
           </div>
         </div>
@@ -305,8 +316,8 @@ export default async function Home() {
       {/* ─── ANMELDELSER ─── */}
       <section id="anmeldelser" style={{ background: 'var(--white)', padding: '108px 5%' }}>
         <div className="inner">
-          <div className="slabel reveal">Erfaringer</div>
-          <h2 className="stitle reveal">Hva kundene i Bergen sier</h2>
+          <div className="slabel reveal">{forside?.anmeldelserLabel ?? 'Erfaringer'}</div>
+          <h2 className="stitle reveal">{forside?.anmeldelserTittel ?? 'Hva kundene i Bergen sier'}</h2>
           <div style={{ marginTop: 60 }}>
             <Script src="https://elfsightcdn.com/platform.js" strategy="lazyOnload" />
             <div className="elfsight-app-f72eef5c-9e8b-40c6-904b-dd6484fdcb3d" data-elfsight-app-lazy></div>
@@ -322,11 +333,11 @@ export default async function Home() {
             style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 80, alignItems: 'center' }}
           >
             <div className="reveal">
-              <div className="slabel">Boligeiere</div>
-              <h2 className="stitle">For deg som eier bolig</h2>
-              <p className="sdesc">Ventilasjonsanlegget går hver dag. Regelmessig service gir:</p>
+              <div className="slabel">{forside?.boligeierLabel ?? 'Boligeiere'}</div>
+              <h2 className="stitle">{forside?.boligeierTittel ?? 'For deg som eier bolig'}</h2>
+              <p className="sdesc">{forside?.boligeierBeskrivelse ?? 'Ventilasjonsanlegget går hver dag. Regelmessig service gir:'}</p>
               <div className="checklist">
-                {['Bedre inneklima', 'Stabil temperatur', 'Lavere energibruk', 'Lengre levetid på anlegget'].map((item) => (
+                {(forside?.boligeierSjekkpunkter ?? ['Bedre inneklima', 'Stabil temperatur', 'Lavere energibruk', 'Lengre levetid på anlegget']).map((item) => (
                   <div key={item} className="citem">
                     <div className="cicon">✓</div>
                     {item}
@@ -334,7 +345,7 @@ export default async function Home() {
                 ))}
               </div>
               <div className="note">
-                Vi tilpasser tiltaket etter boligens behov – ikke mer enn nødvendig.
+                {forside?.boligeierNotat ?? 'Vi tilpasser tiltaket etter boligens behov – ikke mer enn nødvendig.'}
               </div>
             </div>
             <div className="reveal" style={{ position: 'relative' }}>
@@ -349,7 +360,9 @@ export default async function Home() {
                 }}
               >
                 <Image
-                  src="https://ucarecdn.com/dc624f56-8c72-4b43-8818-149be7a94947/hf_20260224_115140_8d1fc521c6fe470eabf2fe55099a1570.jpeg"
+                  src={forside?.boligeierBilde
+                    ? urlFor(forside.boligeierBilde).width(800).height(600).url()
+                    : 'https://ucarecdn.com/dc624f56-8c72-4b43-8818-149be7a94947/hf_20260224_115140_8d1fc521c6fe470eabf2fe55099a1570.jpeg'}
                   alt="For deg som eier bolig"
                   fill
                   style={{ objectFit: 'cover' }}
@@ -369,7 +382,7 @@ export default async function Home() {
                     borderRadius: 2,
                   }}
                 >
-                  For boligeiere
+                  {forside?.boligeierBadge ?? 'For boligeiere'}
                 </div>
               </div>
             </div>
@@ -399,7 +412,9 @@ export default async function Home() {
                 }}
               >
                 <Image
-                  src="https://ucarecdn.com/3cebd723-9ca8-4376-b03d-c3f0df6ebad4/DSC03897.jpg"
+                  src={forside?.omOssBilde
+                    ? urlFor(forside.omOssBilde).width(800).height(1000).url()
+                    : 'https://ucarecdn.com/3cebd723-9ca8-4376-b03d-c3f0df6ebad4/DSC03897.jpg'}
                   alt="Om Straume Boligvent"
                   fill
                   style={{ objectFit: 'cover' }}
@@ -414,28 +429,28 @@ export default async function Home() {
                     borderRadius: '6px 0 6px 0',
                   }}
                 >
-                  <div style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.5rem', fontWeight: 700, color: 'var(--ink)' }}>Boligvent</div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--adark)', marginTop: 5, fontWeight: 700, letterSpacing: '0.04em' }}>Del av Straume Tekniske AS</div>
+                  <div style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.5rem', fontWeight: 700, color: 'var(--ink)' }}>{forside?.omOssBadgeTittel ?? 'Boligvent'}</div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--adark)', marginTop: 5, fontWeight: 700, letterSpacing: '0.04em' }}>{forside?.omOssBadgeTekst ?? 'Del av Straume Tekniske AS'}</div>
                 </div>
               </div>
             </div>
             <div className="reveal">
-              <div className="slabel">Om oss</div>
-              <h2 className="stitle">Lokal fagkunnskap.<br />Langsiktige relasjoner.</h2>
+              <div className="slabel">{forside?.omOssLabel ?? 'Om oss'}</div>
+              <h2 className="stitle" dangerouslySetInnerHTML={{ __html: (forside?.omOssTittel ?? 'Lokal fagkunnskap.<br />Langsiktige relasjoner.').replace(/\n/g, '<br />') }} />
               <p style={{ fontSize: '0.925rem', color: 'var(--muted)', lineHeight: 1.8, marginBottom: 16, fontWeight: 300 }}>
-                Spesialisert ventilasjon siden 2012 – del av Straume Tekniske AS.
+                {forside?.omOssAvsnitt1 ?? 'Spesialisert ventilasjon siden 2012 – del av Straume Tekniske AS.'}
               </p>
               <p style={{ fontSize: '0.925rem', color: 'var(--muted)', lineHeight: 1.8, marginBottom: 16, fontWeight: 300 }}>
-                Én kontaktperson, fullt ansvar, bredt fagmiljø i ryggen.
+                {forside?.omOssAvsnitt2 ?? 'Én kontaktperson, fullt ansvar, bredt fagmiljø i ryggen.'}
               </p>
               <div className="checklist">
-                {[
+                {(forside?.omOssSjekkpunkter ?? [
                   'Sertifiserte teknikere med dokumentert kompetanse',
                   'Erfaring med Flexit, Systemair og Ventiståhl',
                   'Komplett leveranse – service til montasje',
                   'Tilpasset oppfølging for borettslag og sameier',
                   'Langsiktig oppfølging – ikke engangsoppdrag',
-                ].map((item) => (
+                ]).map((item) => (
                   <div key={item} className="citem">
                     <div className="cicon">✓</div>
                     {item}
@@ -443,7 +458,7 @@ export default async function Home() {
                 ))}
               </div>
               <Link href="/kontakt" className="btn-amber" style={{ marginTop: 16, display: 'inline-flex' }}>
-                Ta kontakt
+                {forside?.omOssCtaTekst ?? 'Ta kontakt'}
               </Link>
             </div>
           </div>
@@ -453,10 +468,10 @@ export default async function Home() {
       {/* ─── GALLERI ─── */}
       <section id="galleri" style={{ background: 'var(--warm)', padding: '108px 5%' }}>
         <div className="inner">
-          <div className="slabel reveal">Galleri</div>
-          <h2 className="stitle reveal">Bilder fra oppdrag i Bergen og omegn</h2>
+          <div className="slabel reveal">{forside?.galleriLabel ?? 'Galleri'}</div>
+          <h2 className="stitle reveal">{forside?.galleriTittel ?? 'Bilder fra oppdrag i Bergen og omegn'}</h2>
           <p className="sdesc reveal">
-            Et utvalg bilder fra arbeid vi har utført for boligeiere og borettslag i Bergen og omegn.
+            {forside?.galleriBeskrivelse ?? 'Et utvalg bilder fra arbeid vi har utført for boligeiere og borettslag i Bergen og omegn.'}
           </p>
           <div
             className="gallery-home-grid"
@@ -494,7 +509,7 @@ export default async function Home() {
           </div>
           <div style={{ textAlign: 'center', marginTop: 40 }}>
             <Link href="/galleri" className="btn-ghost">
-              Se hele galleriet →
+              {forside?.galleriCtaTekst ?? 'Se hele galleriet →'}
             </Link>
           </div>
         </div>
@@ -511,7 +526,7 @@ export default async function Home() {
       {/* ─── KONTAKT ─── */}
       <section id="kontakt" style={{ background: 'var(--warm)', padding: '108px 5%' }}>
         <div className="inner">
-          <div className="slabel reveal">Kom i gang</div>
+          <div className="slabel reveal">{forside?.kontaktLabel ?? 'Kom i gang'}</div>
           <div
             className="contact-grid"
             style={{
@@ -533,17 +548,19 @@ export default async function Home() {
                   marginBottom: 20,
                 }}
               >
-                Ta kontakt –<br />vi svarer innen<br />én virkedag
+                {(forside?.kontaktTittel ?? 'Ta kontakt – vi svarer innen én virkedag').split('\n').map((line, i, arr) => (
+                  <span key={i}>{line}{i < arr.length - 1 && <br />}</span>
+                ))}
               </h2>
               <p style={{ fontSize: '0.9rem', color: 'var(--muted)', lineHeight: 1.8, marginBottom: 40, fontWeight: 300 }}>
-                Fyll ut skjemaet, eller ring oss direkte. Vi stiller gjerne spørsmål om anlegget ditt for å gi deg riktig tilbud.
+                {forside?.kontaktBeskrivelse ?? 'Fyll ut skjemaet, eller ring oss direkte. Vi stiller gjerne spørsmål om anlegget ditt for å gi deg riktig tilbud.'}
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                 {[
                   { lbl: 'Telefon', val: settings?.phone || '561 26 800', href: `tel:${(settings?.phone || '561 26 800').replace(/\s/g, '')}` },
                   { lbl: 'E-post', val: settings?.email || 'ordre@straumetekniske.no', href: `mailto:${settings?.email || 'ordre@straumetekniske.no'}` },
                   { lbl: 'Adresse', val: settings?.address || 'Idrettsveien 93, 5353 Straume', href: undefined },
-                  { lbl: 'Åpent', val: 'Man–Fre 08:00–16:00 · Lør 09:00–15:00', href: undefined },
+                  { lbl: 'Åpent', val: forside?.kontaktApningstider || 'Man–Fre 08:00–16:00 · Lør 09:00–15:00', href: undefined },
                 ].map((row) => (
                   <div key={row.lbl} style={{ display: 'flex', gap: 18, alignItems: 'flex-start' }}>
                     <span style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--sec)', width: 64, flexShrink: 0, paddingTop: 3 }}>
