@@ -29,6 +29,10 @@ export default defineConfig({
               .id('omOss')
               .child(S.document().schemaType('omOss').documentId('omOss')),
             S.listItem()
+              .title('Priser')
+              .id('priser')
+              .child(S.document().schemaType('priser').documentId('priser')),
+            S.listItem()
               .title('Borettslag-landingsside')
               .id('borettslagLanding')
               .child(S.document().schemaType('borettslagLanding').documentId('borettslagLanding')),
