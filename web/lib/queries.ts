@@ -271,6 +271,34 @@ export const omOssQuery = groq`
   }
 `
 
+// ─── PRISER (singleton) ───
+export const priserQuery = groq`
+  *[_type == "priser"][0] {
+    seoTittel,
+    seoDescription,
+    tittel,
+    beskrivelse,
+    kort[] {
+      _key,
+      tittel,
+      beskrivelse,
+      prisLabel,
+      pris,
+      featured,
+      badge,
+      inkludertLabel,
+      inkludert,
+      cta1Tekst,
+      cta1Lenke,
+      cta2Tekst,
+      cta2Lenke
+    },
+    fotnoteTekst,
+    fotnoteCtaTekst,
+    fotnoteCtaLenke
+  }
+`
+
 // ─── BORETTSLAG LANDING (singleton) ───
 export const borettslagLandingQuery = groq`
   *[_type == "borettslagLanding"][0] {

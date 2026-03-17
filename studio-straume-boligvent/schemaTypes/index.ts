@@ -8,10 +8,12 @@ import { ansatt } from './ansatt'
 import { omOss } from './omOss'
 import { borettslagLanding } from './borettslagLanding'
 import { forside } from './forside'
+import { priser } from './priser'
 
 export const schemaTypes = [
   siteSettings,
   forside,
+  priser,
   service,
   referenceProject,
   article,

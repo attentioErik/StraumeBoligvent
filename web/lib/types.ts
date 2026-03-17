@@ -180,6 +180,33 @@ export interface Forside {
   kontaktApningstider?: string
 }
 
+export interface PrisKort {
+  _key: string
+  tittel: string
+  beskrivelse?: string
+  prisLabel?: string
+  pris: string
+  featured?: boolean
+  badge?: string
+  inkludertLabel?: string
+  inkludert?: string[]
+  cta1Tekst?: string
+  cta1Lenke?: string
+  cta2Tekst?: string
+  cta2Lenke?: string
+}
+
+export interface Priser {
+  seoTittel?: string
+  seoDescription?: string
+  tittel?: string
+  beskrivelse?: string
+  kort?: PrisKort[]
+  fotnoteTekst?: string
+  fotnoteCtaTekst?: string
+  fotnoteCtaLenke?: string
+}
+
 export interface BorettslagLanding {
   heroTittel?: string
   heroUnderTittel?: string

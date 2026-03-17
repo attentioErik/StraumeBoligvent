@@ -7,8 +7,9 @@ import {
   referenceProjectsQuery,
   faqQuery,
   forsideQuery,
+  priserQuery,
 } from '@/lib/queries'
-import type { SiteSettings, Service, ReferenceProject, FAQ, Forside } from '@/lib/types'
+import type { SiteSettings, Service, ReferenceProject, FAQ, Forside, Priser } from '@/lib/types'
 import type { Metadata } from 'next'
 
 import Image from 'next/image'
@@ -18,6 +19,7 @@ import FaqSection from '@/components/FaqSection'
 import ContactForm from '@/components/ContactForm'
 import Link from 'next/link'
 import Script from 'next/script'
+import PricingSection from '@/components/PricingSection'
 
 export async function generateMetadata(): Promise<Metadata> {
   const forside = await client.fetch<Forside>(forsideQuery).catch(() => null)
@@ -141,12 +143,13 @@ const FALLBACK_FAQS: FAQ[] = [
 ]
 
 export default async function Home() {
-  const [settings, services, projects, faqs, forside] = await Promise.all([
+  const [settings, services, projects, faqs, forside, priser] = await Promise.all([
     client.fetch<SiteSettings>(siteSettingsQuery).catch(() => null),
     client.fetch<Service[]>(servicesQuery).catch(() => []),
     client.fetch<ReferenceProject[]>(referenceProjectsQuery).catch(() => []),
     client.fetch<FAQ[]>(faqQuery).catch(() => []),
     client.fetch<Forside>(forsideQuery).catch(() => null),
+    client.fetch<Priser>(priserQuery).catch(() => null),
   ])
 
   const displayProjects = projects.length > 0 ? projects : FALLBACK_PROJECTS
@@ -252,6 +255,18 @@ export default async function Home() {
             .services-grid { grid-template-columns: 1fr !important; }
           }
         `}</style>
+      </section>
+
+      {/* ─── PRISER ─── */}
+      <section id="priser" style={{ background: 'var(--white)', padding: '108px 5%' }}>
+        <div className="inner">
+          <div className="slabel reveal">{priser?.tittel ? 'Våre priser' : 'Våre priser'}</div>
+          <h2 className="stitle reveal">{priser?.tittel ?? 'Tjenester for ventilasjon i bolig'}</h2>
+          <p className="sdesc reveal" style={{ marginBottom: 60 }}>
+            {priser?.beskrivelse ?? 'Vi hjelper deg med service, kanalrens og utskifting av ventilasjonsaggregat – tilpasset anlegget og behovet i boligen din.'}
+          </p>
+          <PricingSection priser={priser} compact />
+        </div>
       </section>
 
       {/* ─── PROSESS ─── */}
