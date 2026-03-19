@@ -34,7 +34,7 @@ export default function PricingSection({ priser, compact }: PricingSectionProps)
       cta1Tekst: 'Be om vurdering',
       cta1Lenke: '/kontakt',
       cta2Tekst: 'Les mer',
-      cta2Lenke: '/tjenester/ventilasjonsservice',
+      cta2Lenke: '/tjenester/service-og-vedlikehold',
     },
     {
       _key: '2',
@@ -61,7 +61,7 @@ export default function PricingSection({ priser, compact }: PricingSectionProps)
       cta1Tekst: 'Be om vurdering',
       cta1Lenke: '/kontakt',
       cta2Tekst: 'Les mer',
-      cta2Lenke: '/tjenester/nytt-aggregat',
+      cta2Lenke: '/tjenester/montasje-og-utskifting',
     },
   ]
 
