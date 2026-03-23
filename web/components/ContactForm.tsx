@@ -104,7 +104,7 @@ export default function ContactForm({ services, defaultService }: ContactFormPro
   }
 
   return (
-    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+    <form id="kontakt-oss" onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
       {/* Name + Phone */}
       <div
         className="form-row"
