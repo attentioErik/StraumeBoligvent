@@ -64,7 +64,7 @@ export const enova = defineType({
       group: 'innhold',
       description: 'Kort, nøytral forklaring. Husk: bruk tekstreferansen «Enova.no», ikke Enova-logoen.',
       initialValue:
-        'Enova er et statlig foretak som gir økonomisk støtte til energitiltak i norske boliger. Balansert ventilasjon med høy varmegjenvinning er ett av tiltakene som kan kvalifisere for støtte. Du søker selv via Enova.no etter at tiltaket er gjennomført – vi sørger for at anlegget og dokumentasjonen holder mål.',
+        'Enova er et statlig foretak som gir økonomisk støtte til energitiltak i norske boliger. Balansert ventilasjon med høy varmegjenvinning er ett av tiltakene som kan kvalifisere for støtte. Du søker selv via Enova.no før arbeidet starter – og når søknaden er godkjent, setter vi i gang. Vi sørger for at anlegget og dokumentasjonen holder mål.',
     }),
 
     // ─── STØTTEORDNINGER ───
@@ -106,7 +106,13 @@ export const enova = defineType({
               name: 'belop',
               title: 'Beløp',
               type: 'string',
-              description: 'F.eks. «15 000 kr» eller «25 % av kostnaden»',
+              description: 'Vises stort. F.eks. «25 %» eller «15 000 kr»',
+            }),
+            defineField({
+              name: 'belopNote',
+              title: 'Beløp-presisering',
+              type: 'string',
+              description: 'Liten tekst under beløpet. F.eks. «av godkjente kostnader · maks ca. 15 000 kr»',
             }),
             defineField({
               name: 'kriterier',
@@ -116,6 +122,18 @@ export const enova = defineType({
             }),
           ],
           preview: { select: { title: 'tittel', subtitle: 'belop' } },
+        },
+      ],
+      initialValue: [
+        {
+          _key: 'balansert-ventilasjon',
+          tittel: 'Balansert ventilasjon',
+          beskrivelse:
+            'Støtte til installasjon av balansert ventilasjonsanlegg med varmegjenvinning i eksisterende bolig.',
+          belopLabel: 'Inntil',
+          belop: '25 %',
+          belopNote: 'av godkjente kostnader · maks ca. 15 000 kr',
+          kriterier: ['Anlegg med høy varmegjenvinning', 'Søknad godkjent før oppstart', 'Idriftsettelse og rapport'],
         },
       ],
     }),
@@ -134,6 +152,13 @@ export const enova = defineType({
       type: 'array',
       group: 'innhold',
       of: [{ type: 'string' }],
+      initialValue: [
+        'Du eier en helårsbolig i Norge (ikke fritidsbolig)',
+        'Søknaden er sendt inn og godkjent før arbeidet starter',
+        'Arbeidet utføres av godkjent leverandør med sentral godkjenning',
+        'Utstyret er nytt og kjøpt fra registrert leverandør',
+        'Du har faktura og dokumentasjon som viser hva som er gjort',
+      ],
     }),
 
     // ─── SØKNADSPROSESS ───
@@ -159,6 +184,29 @@ export const enova = defineType({
           preview: { select: { title: 'tittel' } },
         },
       ],
+      initialValue: [
+        {
+          _key: 'sok-for',
+          tittel: 'Søk før du starter arbeidet',
+          beskrivelse: 'Søknad må sendes inn og godkjennes av Enova før installasjonen starter.',
+        },
+        {
+          _key: 'godkjent-leverandor',
+          tittel: 'Velg godkjent leverandør',
+          beskrivelse:
+            'Arbeidet må utføres av en bedrift med sentral godkjenning, registrert i Mesterregisteret eller Elvirksomhetsregisteret.',
+        },
+        {
+          _key: 'gjennomfor',
+          tittel: 'Gjennomfør tiltaket',
+          beskrivelse: 'Tiltaket må være ferdig innen 6 måneder etter tilsagn.',
+        },
+        {
+          _key: 'sluttrapportering',
+          tittel: 'Sluttrapportering',
+          beskrivelse: 'Når arbeidet er ferdig, laster du opp faktura og nødvendig dokumentasjon på enova.no.',
+        },
+      ],
     }),
 
     // ─── SLIK HJELPER VI ───
@@ -176,7 +224,7 @@ export const enova = defineType({
       rows: 3,
       group: 'innhold',
       initialValue:
-        'Vi er ikke en del av Enova, men vi kjenner kravene godt. Vi anbefaler og monterer et anlegg som kvalifiserer for støtte, og leverer idriftsettelsesrapport og dokumentasjon du trenger når du søker.',
+        'Vi er ikke en del av Enova, men vi kjenner kravene godt. Vi anbefaler og monterer et anlegg som kvalifiserer for støtte, og leverer idriftsettelsesrapport og dokumentasjonen du trenger til sluttrapporteringen.',
     }),
     defineField({
       name: 'hjelpPunkter',
@@ -184,6 +232,13 @@ export const enova = defineType({
       type: 'array',
       group: 'innhold',
       of: [{ type: 'string' }],
+      initialValue: [
+        'Befaring og anbefaling av riktig anlegg',
+        'Montering av anlegg med høy varmegjenvinning',
+        'Idriftsettelse med måling og rapport',
+        'Tydelig faktura som dokumenterer kostnadene',
+        'Veiledning om søknad før oppstart og sluttrapportering',
+      ],
     }),
 
     // ─── FAQ ───
@@ -200,6 +255,28 @@ export const enova = defineType({
             defineField({ name: 'svar', title: 'Svar', type: 'text', rows: 3 }),
           ],
           preview: { select: { title: 'sporsmal' } },
+        },
+      ],
+      initialValue: [
+        {
+          _key: 'tilknyttet',
+          sporsmal: 'Er Straume Boligvent tilknyttet Enova?',
+          svar: 'Nei. Vi er en uavhengig ventilasjonsentreprenør. Selve søknaden sender du til Enova, men vi hjelper deg med å levere et anlegg og en dokumentasjon som oppfyller kravene.',
+        },
+        {
+          _key: 'nar-soke',
+          sporsmal: 'Når kan jeg søke?',
+          svar: 'Du må søke før du starter arbeidet – søknaden må være sendt inn og godkjent av Enova før installasjonen begynner. Når arbeidet er ferdig, laster du opp faktura og dokumentasjon på enova.no.',
+        },
+        {
+          _key: 'hvem-soker',
+          sporsmal: 'Hvem søker – dere eller jeg?',
+          svar: 'Du søker selv via Enova.no før arbeidet starter. Vi sørger for at du har riktig dokumentasjon til sluttrapporteringen, slik som faktura og idriftsettelsesrapport.',
+        },
+        {
+          _key: 'hvor-mye',
+          sporsmal: 'Hvor mye kan jeg få i støtte?',
+          svar: 'For balansert ventilasjon kan du få inntil 25 % av godkjente kostnader, maks ca. 15 000 kr. Beløp og vilkår fastsettes av Enova og kan endres, så sjekk alltid gjeldende satser på Enova.no.',
         },
       ],
     }),

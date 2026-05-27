@@ -22,7 +22,7 @@ const FALLBACK: Enova = {
     'Installerer du balansert ventilasjon med varmegjenvinning, kan du søke om økonomisk støtte fra Enova. Vi leverer anlegg som oppfyller kravene – og hjelper deg med dokumentasjonen du trenger til søknaden.',
   introTittel: 'Hva er Enova-støtte?',
   introTekst:
-    'Enova er et statlig foretak som gir økonomisk støtte til energitiltak i norske boliger. Balansert ventilasjon med høy varmegjenvinning er ett av tiltakene som kan kvalifisere for støtte. Du søker selv via Enova.no etter at tiltaket er gjennomført – vi sørger for at anlegget og dokumentasjonen holder mål.',
+    'Enova er et statlig foretak som gir økonomisk støtte til energitiltak i norske boliger. Balansert ventilasjon med høy varmegjenvinning er ett av tiltakene som kan kvalifisere for støtte. Du søker selv via Enova.no før arbeidet starter – og når søknaden er godkjent, setter vi i gang. Vi sørger for at anlegget og dokumentasjonen holder mål.',
   stotteTittel: 'Aktuell støtte for ventilasjon',
   stotteIntro:
     'Beløp og vilkår fastsettes av Enova og kan endres løpende. Tallene under er veiledende – sjekk alltid gjeldende satser på Enova.no.',
@@ -32,62 +32,52 @@ const FALLBACK: Enova = {
       beskrivelse:
         'Støtte til installasjon av balansert ventilasjonsanlegg med varmegjenvinning i eksisterende bolig.',
       belopLabel: 'Inntil',
-      belop: '15 000 kr',
+      belop: '25 %',
+      belopNote: 'av godkjente kostnader · maks ca. 15 000 kr',
       kriterier: [
         'Anlegg med høy varmegjenvinning',
-        'Eksisterende helårsbolig',
+        'Søknad godkjent før oppstart',
         'Idriftsettelse og rapport',
       ],
-    },
-    {
-      tittel: 'Luft-til-vann varmepumpe',
-      beskrivelse:
-        'For deg som kombinerer ventilasjon med vannbåren varme. Enova støtter også varmepumpe som knyttes til vannbårent anlegg.',
-      belopLabel: 'Inntil',
-      belop: '20 000 kr',
-      kriterier: ['Tilknyttet vannbårent varmeanlegg', 'Ny og eksisterende bolig'],
     },
   ],
   vilkarTittel: 'Hvem kan søke?',
   vilkar: [
-    'Du eier en helårsbolig i Norge',
-    'Tiltaket er gjennomført i egen bolig (ikke fritidsbolig)',
+    'Du eier en helårsbolig i Norge (ikke fritidsbolig)',
+    'Søknaden er sendt inn og godkjent før arbeidet starter',
+    'Arbeidet utføres av godkjent leverandør med sentral godkjenning',
     'Utstyret er nytt og kjøpt fra registrert leverandør',
-    'Arbeidet er utført av kvalifisert fagperson',
     'Du har faktura og dokumentasjon som viser hva som er gjort',
   ],
   prosessTittel: 'Slik søker du om Enova-støtte',
   prosessSteg: [
     {
-      tittel: 'Sett deg inn i ordningen',
-      beskrivelse:
-        'Sjekk gjeldende vilkår og satser på Enova.no før du bestemmer deg. Ta gjerne kontakt med oss for en vurdering av boligen.',
+      tittel: 'Søk før du starter arbeidet',
+      beskrivelse: 'Søknad må sendes inn og godkjennes av Enova før installasjonen starter.',
     },
     {
-      tittel: 'Få anlegget installert',
+      tittel: 'Velg godkjent leverandør',
       beskrivelse:
-        'Vi monterer et anlegg som oppfyller Enovas krav, og utfører idriftsettelse med målinger.',
+        'Arbeidet må utføres av en bedrift med sentral godkjenning, registrert i Mesterregisteret eller Elvirksomhetsregisteret.',
     },
     {
-      tittel: 'Samle dokumentasjon',
-      beskrivelse:
-        'Du får faktura som viser kostnader, utstyr og arbeid, samt idriftsettelsesrapport for anlegget.',
+      tittel: 'Gjennomfør tiltaket',
+      beskrivelse: 'Tiltaket må være ferdig innen 6 måneder etter tilsagn.',
     },
     {
-      tittel: 'Søk via Enova.no',
-      beskrivelse:
-        'Du registrerer og sender søknaden selv på Enova.no etter at tiltaket er gjennomført. Støtten utbetales til din konto.',
+      tittel: 'Sluttrapportering',
+      beskrivelse: 'Når arbeidet er ferdig, laster du opp faktura og nødvendig dokumentasjon på enova.no.',
     },
   ],
   hjelpTittel: 'Slik hjelper vi deg',
   hjelpTekst:
-    'Vi er ikke en del av Enova, men vi kjenner kravene godt. Vi anbefaler og monterer et anlegg som kvalifiserer for støtte, og leverer idriftsettelsesrapport og dokumentasjon du trenger når du søker.',
+    'Vi er ikke en del av Enova, men vi kjenner kravene godt. Vi anbefaler og monterer et anlegg som kvalifiserer for støtte, og leverer idriftsettelsesrapport og dokumentasjonen du trenger til sluttrapporteringen.',
   hjelpPunkter: [
     'Befaring og anbefaling av riktig anlegg',
     'Montering av anlegg med høy varmegjenvinning',
     'Idriftsettelse med måling og rapport',
     'Tydelig faktura som dokumenterer kostnadene',
-    'Veiledning om hva du trenger til søknaden',
+    'Veiledning om søknad før oppstart og sluttrapportering',
   ],
   faq: [
     {
@@ -95,16 +85,16 @@ const FALLBACK: Enova = {
       svar: 'Nei. Vi er en uavhengig ventilasjonsentreprenør. Selve søknaden sender du til Enova, men vi hjelper deg med å levere et anlegg og en dokumentasjon som oppfyller kravene.',
     },
     {
-      sporsmal: 'Hvor mye kan jeg få i støtte?',
-      svar: 'Beløpet avhenger av tiltaket og fastsettes av Enova. Satsene kan endres løpende, så sjekk alltid gjeldende beløp på Enova.no.',
+      sporsmal: 'Når kan jeg søke?',
+      svar: 'Du må søke før du starter arbeidet – søknaden må være sendt inn og godkjent av Enova før installasjonen begynner. Når arbeidet er ferdig, laster du opp faktura og dokumentasjon på enova.no.',
     },
     {
       sporsmal: 'Hvem søker – dere eller jeg?',
-      svar: 'Du søker selv via Enova.no etter at arbeidet er ferdig. Vi sørger for at du har riktig dokumentasjon, slik som faktura og idriftsettelsesrapport.',
+      svar: 'Du søker selv via Enova.no før arbeidet starter. Vi sørger for at du har riktig dokumentasjon til sluttrapporteringen, slik som faktura og idriftsettelsesrapport.',
     },
     {
-      sporsmal: 'Når kan jeg søke?',
-      svar: 'Du søker normalt etter at tiltaket er gjennomført og betalt. Vi anbefaler at du gjør deg kjent med vilkårene på Enova.no før du setter i gang.',
+      sporsmal: 'Hvor mye kan jeg få i støtte?',
+      svar: 'For balansert ventilasjon kan du få inntil 25 % av godkjente kostnader, maks ca. 15 000 kr. Beløp og vilkår fastsettes av Enova og kan endres, så sjekk alltid gjeldende satser på Enova.no.',
     },
   ],
   disclaimer:
@@ -196,7 +186,13 @@ export default async function EnovaPage() {
             {p.stotteIntro && <p className="sdesc reveal" style={{ maxWidth: 620 }}>{p.stotteIntro}</p>}
             <div
               className="enova-grid"
-              style={{ display: 'grid', gridTemplateColumns: `repeat(${Math.min(p.stotteordninger.length, 2)}, 1fr)`, gap: 24, marginTop: 48 }}
+              style={{
+                display: 'grid',
+                gridTemplateColumns: `repeat(${Math.min(p.stotteordninger.length, 2)}, 1fr)`,
+                gap: 24,
+                marginTop: 48,
+                maxWidth: p.stotteordninger.length === 1 ? 460 : undefined,
+              }}
             >
               {p.stotteordninger.map((s, i) => (
                 <div
@@ -228,6 +224,11 @@ export default async function EnovaPage() {
                       <div style={{ fontFamily: 'Playfair Display, serif', fontSize: '2.2rem', fontWeight: 800, color: 'var(--amber)', lineHeight: 1 }}>
                         {s.belop}
                       </div>
+                      {s.belopNote && (
+                        <div style={{ fontSize: '0.82rem', color: 'var(--muted)', fontWeight: 400, marginTop: 8, lineHeight: 1.5 }}>
+                          {s.belopNote}
+                        </div>
+                      )}
                     </div>
                   )}
                   {s.kriterier && s.kriterier.length > 0 && (

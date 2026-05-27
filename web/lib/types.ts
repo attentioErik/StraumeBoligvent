@@ -231,6 +231,7 @@ export interface Enova {
     beskrivelse?: string
     belopLabel?: string
     belop?: string
+    belopNote?: string
     kriterier?: string[]
   }>
   vilkarTittel?: string

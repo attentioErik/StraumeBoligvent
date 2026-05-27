@@ -328,6 +328,7 @@ export const enovaQuery = groq`
       beskrivelse,
       belopLabel,
       belop,
+      belopNote,
       kriterier
     },
     vilkarTittel,
