@@ -216,3 +216,36 @@ export interface BorettslagLanding {
   hvordforOss?: string[]
   faq?: Array<{ sporsmal: string; svar: string }>
 }
+
+export interface Enova {
+  seoTittel?: string
+  seoDescription?: string
+  heroTittel?: string
+  heroUnderTittel?: string
+  introTittel?: string
+  introTekst?: string
+  stotteTittel?: string
+  stotteIntro?: string
+  stotteordninger?: Array<{
+    tittel: string
+    beskrivelse?: string
+    belopLabel?: string
+    belop?: string
+    kriterier?: string[]
+  }>
+  vilkarTittel?: string
+  vilkar?: string[]
+  prosessTittel?: string
+  prosessSteg?: Array<{ tittel: string; beskrivelse: string }>
+  hjelpTittel?: string
+  hjelpTekst?: string
+  hjelpPunkter?: string[]
+  faq?: Array<{ sporsmal: string; svar: string }>
+  disclaimer?: string
+  enovaLenke?: string
+  enovaLenkeTekst?: string
+  teaserLabel?: string
+  teaserTittel?: string
+  teaserTekst?: string
+  teaserCtaTekst?: string
+}

@@ -8,8 +8,9 @@ import {
   faqQuery,
   forsideQuery,
   priserQuery,
+  enovaQuery,
 } from '@/lib/queries'
-import type { SiteSettings, Service, ReferenceProject, FAQ, Forside, Priser } from '@/lib/types'
+import type { SiteSettings, Service, ReferenceProject, FAQ, Forside, Priser, Enova } from '@/lib/types'
 import type { Metadata } from 'next'
 
 import Image from 'next/image'
@@ -20,6 +21,7 @@ import ContactForm from '@/components/ContactForm'
 import Link from 'next/link'
 import Script from 'next/script'
 import PricingSection from '@/components/PricingSection'
+import EnovaTeaser from '@/components/EnovaTeaser'
 
 export async function generateMetadata(): Promise<Metadata> {
   const forside = await client.fetch<Forside>(forsideQuery).catch(() => null)
@@ -143,13 +145,14 @@ const FALLBACK_FAQS: FAQ[] = [
 ]
 
 export default async function Home() {
-  const [settings, services, projects, faqs, forside, priser] = await Promise.all([
+  const [settings, services, projects, faqs, forside, priser, enova] = await Promise.all([
     client.fetch<SiteSettings>(siteSettingsQuery).catch(() => null),
     client.fetch<Service[]>(servicesQuery).catch(() => []),
     client.fetch<ReferenceProject[]>(referenceProjectsQuery).catch(() => []),
     client.fetch<FAQ[]>(faqQuery).catch(() => []),
     client.fetch<Forside>(forsideQuery).catch(() => null),
     client.fetch<Priser>(priserQuery).catch(() => null),
+    client.fetch<Enova>(enovaQuery).catch(() => null),
   ])
 
   const displayProjects = projects.length > 0 ? projects : FALLBACK_PROJECTS
@@ -268,6 +271,9 @@ export default async function Home() {
           <PricingSection priser={priser} compact />
         </div>
       </section>
+
+      {/* ─── ENOVA-STØTTE ─── */}
+      <EnovaTeaser enova={enova} />
 
       {/* ─── PROSESS ─── */}
       <section id="prosess" style={{ background: '#1e1a12', padding: '108px 5%' }}>

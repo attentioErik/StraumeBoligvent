@@ -36,6 +36,10 @@ export default defineConfig({
               .title('Borettslag-landingsside')
               .id('borettslagLanding')
               .child(S.document().schemaType('borettslagLanding').documentId('borettslagLanding')),
+            S.listItem()
+              .title('Enova-støtte')
+              .id('enova')
+              .child(S.document().schemaType('enova').documentId('enova')),
             S.divider(),
             S.listItem()
               .title('Tjenester')

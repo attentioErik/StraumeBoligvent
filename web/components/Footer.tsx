@@ -19,6 +19,7 @@ const services = [
 const company = [
   { label: 'Om oss', href: '/om-oss' },
   { label: 'Borettslag', href: '/borettslag' },
+  { label: 'Enova-støtte', href: '/enova' },
   { label: 'Galleri', href: '/galleri' },
   { label: 'Artikler', href: '/blog' },
   { label: 'Kontakt', href: '/kontakt' },

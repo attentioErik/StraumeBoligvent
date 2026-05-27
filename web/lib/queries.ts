@@ -311,3 +311,39 @@ export const borettslagLandingQuery = groq`
     faq
   }
 `
+
+// ─── ENOVA (singleton) ───
+export const enovaQuery = groq`
+  *[_type == "enova"][0] {
+    seoTittel,
+    seoDescription,
+    heroTittel,
+    heroUnderTittel,
+    introTittel,
+    introTekst,
+    stotteTittel,
+    stotteIntro,
+    stotteordninger[] {
+      tittel,
+      beskrivelse,
+      belopLabel,
+      belop,
+      kriterier
+    },
+    vilkarTittel,
+    vilkar,
+    prosessTittel,
+    prosessSteg,
+    hjelpTittel,
+    hjelpTekst,
+    hjelpPunkter,
+    faq,
+    disclaimer,
+    enovaLenke,
+    enovaLenkeTekst,
+    teaserLabel,
+    teaserTittel,
+    teaserTekst,
+    teaserCtaTekst
+  }
+`

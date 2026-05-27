@@ -1,10 +1,11 @@
 export const revalidate = 60
 
 import { client } from '@/lib/sanity'
-import { priserQuery } from '@/lib/queries'
-import type { Priser } from '@/lib/types'
+import { priserQuery, enovaQuery } from '@/lib/queries'
+import type { Priser, Enova } from '@/lib/types'
 import type { Metadata } from 'next'
 import PricingSection from '@/components/PricingSection'
+import EnovaTeaser from '@/components/EnovaTeaser'
 
 export async function generateMetadata(): Promise<Metadata> {
   const priser = await client.fetch<Priser>(priserQuery).catch(() => null)
@@ -15,11 +16,15 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function PriserPage() {
-  const priser = await client.fetch<Priser>(priserQuery).catch(() => null)
+  const [priser, enova] = await Promise.all([
+    client.fetch<Priser>(priserQuery).catch(() => null),
+    client.fetch<Enova>(enovaQuery).catch(() => null),
+  ])
 
   return (
     <main style={{ background: 'var(--white)', paddingTop: 40 }}>
       <PricingSection priser={priser} />
+      <EnovaTeaser enova={enova} />
     </main>
   )
 }
