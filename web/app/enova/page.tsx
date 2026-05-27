@@ -177,95 +177,102 @@ export default async function EnovaPage() {
         </section>
       )}
 
-      {/* ─── STØTTEORDNINGER ─── */}
-      {p.stotteordninger && p.stotteordninger.length > 0 && (
+      {/* ─── STØTTE OG VILKÅR ─── */}
+      {((p.stotteordninger && p.stotteordninger.length > 0) || (p.vilkar && p.vilkar.length > 0)) && (
         <section style={{ background: 'var(--off)', padding: '80px 5%' }}>
           <div className="inner">
-            <div className="slabel reveal">Støtteordninger</div>
-            {p.stotteTittel && <h2 className="stitle reveal">{p.stotteTittel}</h2>}
-            {p.stotteIntro && <p className="sdesc reveal" style={{ maxWidth: 620 }}>{p.stotteIntro}</p>}
+            <div className="slabel reveal">Støtte og vilkår</div>
             <div
-              className="enova-grid"
-              style={{
-                display: 'grid',
-                gridTemplateColumns: `repeat(${Math.min(p.stotteordninger.length, 2)}, 1fr)`,
-                gap: 24,
-                marginTop: 48,
-                maxWidth: p.stotteordninger.length === 1 ? 460 : undefined,
-              }}
+              className="enova-merge"
+              style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 56, marginTop: 40, alignItems: 'start' }}
             >
-              {p.stotteordninger.map((s, i) => (
-                <div
-                  key={i}
-                  className="reveal"
-                  style={{
-                    background: 'var(--white)',
-                    border: '1px solid var(--ll)',
-                    borderTop: '3px solid var(--amber)',
-                    borderRadius: '0 0 8px 8px',
-                    padding: '36px 32px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                  }}
-                >
-                  <div style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.25rem', fontWeight: 700, color: 'var(--ink)', marginBottom: 12 }}>
-                    {s.tittel}
-                  </div>
-                  {s.beskrivelse && (
-                    <p style={{ fontSize: '0.9rem', color: 'var(--muted)', lineHeight: 1.7, fontWeight: 300, marginBottom: 24 }}>{s.beskrivelse}</p>
+              {/* Støtteordning(er) */}
+              {p.stotteordninger && p.stotteordninger.length > 0 && (
+                <div className="reveal">
+                  {p.stotteTittel && (
+                    <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.6rem', fontWeight: 700, color: 'var(--ink)', lineHeight: 1.15, marginBottom: 12 }}>
+                      {p.stotteTittel}
+                    </h2>
                   )}
-                  {s.belop && (
-                    <div style={{ marginBottom: 24 }}>
-                      {s.belopLabel && (
-                        <div style={{ fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--sec)', marginBottom: 4 }}>
-                          {s.belopLabel}
+                  {p.stotteIntro && (
+                    <p style={{ fontSize: '0.92rem', color: 'var(--muted)', lineHeight: 1.7, fontWeight: 300, marginBottom: 28 }}>{p.stotteIntro}</p>
+                  )}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+                    {p.stotteordninger.map((s, i) => (
+                      <div
+                        key={i}
+                        style={{
+                          background: 'var(--white)',
+                          border: '1px solid var(--ll)',
+                          borderTop: '3px solid var(--amber)',
+                          borderRadius: '0 0 8px 8px',
+                          padding: '32px 30px',
+                          display: 'flex',
+                          flexDirection: 'column',
+                        }}
+                      >
+                        <div style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.25rem', fontWeight: 700, color: 'var(--ink)', marginBottom: 12 }}>
+                          {s.tittel}
                         </div>
-                      )}
-                      <div style={{ fontFamily: 'Playfair Display, serif', fontSize: '2.2rem', fontWeight: 800, color: 'var(--amber)', lineHeight: 1 }}>
-                        {s.belop}
+                        {s.beskrivelse && (
+                          <p style={{ fontSize: '0.9rem', color: 'var(--muted)', lineHeight: 1.7, fontWeight: 300, marginBottom: 24 }}>{s.beskrivelse}</p>
+                        )}
+                        {s.belop && (
+                          <div style={{ marginBottom: 24 }}>
+                            {s.belopLabel && (
+                              <div style={{ fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--sec)', marginBottom: 4 }}>
+                                {s.belopLabel}
+                              </div>
+                            )}
+                            <div style={{ fontFamily: 'Playfair Display, serif', fontSize: '2.2rem', fontWeight: 800, color: 'var(--amber)', lineHeight: 1 }}>
+                              {s.belop}
+                            </div>
+                            {s.belopNote && (
+                              <div style={{ fontSize: '0.82rem', color: 'var(--muted)', fontWeight: 400, marginTop: 8, lineHeight: 1.5 }}>
+                                {s.belopNote}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                        {s.kriterier && s.kriterier.length > 0 && (
+                          <div className="checklist" style={{ margin: 'auto 0 0', borderTop: '1px solid var(--ll)', paddingTop: 8 }}>
+                            {s.kriterier.map((k, ki) => (
+                              <div key={ki} className="citem" style={{ fontSize: '0.875rem' }}>
+                                <div className="cicon">✓</div>
+                                {k}
+                              </div>
+                            ))}
+                          </div>
+                        )}
                       </div>
-                      {s.belopNote && (
-                        <div style={{ fontSize: '0.82rem', color: 'var(--muted)', fontWeight: 400, marginTop: 8, lineHeight: 1.5 }}>
-                          {s.belopNote}
-                        </div>
-                      )}
-                    </div>
-                  )}
-                  {s.kriterier && s.kriterier.length > 0 && (
-                    <div className="checklist" style={{ margin: 'auto 0 0', borderTop: '1px solid var(--ll)', paddingTop: 8 }}>
-                      {s.kriterier.map((k, ki) => (
-                        <div key={ki} className="citem" style={{ fontSize: '0.875rem' }}>
-                          <div className="cicon">✓</div>
-                          {k}
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                    ))}
+                  </div>
                 </div>
-              ))}
+              )}
+
+              {/* Vilkår */}
+              {p.vilkar && p.vilkar.length > 0 && (
+                <div className="reveal">
+                  {p.vilkarTittel && (
+                    <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.6rem', fontWeight: 700, color: 'var(--ink)', lineHeight: 1.15, marginBottom: 12 }}>
+                      {p.vilkarTittel}
+                    </h2>
+                  )}
+                  <div className="checklist" style={{ marginTop: 16 }}>
+                    {p.vilkar.map((v, i) => (
+                      <div key={i} className="citem">
+                        <div className="cicon">✓</div>
+                        {v}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
           <style>{`
-            @media (max-width: 760px) { .enova-grid { grid-template-columns: 1fr !important; } }
+            @media (max-width: 860px) { .enova-merge { grid-template-columns: 1fr !important; gap: 48px !important; } }
           `}</style>
-        </section>
-      )}
-
-      {/* ─── VILKÅR ─── */}
-      {p.vilkar && p.vilkar.length > 0 && (
-        <section style={{ background: 'var(--white)', padding: '80px 5%' }}>
-          <div className="inner" style={{ maxWidth: 760 }}>
-            <div className="slabel reveal">Vilkår</div>
-            {p.vilkarTittel && <h2 className="stitle reveal">{p.vilkarTittel}</h2>}
-            <div className="checklist reveal" style={{ marginTop: 32 }}>
-              {p.vilkar.map((v, i) => (
-                <div key={i} className="citem">
-                  <div className="cicon">✓</div>
-                  {v}
-                </div>
-              ))}
-            </div>
-          </div>
         </section>
       )}
 
