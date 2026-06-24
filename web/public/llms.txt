@@ -44,5 +44,6 @@ Straume Boligvent er en spesialisert ventilasjonstjeneste fra Straume Tekniske A
 
 ## Optional
 
+- [Full informasjon for AI](https://www.straumeboligvent.no/llms-full.txt): Konkatenert tekstversjon av hele nettsiden, inkludert alle tjenester, priser, Enova-detaljer og artikler – generert dynamisk fra CMS-innholdet.
 - [Sitemap](https://www.straumeboligvent.no/sitemap.xml)
 - [Enova (ekstern)](https://www.enova.no/privat/): Offisiell informasjon om støtteordninger, vilkår og søknad.
