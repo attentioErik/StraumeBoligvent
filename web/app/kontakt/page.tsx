@@ -3,10 +3,20 @@ import { servicesQuery, siteSettingsQuery } from '@/lib/queries'
 import type { Service, SiteSettings } from '@/lib/types'
 import ContactForm from '@/components/ContactForm'
 import type { Metadata } from 'next'
+import { absUrl } from '@/lib/site'
+import { contactPageJsonLd, breadcrumbJsonLd, jsonLdScript } from '@/lib/jsonld'
+
+const PAGE_PATH = '/kontakt'
+const PAGE_TITLE = 'Kontakt'
+const PAGE_DESC =
+  'Kontakt Straume Boligvent for service, kanalrens, innregulering eller utskifting av ventilasjonsanlegg i Bergen og omegn. Vi svarer innen én virkedag.'
 
 export const metadata: Metadata = {
-  title: 'Kontakt',
-  description: 'Ta kontakt med Straume Boligvent. Vi svarer innen én virkedag.',
+  title: PAGE_TITLE,
+  description: PAGE_DESC,
+  alternates: { canonical: PAGE_PATH },
+  openGraph: { title: PAGE_TITLE, description: PAGE_DESC, url: absUrl(PAGE_PATH), type: 'website' },
+  twitter: { title: PAGE_TITLE, description: PAGE_DESC },
 }
 
 export default async function KontaktPage() {
@@ -19,8 +29,16 @@ export default async function KontaktPage() {
   const email = settings?.email || 'ordre@straumetekniske.no'
   const address = settings?.address || 'Idrettsveien 93, 5353 Straume'
 
+  const contactSchema = contactPageJsonLd({ phone, email, address })
+  const breadcrumb = breadcrumbJsonLd([
+    { name: 'Forside', path: '/' },
+    { name: 'Kontakt', path: PAGE_PATH },
+  ])
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(contactSchema)} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(breadcrumb)} />
       {/* Hero */}
       <section
         style={{

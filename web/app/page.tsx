@@ -23,12 +23,44 @@ import Script from 'next/script'
 import PricingSection from '@/components/PricingSection'
 import EnovaTeaser from '@/components/EnovaTeaser'
 
+import { absUrl, SITE_URL } from '@/lib/site'
+import { websiteJsonLd, webPageJsonLd, faqJsonLd, jsonLdScript } from '@/lib/jsonld'
+
 export async function generateMetadata(): Promise<Metadata> {
   const forside = await client.fetch<Forside>(forsideQuery).catch(() => null)
+  const title =
+    forside?.seoTittel ?? 'Straume Boligvent — Ventilasjon for bolig og næring i Bergen og omegn'
+  const description =
+    forside?.seoDescription ??
+    'Komplett leveranse innen ventilasjon i Bergen og omegn. Service, kanalrens, innregulering og montasje for bolig, borettslag og næring.'
+  const heroImage = forside?.heroBilde ? urlFor(forside.heroBilde).width(1200).height(630).url() : undefined
   return {
-    title: forside?.seoTittel ?? 'Straume Boligvent — Ventilasjon for bolig og næring',
-    description: forside?.seoDescription ?? 'Komplett leveranse innen ventilasjon i Bergen og omegn. Service, kanalrens, innregulering og montasje.',
+    title,
+    description,
+    alternates: { canonical: '/' },
+    openGraph: {
+      title,
+      description,
+      url: SITE_URL,
+      type: 'website',
+      images: heroImage ? [{ url: heroImage, width: 1200, height: 630, alt: title }] : undefined,
+    },
+    twitter: {
+      title,
+      description,
+      images: heroImage ? [heroImage] : undefined,
+    },
   }
+}
+
+function portableTextToPlain(blocks?: unknown): string {
+  if (!Array.isArray(blocks)) return ''
+  return blocks
+    .map((b: { _type?: string; children?: { text?: string }[] }) =>
+      b._type === 'block' ? (b.children || []).map((c) => c.text || '').join('') : '',
+    )
+    .join(' ')
+    .trim()
 }
 
 // Static fallback projects
@@ -158,8 +190,27 @@ export default async function Home() {
   const displayProjects = projects.length > 0 ? projects : FALLBACK_PROJECTS
   const displayFaqs = faqs.length > 0 ? faqs : FALLBACK_FAQS
 
+  const homeWebSite = websiteJsonLd()
+  const homeWebPage = webPageJsonLd({
+    path: '/',
+    name: forside?.seoTittel || 'Straume Boligvent',
+    description: forside?.seoDescription,
+  })
+  const homeFaq =
+    displayFaqs.length > 0
+      ? faqJsonLd(
+          displayFaqs.map((f) => ({
+            question: f.question,
+            answer: portableTextToPlain(f.answer),
+          })),
+        )
+      : null
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(homeWebSite)} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(homeWebPage)} />
+      {homeFaq && <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(homeFaq)} />}
       <Hero settings={settings} forside={forside} />
 
       {/* ─── TJENESTER ─── */}

@@ -5,10 +5,20 @@ import { borettslagLandingQuery } from '@/lib/queries'
 import type { BorettslagLanding } from '@/lib/types'
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { absUrl } from '@/lib/site'
+import { webPageJsonLd, breadcrumbJsonLd, faqJsonLd, jsonLdScript } from '@/lib/jsonld'
+
+const PAGE_PATH = '/borettslag'
+const PAGE_TITLE = 'For borettslag og sameier'
+const PAGE_DESC =
+  'Profesjonell vedlikehold og service av ventilasjonsanlegg for borettslag og sameier. Tilbud og dokumentasjon til styret.'
 
 export const metadata: Metadata = {
-  title: 'For borettslag og sameier',
-  description: 'Profesjonell vedlikehold og service av ventilasjonsanlegg for borettslag og sameier. Tilbud til styret.',
+  title: PAGE_TITLE,
+  description: PAGE_DESC,
+  alternates: { canonical: PAGE_PATH },
+  openGraph: { title: PAGE_TITLE, description: PAGE_DESC, url: absUrl(PAGE_PATH), type: 'website' },
+  twitter: { title: PAGE_TITLE, description: PAGE_DESC },
 }
 
 const FALLBACK: BorettslagLanding = {
@@ -52,8 +62,18 @@ export default async function BorettslagPage() {
   const data = await client.fetch<BorettslagLanding>(borettslagLandingQuery).catch(() => null)
   const p = data ?? FALLBACK
 
+  const webPage = webPageJsonLd({ path: PAGE_PATH, name: p.heroTittel || PAGE_TITLE, description: p.heroUnderTittel || PAGE_DESC })
+  const breadcrumb = breadcrumbJsonLd([
+    { name: 'Forside', path: '/' },
+    { name: 'Borettslag', path: PAGE_PATH },
+  ])
+  const faq = p.faq && p.faq.length > 0 ? faqJsonLd(p.faq.map((f) => ({ question: f.sporsmal, answer: f.svar }))) : null
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(webPage)} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(breadcrumb)} />
+      {faq && <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(faq)} />}
       {/* ─── HERO ─── */}
       <section
         style={{

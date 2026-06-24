@@ -5,10 +5,19 @@ import { referenceProjectsQuery } from '@/lib/queries'
 import type { ReferenceProject } from '@/lib/types'
 import type { Metadata } from 'next'
 import GalleryGrid from './GalleryGrid'
+import { absUrl } from '@/lib/site'
+
+const PAGE_PATH = '/galleri'
+const PAGE_TITLE = 'Galleri – referanseprosjekter'
+const PAGE_DESC =
+  'Se bilder fra ventilasjonsoppdrag vi har utført for boligeiere, borettslag og næringsbygg i Bergen og omegn.'
 
 export const metadata: Metadata = {
-  title: 'Galleri',
-  description: 'Se bilder fra oppdrag vi har utført for boligeiere og borettslag i Bergen og omegn.',
+  title: PAGE_TITLE,
+  description: PAGE_DESC,
+  alternates: { canonical: PAGE_PATH },
+  openGraph: { title: PAGE_TITLE, description: PAGE_DESC, url: absUrl(PAGE_PATH), type: 'website' },
+  twitter: { title: PAGE_TITLE, description: PAGE_DESC },
 }
 
 export default async function GalleriPage() {

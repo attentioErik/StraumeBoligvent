@@ -15,6 +15,8 @@ import { notFound } from 'next/navigation'
 import ProjectCard from '@/components/ProjectCard'
 import FaqSection from '@/components/FaqSection'
 import type { Metadata } from 'next'
+import { absUrl } from '@/lib/site'
+import { serviceJsonLd, faqJsonLd, breadcrumbJsonLd, jsonLdScript } from '@/lib/jsonld'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -25,13 +27,40 @@ export async function generateStaticParams() {
   return paths.map((p) => ({ slug: p.slug }))
 }
 
+function portableTextToPlain(blocks?: unknown): string {
+  if (!Array.isArray(blocks)) return ''
+  return blocks
+    .map((b: { _type?: string; children?: { text?: string }[] }) =>
+      b._type === 'block' ? (b.children || []).map((c) => c.text || '').join('') : '',
+    )
+    .join(' ')
+    .trim()
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const service = await client.fetch<Service>(serviceBySlugQuery, { slug })
   if (!service) return {}
+  const title = service.title
+  const description = service.description
+  const imageUrl = service.image ? urlFor(service.image).width(1200).height(630).url() : undefined
+  const path = `/tjenester/${slug}`
   return {
-    title: service.title,
-    description: service.description,
+    title,
+    description,
+    alternates: { canonical: path },
+    openGraph: {
+      title,
+      description,
+      url: absUrl(path),
+      type: 'article',
+      images: imageUrl ? [{ url: imageUrl, width: 1200, height: 630, alt: title }] : undefined,
+    },
+    twitter: {
+      title,
+      description,
+      images: imageUrl ? [imageUrl] : undefined,
+    },
   }
 }
 
@@ -59,8 +88,30 @@ export default async function ServicePage({ params }: Props) {
 
   const hasRelatedServices = service.relatedServices && service.relatedServices.length > 0
 
+  const serviceImage = service.image ? urlFor(service.image).width(1200).height(630).url() : undefined
+  const serviceSchema = serviceJsonLd({
+    name: service.title,
+    description: service.description,
+    slug,
+    image: serviceImage,
+  })
+  const breadcrumb = breadcrumbJsonLd([
+    { name: 'Forside', path: '/' },
+    { name: 'Tjenester', path: '/#tjenester' },
+    { name: service.title, path: `/tjenester/${slug}` },
+  ])
+  const faqSchema =
+    faqs.length > 0
+      ? faqJsonLd(
+          faqs.map((f) => ({ question: f.question, answer: portableTextToPlain(f.answer) })),
+        )
+      : null
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(serviceSchema)} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(breadcrumb)} />
+      {faqSchema && <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(faqSchema)} />}
       {/* ─── HERO ─── */}
       <section
         style={{

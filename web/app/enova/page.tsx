@@ -5,14 +5,23 @@ import { enovaQuery } from '@/lib/queries'
 import type { Enova } from '@/lib/types'
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { absUrl } from '@/lib/site'
+import { faqJsonLd, webPageJsonLd, breadcrumbJsonLd, jsonLdScript } from '@/lib/jsonld'
+
+const PAGE_PATH = '/enova'
 
 export async function generateMetadata(): Promise<Metadata> {
   const data = await client.fetch<Enova>(enovaQuery).catch(() => null)
+  const title = data?.seoTittel ?? 'Enova-støtte til balansert ventilasjon – Straume Boligvent'
+  const description =
+    data?.seoDescription ??
+    'Du kan få Enova-støtte når du installerer balansert ventilasjon med varmegjenvinning. Vi hjelper deg med et anlegg som kvalifiserer for støtte.'
   return {
-    title: data?.seoTittel ?? 'Enova-støtte til balansert ventilasjon – Straume Boligvent',
-    description:
-      data?.seoDescription ??
-      'Du kan få Enova-støtte når du installerer balansert ventilasjon med varmegjenvinning. Vi hjelper deg med et anlegg som kvalifiserer for støtte.',
+    title,
+    description,
+    alternates: { canonical: PAGE_PATH },
+    openGraph: { title, description, url: absUrl(PAGE_PATH), type: 'article' },
+    twitter: { title, description },
   }
 }
 
@@ -109,8 +118,22 @@ export default async function EnovaPage() {
   const enovaUrl = p.enovaLenke || 'https://www.enova.no/privat/'
   const enovaTekst = p.enovaLenkeTekst || 'Enova.no'
 
+  const webPage = webPageJsonLd({
+    path: PAGE_PATH,
+    name: p.heroTittel || 'Enova-støtte til balansert ventilasjon',
+    description: p.heroUnderTittel,
+  })
+  const breadcrumb = breadcrumbJsonLd([
+    { name: 'Forside', path: '/' },
+    { name: 'Enova-støtte', path: PAGE_PATH },
+  ])
+  const faq = p.faq && p.faq.length > 0 ? faqJsonLd(p.faq.map((f) => ({ question: f.sporsmal, answer: f.svar }))) : null
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(webPage)} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(breadcrumb)} />
+      {faq && <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(faq)} />}
       {/* ─── HERO ─── */}
       <section style={{ background: '#1e1a12', padding: '120px 5% 100px', position: 'relative', overflow: 'hidden' }}>
         <div className="inner" style={{ position: 'relative', zIndex: 1 }}>

@@ -9,6 +9,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
+import { absUrl } from '@/lib/site'
+import { articleJsonLd, breadcrumbJsonLd, jsonLdScript } from '@/lib/jsonld'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -23,9 +25,28 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const article = await client.fetch<Article>(articleBySlugQuery, { slug })
   if (!article) return {}
+  const title = article.title
+  const description = article.excerpt
+  const imageUrl = article.image ? urlFor(article.image).width(1200).height(630).url() : undefined
+  const path = `/blog/${slug}`
   return {
-    title: article.title,
-    description: article.excerpt,
+    title,
+    description,
+    alternates: { canonical: path },
+    openGraph: {
+      title,
+      description,
+      url: absUrl(path),
+      type: 'article',
+      publishedTime: article.publishedAt,
+      authors: article.author ? [article.author] : undefined,
+      images: imageUrl ? [{ url: imageUrl, width: 1200, height: 630, alt: title }] : undefined,
+    },
+    twitter: {
+      title,
+      description,
+      images: imageUrl ? [imageUrl] : undefined,
+    },
   }
 }
 
@@ -48,8 +69,25 @@ export default async function ArticlePage({ params }: Props) {
 
   const related = allArticles.filter((a) => a._id !== article._id).slice(0, 3)
 
+  const articleImage = article.image ? urlFor(article.image).width(1200).height(630).url() : undefined
+  const articleSchema = articleJsonLd({
+    title: article.title,
+    description: article.excerpt,
+    slug,
+    image: articleImage,
+    publishedAt: article.publishedAt,
+    author: article.author,
+  })
+  const breadcrumb = breadcrumbJsonLd([
+    { name: 'Forside', path: '/' },
+    { name: 'Artikler', path: '/blog' },
+    { name: article.title, path: `/blog/${slug}` },
+  ])
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(articleSchema)} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(breadcrumb)} />
       {/* Article hero */}
       <section
         style={{

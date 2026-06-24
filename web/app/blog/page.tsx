@@ -5,10 +5,19 @@ import { urlFor } from '@/lib/sanity'
 import Image from 'next/image'
 import Link from 'next/link'
 import type { Metadata } from 'next'
+import { absUrl } from '@/lib/site'
+
+const PAGE_PATH = '/blog'
+const PAGE_TITLE = 'Artikler og fagstoff om ventilasjon'
+const PAGE_DESC =
+  'Fagartikler om ventilasjon, inneklima og vedlikehold – fra service og kanalrens til valg av nytt aggregat og Enova-støtte.'
 
 export const metadata: Metadata = {
-  title: 'Artikler',
-  description: 'Les våre artikler om ventilasjon, inneklima og vedlikehold.',
+  title: PAGE_TITLE,
+  description: PAGE_DESC,
+  alternates: { canonical: PAGE_PATH },
+  openGraph: { title: PAGE_TITLE, description: PAGE_DESC, url: absUrl(PAGE_PATH), type: 'website' },
+  twitter: { title: PAGE_TITLE, description: PAGE_DESC },
 }
 
 function formatDate(date: string) {

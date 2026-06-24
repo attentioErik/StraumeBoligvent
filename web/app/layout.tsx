@@ -7,14 +7,38 @@ import { client } from '@/lib/sanity'
 import { siteSettingsQuery } from '@/lib/queries'
 import type { SiteSettings } from '@/lib/types'
 import Script from 'next/script'
+import { SITE_URL, SITE_NAME, DEFAULT_DESCRIPTION, DEFAULT_OG_IMAGE } from '@/lib/site'
+import { organizationJsonLd, jsonLdScript } from '@/lib/jsonld'
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: 'Straume Boligvent — Ventilasjon for bolig og næring',
+    default: 'Straume Boligvent — Ventilasjon for bolig og næring i Bergen og omegn',
     template: '%s | Straume Boligvent',
   },
-  description:
-    'Komplett leveranse innen ventilasjon i Bergen og omegn. Service, kanalrens, innregulering og montasje.',
+  description: DEFAULT_DESCRIPTION,
+  applicationName: SITE_NAME,
+  authors: [{ name: 'Straume Tekniske AS' }],
+  creator: 'Straume Tekniske AS',
+  publisher: 'Straume Tekniske AS',
+  keywords: [
+    'ventilasjon',
+    'ventilasjon Bergen',
+    'kanalrens',
+    'ventilasjonsservice',
+    'balansert ventilasjon',
+    'ventilasjonsanlegg',
+    'innregulering',
+    'serviceavtale',
+    'borettslag',
+    'Enova-støtte',
+    'Straume Boligvent',
+    'Sotra',
+    'Øygarden',
+  ],
+  alternates: {
+    canonical: '/',
+  },
   icons: {
     icon: [
       { url: 'https://ucarecdn.com/1d19609f-0002-4148-a926-a35653ed9d88/Logo_Sosiale_medier_Lys.png', sizes: '32x32', type: 'image/png' },
@@ -23,10 +47,39 @@ export const metadata: Metadata = {
     apple: 'https://ucarecdn.com/1d19609f-0002-4148-a926-a35653ed9d88/Logo_Sosiale_medier_Lys.png',
   },
   openGraph: {
-    siteName: 'Straume Boligvent',
+    siteName: SITE_NAME,
     locale: 'nb_NO',
     type: 'website',
+    url: SITE_URL,
+    title: 'Straume Boligvent — Ventilasjon for bolig og næring i Bergen og omegn',
+    description: DEFAULT_DESCRIPTION,
+    images: [
+      {
+        url: DEFAULT_OG_IMAGE,
+        width: 1200,
+        height: 630,
+        alt: 'Straume Boligvent',
+      },
+    ],
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Straume Boligvent — Ventilasjon for bolig og næring',
+    description: DEFAULT_DESCRIPTION,
+    images: [DEFAULT_OG_IMAGE],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+      'max-video-preview': -1,
+    },
+  },
+  category: 'Ventilasjon',
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
@@ -54,6 +107,16 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             style={{ display: 'none', visibility: 'hidden' }}
           />
         </noscript>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={jsonLdScript(
+            organizationJsonLd({
+              phone: settings?.phone,
+              email: settings?.email,
+              address: settings?.address,
+            }),
+          )}
+        />
         <Navigation />
         <main>{children}</main>
         <Footer settings={settings} />

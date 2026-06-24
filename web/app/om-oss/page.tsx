@@ -8,11 +8,22 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { PortableText } from '@portabletext/react'
 
+import { absUrl } from '@/lib/site'
+
+const PAGE_PATH = '/om-oss'
+
 export async function generateMetadata(): Promise<Metadata> {
   const omOss = await client.fetch<OmOss>(omOssQuery).catch(() => null)
+  const title = 'Om oss'
+  const description =
+    omOss?.seoDescription ??
+    'Lokal fagkunnskap og langsiktige relasjoner. Straume Boligvent er en spesialisert tjeneste fra Straume Tekniske AS i Bergen og omegn.'
   return {
-    title: 'Om oss',
-    description: omOss?.seoDescription ?? 'Lokal fagkunnskap og langsiktige relasjoner. Straume Boligvent er en spesialisert tjeneste fra Straume Tekniske AS.',
+    title,
+    description,
+    alternates: { canonical: PAGE_PATH },
+    openGraph: { title, description, url: absUrl(PAGE_PATH), type: 'website' },
+    twitter: { title, description },
   }
 }
 
