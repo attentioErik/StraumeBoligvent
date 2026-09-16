@@ -76,6 +76,7 @@ export default async function ArticlePage({ params }: Props) {
     slug,
     image: articleImage,
     publishedAt: article.publishedAt,
+    updatedAt: article._updatedAt,
     author: article.author,
   })
   const breadcrumb = breadcrumbJsonLd([

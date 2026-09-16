@@ -87,7 +87,7 @@ export default function ContactForm({
     border: '1px solid var(--lm)',
     color: 'var(--body)',
     fontFamily: 'Lato, sans-serif',
-    fontSize: '0.875rem',
+    fontSize: '16px', // < 16px gir auto-zoom på iOS
     fontWeight: 400,
     padding: '14px 16px',
     outline: 'none',
@@ -154,6 +154,7 @@ export default function ContactForm({
             style={inputStyle}
             type="text"
             name="name"
+            autoComplete="name"
             value={form.name}
             onChange={handleChange}
             placeholder="Ditt navn"
@@ -174,6 +175,8 @@ export default function ContactForm({
             style={inputStyle}
             type="tel"
             name="phone"
+            autoComplete="tel"
+            inputMode="tel"
             value={form.phone}
             onChange={handleChange}
             placeholder="Mobilnummer"
@@ -196,6 +199,7 @@ export default function ContactForm({
           style={inputStyle}
           type="email"
           name="email"
+          autoComplete="email"
           value={form.email}
           onChange={handleChange}
           placeholder="din@epost.no"

@@ -52,12 +52,13 @@ export default function Navigation() {
         <span style={{ fontFamily: 'Lato, sans-serif', fontWeight: 700, fontSize: '0.95rem', letterSpacing: '0.01em', color: 'var(--ink)', whiteSpace: 'nowrap' }}>
           Straume <span style={{ color: 'var(--amber)' }}>Boligvent</span>
         </span>
-        <span style={{ color: 'var(--lm)', fontSize: '1rem', fontWeight: 300, lineHeight: 1, flexShrink: 0 }}>|</span>
+        <span className="nav-partner" style={{ color: 'var(--lm)', fontSize: '1rem', fontWeight: 300, lineHeight: 1, flexShrink: 0 }}>|</span>
         <Image
           src="https://ucarecdn.com/09cfc539-0376-4f05-a8a6-113d3739a405/Straume_Tekniske_AS_Lys.png"
           alt="Straume Tekniske AS"
           height={16}
           width={100}
+          className="nav-partner"
           style={{ objectFit: 'contain', objectPosition: 'left', flexShrink: 0 }}
           unoptimized
         />
@@ -93,12 +94,18 @@ export default function Navigation() {
         className="mobile-menu-btn"
         onClick={() => setMenuOpen(!menuOpen)}
         aria-label="Meny"
+        aria-expanded={menuOpen}
         style={{
           display: 'none',
           background: 'none',
           border: 'none',
           cursor: 'pointer',
-          padding: 8,
+          padding: 10,
+          minWidth: 44,
+          minHeight: 44,
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginRight: -10,
           color: 'var(--ink)',
         }}
       >
@@ -165,6 +172,9 @@ export default function Navigation() {
         @media (max-width: 980px) {
           .nav-links { display: none !important; }
           .mobile-menu-btn { display: flex !important; }
+        }
+        @media (max-width: 359px) {
+          .nav-partner { display: none !important; }
         }
       `}</style>
     </nav>

@@ -43,6 +43,13 @@ function portableTextToPlain(blocks?: unknown): string {
     .trim()
 }
 
+// "29 900,-" / "kr 29.900" → 29900
+function parsePrice(value?: string): number | undefined {
+  if (!value) return undefined
+  const digits = value.split(',')[0].replace(/\D/g, '')
+  return digits ? Number(digits) : undefined
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const service = await client.fetch<Service>(serviceBySlugQuery, { slug })
@@ -134,6 +141,8 @@ export default async function ServicePage({ params }: Props) {
     description: service.description,
     slug,
     image: serviceImage,
+    dateModified: service._updatedAt,
+    priceFrom: parsePrice(service.priceFrom),
   })
   const breadcrumb = breadcrumbJsonLd([
     { name: 'Forside', path: '/' },
@@ -178,6 +187,7 @@ export default async function ServicePage({ params }: Props) {
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: 8,
+                minHeight: 44,
                 fontSize: '0.82rem',
                 color: 'var(--muted)',
                 textDecoration: 'none',
@@ -331,6 +341,61 @@ export default async function ServicePage({ params }: Props) {
           <div className="inner">
             <GoogleReviews />
           </div>
+        </section>
+      )}
+
+      {/* ─── KORT FORTALT ─── */}
+      {service.showQuickAnswer && service.quickAnswer && (
+        <section style={{ background: 'var(--white)', padding: '64px 5%' }}>
+          <div
+            className="inner reveal"
+            style={{
+              maxWidth: 860,
+              background: 'var(--alight)',
+              border: '1px solid var(--amid)',
+              borderLeft: '4px solid var(--amber)',
+              borderRadius: 6,
+              padding: 'clamp(24px, 5vw, 40px)',
+            }}
+          >
+            <h2
+              style={{
+                fontFamily: 'Playfair Display, serif',
+                fontSize: 'clamp(1.3rem, 3vw, 1.7rem)',
+                fontWeight: 700,
+                color: 'var(--ink)',
+                marginBottom: 14,
+              }}
+            >
+              {service.quickAnswerTitle || 'Kort fortalt'}
+            </h2>
+            <p style={{ fontSize: '1.05rem', lineHeight: 1.75, color: 'var(--body)' }}>{service.quickAnswer}</p>
+            {service.quickFacts && service.quickFacts.length > 0 && (
+              <dl
+                className="quick-facts"
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: `repeat(${service.quickFacts.length}, 1fr)`,
+                  gap: 20,
+                  marginTop: 28,
+                  paddingTop: 24,
+                  borderTop: '1px solid var(--amid)',
+                }}
+              >
+                {service.quickFacts.map((f) => (
+                  <div key={f.tekst} style={{ minWidth: 0 }}>
+                    <dt style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.8rem', fontWeight: 800, color: 'var(--adark)', lineHeight: 1.1 }}>
+                      {f.verdi}
+                    </dt>
+                    <dd style={{ fontSize: '0.85rem', color: 'var(--muted)', marginTop: 4 }}>{f.tekst}</dd>
+                  </div>
+                ))}
+              </dl>
+            )}
+          </div>
+          <style>{`
+            @media (max-width: 640px) { .quick-facts { grid-template-columns: 1fr 1fr !important; } }
+          `}</style>
         </section>
       )}
 
@@ -842,6 +907,18 @@ export default async function ServicePage({ params }: Props) {
             @media (max-width: 640px) { .proj-grid { grid-template-columns: 1fr !important; } }
           `}</style>
         </section>
+      )}
+
+      {/* ─── SIST OPPDATERT ─── */}
+      {service._updatedAt && (
+        <div style={{ background: 'var(--white)', padding: '20px 5%', borderTop: '1px solid var(--ll)' }}>
+          <p className="inner" style={{ fontSize: '0.8rem', color: 'var(--sec)' }}>
+            Sist oppdatert{' '}
+            <time dateTime={service._updatedAt}>
+              {new Date(service._updatedAt).toLocaleDateString('nb-NO', { year: 'numeric', month: 'long', day: 'numeric' })}
+            </time>
+          </p>
+        </div>
       )}
 
       {/* ─── FAQ ─── */}

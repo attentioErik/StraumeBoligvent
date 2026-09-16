@@ -93,6 +93,8 @@ export function serviceJsonLd(opts: {
   description: string
   slug: string
   image?: string
+  dateModified?: string
+  priceFrom?: number
 }) {
   return {
     '@context': 'https://schema.org',
@@ -105,6 +107,18 @@ export function serviceJsonLd(opts: {
     provider: { '@id': ORG_ID },
     areaServed: { '@type': 'Place', name: 'Bergen og omegn' },
     inLanguage: 'nb-NO',
+    dateModified: opts.dateModified,
+    offers: opts.priceFrom
+      ? {
+          '@type': 'Offer',
+          priceCurrency: 'NOK',
+          priceSpecification: {
+            '@type': 'PriceSpecification',
+            minPrice: opts.priceFrom,
+            priceCurrency: 'NOK',
+          },
+        }
+      : undefined,
   }
 }
 
@@ -114,6 +128,7 @@ export function articleJsonLd(opts: {
   slug: string
   image?: string
   publishedAt?: string
+  updatedAt?: string
   author?: string
 }) {
   return {
@@ -124,7 +139,7 @@ export function articleJsonLd(opts: {
     url: absUrl(`/blog/${opts.slug}`),
     image: opts.image,
     datePublished: opts.publishedAt,
-    dateModified: opts.publishedAt,
+    dateModified: opts.updatedAt || opts.publishedAt,
     inLanguage: 'nb-NO',
     author: opts.author ? { '@type': 'Person', name: opts.author } : { '@id': ORG_ID },
     publisher: { '@id': ORG_ID },

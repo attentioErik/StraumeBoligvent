@@ -20,6 +20,9 @@ const nextConfig: NextConfig = {
         destination: '/tjenester/:slug',
         permanent: true,
       },
+      // Referansesidene er erstattet av galleriet
+      { source: '/referanser', destination: '/galleri', permanent: true },
+      { source: '/referanser/:slug', destination: '/galleri', permanent: true },
     ]
   },
 }

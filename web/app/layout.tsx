@@ -36,9 +36,6 @@ export const metadata: Metadata = {
     'Sotra',
     'Øygarden',
   ],
-  alternates: {
-    canonical: '/',
-  },
   icons: {
     icon: [
       { url: 'https://ucarecdn.com/1d19609f-0002-4148-a926-a35653ed9d88/Logo_Sosiale_medier_Lys.png', sizes: '32x32', type: 'image/png' },

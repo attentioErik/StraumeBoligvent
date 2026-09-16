@@ -26,9 +26,9 @@ export default function Hero({ settings, forside }: HeroProps) {
   return (
     <section
       id="hero"
+      className="hero-fullheight"
       style={{
         background: 'var(--white)',
-        minHeight: '100vh',
         padding: '68px 5% 0',
         display: 'flex',
         flexDirection: 'column',

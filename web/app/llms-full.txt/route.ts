@@ -49,6 +49,8 @@ function renderService(s: Service) {
   parts.push(`### ${s.title}`)
   parts.push(`URL: ${SITE_URL}/tjenester/${s.slug.current}`)
   if (s.description) parts.push(s.description)
+  if (s.showQuickAnswer && s.quickAnswer) parts.push(s.quickAnswer)
+  if (s.showQuickAnswer && s.quickFacts?.length) parts.push(bullet(s.quickFacts.map((f) => `${f.verdi} ${f.tekst}`)))
 
   const intro = ptToPlain(s.introText) || ptToPlain(s.fullDescription)
   if (intro) parts.push(intro)

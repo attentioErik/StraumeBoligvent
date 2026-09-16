@@ -18,12 +18,12 @@ Straume Boligvent er en spesialisert ventilasjonstjeneste fra Straume Tekniske A
 
 ## Tjenester
 
-- Service og vedlikehold av balansert ventilasjon (filterbytte, kontroll av varmegjenvinner, vifter og styresystem)
-- Kanalrens (rengjøring av vifte, motor, kanaler og kjøkkenavtrekk)
-- Innregulering (riktig luftmengde i alle rom, optimalisert tilluft og avtrekk)
-- Montasje og utskifting av ventilasjonsaggregat
-- Serviceavtaler (fast oppfølging, anbefalt for borettslag og sameier)
-- Tilstandsrapporter for fellesanlegg
+- [Service og vedlikehold](https://www.straumeboligvent.no/tjenester/service-og-vedlikehold): Service av balansert ventilasjon – filterbytte, kontroll av varmegjenvinner, vifter og styresystem.
+- [Kanalrens](https://www.straumeboligvent.no/tjenester/kanalrens): Rengjøring av vifte, motor, kanaler og kjøkkenavtrekk.
+- [Innregulering](https://www.straumeboligvent.no/tjenester/innregulering): Riktig luftmengde i alle rom, optimalisert tilluft og avtrekk.
+- [Montasje og utskifting](https://www.straumeboligvent.no/tjenester/montasje-og-utskifting): Montasje og utskifting av ventilasjonsaggregat og ventilasjonsanlegg.
+- [Serviceavtale](https://www.straumeboligvent.no/tjenester/serviceavtale): Fast oppfølging, anbefalt for borettslag og sameier.
+- [Borettslag og næring](https://www.straumeboligvent.no/tjenester/borettslag-og-naering): Ventilasjonstjenester og tilstandsrapporter for fellesanlegg og næringsbygg.
 
 ## Enova-støtte (oppsummering)
 

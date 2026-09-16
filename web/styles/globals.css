@@ -215,12 +215,52 @@ h2, h3 { font-family: 'Playfair Display', Georgia, serif; }
 .prose strong { font-weight: 700; color: var(--ink); }
 .prose a { color: var(--adark); text-decoration: underline; }
 
+/* ─── HERO HØYDE ─── */
+.hero-fullheight { min-height: 100vh; min-height: 100dvh; }
+
+/* ─── TOUCH ─── */
+a, button, [role="button"], input, select, textarea, label, summary {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(240, 165, 0, 0.12);
+}
+
+/* Anker-lenker havner ikke bak fast nav (68px) */
+[id] { scroll-margin-top: 84px; }
+
+/* ─── REDUCED MOTION ─── */
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1 !important; transform: none !important; }
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /* ─── MOBILE OPTIMIZATIONS ─── */
 @media (max-width: 640px) {
   section:not(#hero) {
     padding-top: 64px !important;
     padding-bottom: 64px !important;
   }
+
+  /* Første seksjon på undersider må klarere fast nav (68px) */
+  body > main > section:first-of-type:not(#hero) {
+    padding-top: 108px !important;
+  }
+
+  /* Lange norske sammensatte ord i overskrifter */
+  h1, h2, .stitle {
+    hyphens: auto;
+    -webkit-hyphens: auto;
+    overflow-wrap: break-word;
+  }
+
+  .prose p, .prose li { font-size: 1rem; }
+
+  /* Knapper i smale prisgrid skal kunne brytes */
+  .pricing-btn, .pricing-btn-outline { white-space: normal !important; }
 
   .btn-amber, .btn-ghost {
     min-height: 48px;

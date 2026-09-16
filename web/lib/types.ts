@@ -20,6 +20,7 @@ export interface SiteSettings {
 
 export interface Service {
   _id: string
+  _updatedAt?: string
   title: string
   heroTitle?: string
   slug: { current: string }
@@ -46,6 +47,10 @@ export interface Service {
   benefitsText?: string
   benefitsList?: string[]
   practicalBlocks?: { title: string; content: PortableTextBlock[] }[]
+  showQuickAnswer?: boolean
+  quickAnswerTitle?: string
+  quickAnswer?: string
+  quickFacts?: { verdi: string; tekst: string }[]
   priceFrom?: string
   priceNote?: string
   ctaLabel?: string
@@ -81,6 +86,7 @@ export interface Article {
   content?: PortableTextBlock[]
   image?: SanityImage
   publishedAt?: string
+  _updatedAt?: string
   author?: string
   relatedService?: { title: string; slug: { current: string } }
 }

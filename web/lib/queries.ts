@@ -33,6 +33,7 @@ export const servicesQuery = groq`
 export const serviceBySlugQuery = groq`
   *[_type == "service" && slug.current == $slug][0] {
     _id,
+    _updatedAt,
     title,
     heroTitle,
     slug,
@@ -57,6 +58,10 @@ export const serviceBySlugQuery = groq`
     benefitsText,
     benefitsList,
     practicalBlocks,
+    showQuickAnswer,
+    quickAnswerTitle,
+    quickAnswer,
+    quickFacts[]{ verdi, tekst },
     priceFrom,
     priceNote,
     ctaLabel,
@@ -116,6 +121,7 @@ export const articlesQuery = groq`
     excerpt,
     image,
     publishedAt,
+    _updatedAt,
     author,
     "relatedService": relatedService->{ title, slug }
   }
@@ -130,6 +136,7 @@ export const articleBySlugQuery = groq`
     content,
     image,
     publishedAt,
+    _updatedAt,
     author,
     "relatedService": relatedService->{ title, slug }
   }
@@ -155,11 +162,11 @@ export const faqByServiceQuery = groq`
 
 // ─── SLUG PATHS ───
 export const servicePathsQuery = groq`
-  *[_type == "service" && defined(slug.current)] { "slug": slug.current }
+  *[_type == "service" && defined(slug.current)] { "slug": slug.current, _updatedAt }
 `
 
 export const articlePathsQuery = groq`
-  *[_type == "article" && defined(slug.current)] { "slug": slug.current }
+  *[_type == "article" && defined(slug.current)] { "slug": slug.current, _updatedAt }
 `
 
 export const referenceProjectPathsQuery = groq`
@@ -190,7 +197,7 @@ export const referanseBySlugQuery = groq`
 `
 
 export const referansePathsQuery = groq`
-  *[_type == "referanse" && publisert == true && defined(slug.current)] { "slug": slug.current }
+  *[_type == "referanse" && publisert == true && defined(slug.current)] { "slug": slug.current, _updatedAt }
 `
 
 // ─── ANSATTE ───

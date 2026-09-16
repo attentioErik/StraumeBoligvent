@@ -3,7 +3,6 @@ import { client } from '@/lib/sanity'
 import {
   servicePathsQuery,
   articlePathsQuery,
-  referansePathsQuery,
 } from '@/lib/queries'
 import { SITE_URL } from '@/lib/site'
 
@@ -23,10 +22,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}/kontakt`, lastModified: now, changeFrequency: 'yearly', priority: 0.7 },
   ]
 
-  const [services, articles, references] = await Promise.all([
-    client.fetch<{ slug: string }[]>(servicePathsQuery).catch(() => []),
-    client.fetch<{ slug: string }[]>(articlePathsQuery).catch(() => []),
-    client.fetch<{ slug: string }[]>(referansePathsQuery).catch(() => []),
+  const [services, articles] = await Promise.all([
+    client.fetch<{ slug: string; _updatedAt?: string }[]>(servicePathsQuery).catch(() => []),
+    client.fetch<{ slug: string; _updatedAt?: string }[]>(articlePathsQuery).catch(() => []),
   ])
 
   const dynamicRoutes: MetadataRoute.Sitemap = [
@@ -34,7 +32,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .filter((s) => s?.slug)
       .map((s) => ({
         url: `${SITE_URL}/tjenester/${s.slug}`,
-        lastModified: now,
+        lastModified: s._updatedAt ? new Date(s._updatedAt) : now,
         changeFrequency: 'monthly' as const,
         priority: 0.8,
       })),
@@ -42,17 +40,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .filter((a) => a?.slug)
       .map((a) => ({
         url: `${SITE_URL}/blog/${a.slug}`,
-        lastModified: now,
+        lastModified: a._updatedAt ? new Date(a._updatedAt) : now,
         changeFrequency: 'monthly' as const,
         priority: 0.6,
-      })),
-    ...references
-      .filter((r) => r?.slug)
-      .map((r) => ({
-        url: `${SITE_URL}/referanser/${r.slug}`,
-        lastModified: now,
-        changeFrequency: 'yearly' as const,
-        priority: 0.5,
       })),
   ]
 

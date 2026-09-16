@@ -241,6 +241,61 @@ export const service = defineType({
 
     // ─── KONVERTERING ───
     defineField({
+      name: 'showQuickAnswer',
+      title: 'Vis «Kort fortalt»-boks',
+      type: 'boolean',
+      fieldset: 'konvertering',
+      description:
+        'Kort, direkte svar øverst på siden: hva tjenesten er, hva den koster og hvem den passer for. Lett for Google og AI (ChatGPT, Perplexity) å sitere.',
+      initialValue: false,
+    }),
+    defineField({
+      name: 'quickAnswerTitle',
+      title: 'Kort fortalt – overskrift',
+      type: 'string',
+      fieldset: 'konvertering',
+      description: 'F.eks. "Hva er kanalrens?". Standard: "Kort fortalt"',
+      hidden: ({ parent }) => !parent?.showQuickAnswer,
+    }),
+    defineField({
+      name: 'quickAnswer',
+      title: 'Kort fortalt – tekst',
+      type: 'text',
+      rows: 4,
+      fieldset: 'konvertering',
+      description:
+        '40–60 ord. Start med svaret. Eks: "Kanalrens er rengjøring av ventilasjonskanaler, vifter og avtrekk. For en vanlig enebolig i Bergen koster det fra X kr, og det anbefales hvert 5.–10. år. Passer for …"',
+      hidden: ({ parent }) => !parent?.showQuickAnswer,
+      validation: (Rule) =>
+        Rule.custom((value, context) => {
+          const parent = context.parent as { showQuickAnswer?: boolean } | undefined
+          if (!parent?.showQuickAnswer) return true
+          if (!value) return 'Fyll inn teksten, eller slå av boksen'
+          const words = String(value).trim().split(/\s+/).length
+          if (words < 40 || words > 60) return `Anbefalt 40–60 ord (nå: ${words})`
+          return true
+        }).warning(),
+    }),
+    defineField({
+      name: 'quickFacts',
+      title: 'Kort fortalt – nøkkeltall',
+      type: 'array',
+      fieldset: 'konvertering',
+      description: 'Maks 4 konkrete tall, f.eks. "12+" / "års erfaring", "800+" / "utførte oppdrag"',
+      hidden: ({ parent }) => !parent?.showQuickAnswer,
+      validation: (Rule) => Rule.max(4),
+      of: [
+        {
+          type: 'object',
+          fields: [
+            defineField({ name: 'verdi', title: 'Tall', type: 'string', validation: (Rule) => Rule.required() }),
+            defineField({ name: 'tekst', title: 'Beskrivelse', type: 'string', validation: (Rule) => Rule.required() }),
+          ],
+          preview: { select: { title: 'verdi', subtitle: 'tekst' } },
+        },
+      ],
+    }),
+    defineField({
       name: 'priceFrom',
       title: 'Prisindikasjon',
       type: 'string',
