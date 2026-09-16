@@ -54,6 +54,22 @@ export const siteSettings = defineType({
       title: 'Organisasjonsnummer',
       type: 'string',
     }),
+    defineField({
+      name: 'trustItems',
+      title: 'Trust-bar (tjenestesider)',
+      type: 'array',
+      description: 'F.eks. "12+ års erfaring", sertifiseringer og merker. Logo er valgfri.',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            defineField({ name: 'tekst', title: 'Tekst', type: 'string', validation: (Rule) => Rule.required() }),
+            defineField({ name: 'logo', title: 'Logo', type: 'image' }),
+          ],
+          preview: { select: { title: 'tekst', media: 'logo' } },
+        },
+      ],
+    }),
   ],
   preview: {
     select: { title: 'companyName' },

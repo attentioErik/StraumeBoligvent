@@ -4,6 +4,19 @@ export const service = defineType({
   name: 'service',
   title: 'Tjeneste',
   type: 'document',
+  fieldsets: [
+    {
+      name: 'konvertering',
+      title: 'Konvertering',
+      description: 'Elementer for flere henvendelser. Alt er av som standard – slå på ett tiltak om gangen.',
+      options: { collapsible: true, collapsed: false },
+    },
+    {
+      name: 'media',
+      title: 'Video',
+      options: { collapsible: true, collapsed: true },
+    },
+  ],
   fields: [
     defineField({
       name: 'title',
@@ -224,6 +237,139 @@ export const service = defineType({
       type: 'array',
       of: [{ type: 'reference', to: [{ type: 'service' }] }],
       description: 'Lenker til andre relevante tjenester',
+    }),
+
+    // ─── KONVERTERING ───
+    defineField({
+      name: 'priceFrom',
+      title: 'Prisindikasjon',
+      type: 'string',
+      fieldset: 'konvertering',
+      description: 'Vises i hero, f.eks. "29 900,-". Vises som "Fra 29 900,-". La stå tom for å skjule.',
+    }),
+    defineField({
+      name: 'priceNote',
+      title: 'Pris-notat',
+      type: 'string',
+      fieldset: 'konvertering',
+      description: 'Kort tekst under prisen, f.eks. "inkl. mva. og montering"',
+      hidden: ({ parent }) => !parent?.priceFrom,
+    }),
+    defineField({
+      name: 'ctaLabel',
+      title: 'CTA-tekst',
+      type: 'string',
+      fieldset: 'konvertering',
+      description: 'Tekst på hovedknappene, f.eks. "Få gratis vurdering". Standard: "Få tilbud"',
+    }),
+    defineField({
+      name: 'showContactForm',
+      title: 'Vis kontaktskjema',
+      type: 'boolean',
+      fieldset: 'konvertering',
+      description: 'Viser kontaktskjema direkte på tjenestesiden',
+      initialValue: false,
+    }),
+    defineField({
+      name: 'contactFormPlacement',
+      title: 'Plassering av skjema',
+      type: 'string',
+      fieldset: 'konvertering',
+      options: {
+        list: [
+          { title: 'Nederst på siden', value: 'bottom' },
+          { title: 'I hero (erstatter bildet)', value: 'hero' },
+        ],
+        layout: 'radio',
+      },
+      initialValue: 'bottom',
+      hidden: ({ parent }) => !parent?.showContactForm,
+    }),
+    defineField({
+      name: 'contactFormTitle',
+      title: 'Kontaktskjema-tittel',
+      type: 'string',
+      fieldset: 'konvertering',
+      description: 'F.eks. "Få et uforpliktende tilbud". Standard: "Interessert i <tjeneste>?"',
+      hidden: ({ parent }) => !parent?.showContactForm,
+    }),
+    defineField({
+      name: 'contactFormText',
+      title: 'Kontaktskjema-tekst',
+      type: 'text',
+      rows: 3,
+      fieldset: 'konvertering',
+      hidden: ({ parent }) => !parent?.showContactForm,
+    }),
+    defineField({
+      name: 'allowImageUpload',
+      title: 'Bildeopplasting i skjema',
+      type: 'boolean',
+      fieldset: 'konvertering',
+      description: 'Lar kunden laste opp bilde av eksisterende aggregat/typeskilt',
+      initialValue: false,
+    }),
+    defineField({
+      name: 'showTrustBar',
+      title: 'Vis trust-bar',
+      type: 'boolean',
+      fieldset: 'konvertering',
+      description: 'Stripe under hero med erfaring og sertifiseringer (innhold redigeres i Nettstedsinnstillinger)',
+      initialValue: false,
+    }),
+    defineField({
+      name: 'showReviews',
+      title: 'Vis Google-anmeldelser under hero',
+      type: 'boolean',
+      fieldset: 'konvertering',
+      initialValue: false,
+    }),
+    defineField({
+      name: 'showFaq',
+      title: 'Vis FAQ',
+      type: 'boolean',
+      fieldset: 'konvertering',
+      description: 'Viser FAQ-spørsmål som er koblet til denne tjenesten',
+      initialValue: false,
+    }),
+
+    // ─── VIDEO ───
+    defineField({
+      name: 'video',
+      title: 'Video',
+      type: 'file',
+      fieldset: 'media',
+      options: { accept: 'video/mp4,video/webm,video/quicktime' },
+      description:
+        'Vises ved siden av "Hva som er inkludert". Komprimer før opplasting: MP4 (H.264), ca. 720x1280, under 20 MB.',
+    }),
+    defineField({
+      name: 'videoFormat',
+      title: 'Videoformat',
+      type: 'string',
+      fieldset: 'media',
+      options: {
+        list: [
+          { title: 'Stående (9:16)', value: 'portrait' },
+          { title: 'Liggende (16:9)', value: 'landscape' },
+        ],
+        layout: 'radio',
+      },
+      initialValue: 'portrait',
+    }),
+    defineField({
+      name: 'videoPoster',
+      title: 'Forhåndsvisningsbilde',
+      type: 'image',
+      fieldset: 'media',
+      description: 'Vises før videoen lastes',
+    }),
+    defineField({
+      name: 'videoCaption',
+      title: 'Videotekst',
+      type: 'string',
+      fieldset: 'media',
+      description: 'F.eks. "Timelapse: utskifting av aggregat på én dag"',
     }),
 
     // ─── LEGACY FIELDS (backward compat) ───

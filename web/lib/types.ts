@@ -15,6 +15,7 @@ export interface SiteSettings {
   heroDescription: string
   heroPill: string
   orgNumber?: string
+  trustItems?: { tekst: string; logo?: SanityImage }[]
 }
 
 export interface Service {
@@ -45,6 +46,22 @@ export interface Service {
   benefitsText?: string
   benefitsList?: string[]
   practicalBlocks?: { title: string; content: PortableTextBlock[] }[]
+  priceFrom?: string
+  priceNote?: string
+  ctaLabel?: string
+  showContactForm?: boolean
+  contactFormPlacement?: 'hero' | 'bottom'
+  contactFormTitle?: string
+  contactFormText?: string
+  allowImageUpload?: boolean
+  showTrustBar?: boolean
+  showReviews?: boolean
+  showFaq?: boolean
+  videoUrl?: string
+  videoUploadedAt?: string
+  videoFormat?: 'portrait' | 'landscape'
+  videoPoster?: SanityImage
+  videoCaption?: string
   relatedServices?: { _id: string; title: string; slug: { current: string } }[]
 }
 

@@ -6,10 +6,21 @@ import type { Service } from '@/lib/types'
 interface ContactFormProps {
   services?: Service[]
   defaultService?: string
+  submitLabel?: string
+  allowImageUpload?: boolean
 }
 
-export default function ContactForm({ services, defaultService }: ContactFormProps) {
+const MAX_TOTAL_BYTES = 10 * 1024 * 1024
+
+export default function ContactForm({
+  services,
+  defaultService,
+  submitLabel = 'Send forespørsel',
+  allowImageUpload = false,
+}: ContactFormProps) {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+  const [files, setFiles] = useState<File[]>([])
+  const [fileError, setFileError] = useState('')
   const [form, setForm] = useState({
     name: '',
     phone: '',
@@ -24,18 +35,45 @@ export default function ContactForm({ services, defaultService }: ContactFormPro
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
+  const handleFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = Array.from(e.target.files ?? [])
+    const total = selected.reduce((sum, f) => sum + f.size, 0)
+    if (total > MAX_TOTAL_BYTES) {
+      setFileError('Bildene er for store (maks 10 MB totalt).')
+      setFiles([])
+      e.target.value = ''
+      return
+    }
+    setFileError('')
+    setFiles(selected)
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setStatus('loading')
     try {
+      // FormData ved bilder (multipart), ellers JSON som før
+      const hasFiles = files.length > 0
+      let body: BodyInit
+      const headers: Record<string, string> = { Accept: 'application/json' }
+      if (hasFiles) {
+        const data = new FormData()
+        Object.entries(form).forEach(([k, v]) => data.append(k, v))
+        files.forEach((f) => data.append('bilder[]', f))
+        body = data
+      } else {
+        headers['Content-Type'] = 'application/json'
+        body = JSON.stringify(form)
+      }
       const res = await fetch('https://usebasin.com/f/a4f5a134dfe9', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify(form),
+        headers,
+        body,
       })
       if (res.ok) {
         setStatus('success')
-        setForm({ name: '', phone: '', email: '', service: '', message: '' })
+        setForm({ name: '', phone: '', email: '', service: defaultService ?? '', message: '' })
+        setFiles([])
       } else {
         setStatus('error')
       }
@@ -230,6 +268,30 @@ export default function ContactForm({ services, defaultService }: ContactFormPro
         />
       </div>
 
+      {allowImageUpload && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <label htmlFor="contact-images" style={labelStyle}>Bilde av eksisterende aggregat (valgfritt)</label>
+          <input
+            id="contact-images"
+            type="file"
+            name="bilder"
+            accept="image/*"
+            multiple
+            onChange={handleFiles}
+            style={{ ...inputStyle, padding: '12px 16px', cursor: 'pointer' }}
+          />
+          <span style={{ fontSize: '0.78rem', color: 'var(--sec)' }}>
+            Ta gjerne bilde av typeskiltet – da kan vi gi et mer presist tilbud.
+          </span>
+          {files.length > 0 && (
+            <span style={{ fontSize: '0.78rem', color: 'var(--muted)' }}>
+              {files.map((f) => f.name).join(', ')}
+            </span>
+          )}
+          {fileError && <span style={{ fontSize: '0.8rem', color: '#c0392b' }}>{fileError}</span>}
+        </div>
+      )}
+
       {status === 'error' && (
         <p style={{ fontSize: '0.85rem', color: '#c0392b' }}>
           Noe gikk galt. Prøv igjen eller ring oss direkte.
@@ -250,7 +312,7 @@ export default function ContactForm({ services, defaultService }: ContactFormPro
             opacity: status === 'loading' ? 0.7 : 1,
           }}
         >
-          {status === 'loading' ? 'Sender…' : 'Send forespørsel'}
+          {status === 'loading' ? 'Sender…' : submitLabel}
         </button>
         <p
           style={{

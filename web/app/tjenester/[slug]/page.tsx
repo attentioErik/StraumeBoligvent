@@ -6,17 +6,23 @@ import {
   servicePathsQuery,
   projectsByServiceQuery,
   faqByServiceQuery,
+  servicesQuery,
+  siteSettingsQuery,
 } from '@/lib/queries'
-import type { Service, ReferenceProject, FAQ } from '@/lib/types'
+import type { Service, ReferenceProject, FAQ, SiteSettings } from '@/lib/types'
 import { PortableText } from '@portabletext/react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import ProjectCard from '@/components/ProjectCard'
 import FaqSection from '@/components/FaqSection'
+import ContactForm from '@/components/ContactForm'
+import GoogleReviews from '@/components/GoogleReviews'
+import TrustBar from '@/components/service/TrustBar'
+import ServiceVideo from '@/components/service/ServiceVideo'
 import type { Metadata } from 'next'
 import { absUrl } from '@/lib/site'
-import { serviceJsonLd, faqJsonLd, breadcrumbJsonLd, jsonLdScript } from '@/lib/jsonld'
+import { serviceJsonLd, faqJsonLd, breadcrumbJsonLd, videoJsonLd, jsonLdScript } from '@/lib/jsonld'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -70,9 +76,15 @@ export default async function ServicePage({ params }: Props) {
 
   if (!service) notFound()
 
-  const [projects, faqs] = await Promise.all([
+  const [projects, faqs, allServices, settings] = await Promise.all([
     client.fetch<ReferenceProject[]>(projectsByServiceQuery, { serviceId: service._id }).catch(() => []),
     client.fetch<FAQ[]>(faqByServiceQuery, { serviceId: service._id }).catch(() => []),
+    service.showContactForm
+      ? client.fetch<Service[]>(servicesQuery).catch(() => [])
+      : Promise.resolve([] as Service[]),
+    service.showTrustBar
+      ? client.fetch<SiteSettings>(siteSettingsQuery).catch(() => null)
+      : Promise.resolve(null),
   ])
 
   // Determine content for each section (new fields preferred, legacy fallback)
@@ -87,6 +99,34 @@ export default async function ServicePage({ params }: Props) {
   const hasPracticalSection = service.practicalBlocks && service.practicalBlocks.length > 0
 
   const hasRelatedServices = service.relatedServices && service.relatedServices.length > 0
+  const showFaq = service.showFaq && faqs.length > 0
+
+  // Konvertering
+  const ctaLabel = service.ctaLabel || 'Få tilbud'
+  const formInHero = !!service.showContactForm && service.contactFormPlacement === 'hero'
+  const formAtBottom = !!service.showContactForm && !formInHero
+  const ctaHref = service.showContactForm ? '#kontaktskjema' : '/kontakt'
+  const videoPosterUrl = service.videoPoster ? urlFor(service.videoPoster).width(720).url() : undefined
+  const portraitVideo = service.videoFormat !== 'landscape'
+
+  const formCard = (
+    <div
+      style={{
+        background: 'var(--white)',
+        border: '1px solid var(--ll)',
+        borderRadius: 8,
+        padding: 'clamp(24px, 5vw, 40px)',
+        boxShadow: formInHero ? '0 24px 64px rgba(20,16,8,0.10)' : undefined,
+      }}
+    >
+      <ContactForm
+        services={allServices}
+        defaultService={service.slug.current}
+        submitLabel={ctaLabel}
+        allowImageUpload={service.allowImageUpload}
+      />
+    </div>
+  )
 
   const serviceImage = service.image ? urlFor(service.image).width(1200).height(630).url() : undefined
   const serviceSchema = serviceJsonLd({
@@ -100,8 +140,17 @@ export default async function ServicePage({ params }: Props) {
     { name: 'Tjenester', path: '/#tjenester' },
     { name: service.title, path: `/tjenester/${slug}` },
   ])
+  const videoSchema = service.videoUrl
+    ? videoJsonLd({
+        name: service.videoCaption || service.title,
+        description: service.videoCaption || service.description,
+        contentUrl: service.videoUrl,
+        thumbnailUrl: videoPosterUrl || serviceImage,
+        uploadDate: service.videoUploadedAt,
+      })
+    : null
   const faqSchema =
-    faqs.length > 0
+    showFaq
       ? faqJsonLd(
           faqs.map((f) => ({ question: f.question, answer: portableTextToPlain(f.answer) })),
         )
@@ -112,6 +161,7 @@ export default async function ServicePage({ params }: Props) {
       <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(serviceSchema)} />
       <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(breadcrumb)} />
       {faqSchema && <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(faqSchema)} />}
+      {videoSchema && <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(videoSchema)} />}
       {/* ─── HERO ─── */}
       <section
         style={{
@@ -184,6 +234,29 @@ export default async function ServicePage({ params }: Props) {
                 {service.description}
               </p>
 
+              {/* Prisindikasjon */}
+              {service.priceFrom && (
+                <div
+                  style={{
+                    display: 'inline-flex',
+                    flexDirection: 'column',
+                    gap: 2,
+                    background: 'var(--abg)',
+                    border: '1px solid var(--amid)',
+                    borderRadius: 6,
+                    padding: '12px 20px',
+                    marginBottom: 28,
+                  }}
+                >
+                  <span style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--ink)' }}>
+                    Fra {service.priceFrom}
+                  </span>
+                  {service.priceNote && (
+                    <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>{service.priceNote}</span>
+                  )}
+                </div>
+              )}
+
               {/* Google rating */}
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 36 }}>
                 <svg width="20" height="20" viewBox="0 0 48 48" style={{ flexShrink: 0 }}>
@@ -212,8 +285,8 @@ export default async function ServicePage({ params }: Props) {
               </div>
 
               <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap' }}>
-                <Link href="/kontakt" className="btn-amber">
-                  Få tilbud
+                <Link href={ctaHref} className="btn-amber">
+                  {ctaLabel}
                 </Link>
                 <a href="tel:56126800" className="btn-ghost">
                   Ring 561 26 800 →
@@ -221,8 +294,12 @@ export default async function ServicePage({ params }: Props) {
               </div>
             </div>
 
-            {/* Right: hero image */}
-            {service.image && (
+            {/* Right: skjema eller hero image */}
+            {formInHero ? (
+              <div id="kontaktskjema" style={{ scrollMarginTop: 100 }}>
+                {formCard}
+              </div>
+            ) : service.image && (
               <div style={{ borderRadius: 8, overflow: 'hidden', boxShadow: '0 24px 64px rgba(20,16,8,0.14)' }}>
                 <div style={{ width: '100%', aspectRatio: '4/3', position: 'relative' }}>
                   <Image
@@ -244,6 +321,18 @@ export default async function ServicePage({ params }: Props) {
           }
         `}</style>
       </section>
+
+      {/* ─── TRUST-BAR ─── */}
+      {service.showTrustBar && <TrustBar items={settings?.trustItems} />}
+
+      {/* ─── GOOGLE-ANMELDELSER ─── */}
+      {service.showReviews && (
+        <section style={{ background: 'var(--white)', padding: '56px 5%' }}>
+          <div className="inner">
+            <GoogleReviews />
+          </div>
+        </section>
+      )}
 
       {/* ─── INTRO / OM TJENESTEN ─── */}
       {introContent && introContent.length > 0 && (
@@ -290,8 +379,8 @@ export default async function ServicePage({ params }: Props) {
                   Kontakt oss for en uforpliktende prat om din situasjon.
                 </p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                  <Link href="/kontakt" className="btn-amber" style={{ justifyContent: 'center' }}>
-                    Send forespørsel
+                  <Link href={ctaHref} className="btn-amber" style={{ justifyContent: 'center' }}>
+                    {ctaLabel}
                   </Link>
                   <a
                     href="tel:56126800"
@@ -334,6 +423,20 @@ export default async function ServicePage({ params }: Props) {
               .intro-cta-col { position: static !important; }
             }
           `}</style>
+        </section>
+      )}
+
+      {/* ─── VIDEO (når det ikke finnes steg) ─── */}
+      {service.videoUrl && !hasIncludedSection && (
+        <section style={{ background: 'var(--white)', padding: '80px 5%' }}>
+          <div className="inner reveal" style={{ maxWidth: portraitVideo ? 360 : 960, margin: '0 auto' }}>
+            <ServiceVideo
+              src={service.videoUrl}
+              poster={videoPosterUrl}
+              caption={service.videoCaption}
+              format={portraitVideo ? 'portrait' : 'landscape'}
+            />
+          </div>
         </section>
       )}
 
@@ -483,6 +586,12 @@ export default async function ServicePage({ params }: Props) {
                 </p>
               )}
             </div>
+            {service.videoUrl && !portraitVideo && (
+              <div className="reveal" style={{ marginBottom: 48 }}>
+                <ServiceVideo src={service.videoUrl} poster={videoPosterUrl} caption={service.videoCaption} format="landscape" />
+              </div>
+            )}
+            <div className={service.videoUrl && portraitVideo ? 'included-video-grid' : undefined}>
             <div
               className="included-grid"
               style={{
@@ -533,8 +642,16 @@ export default async function ServicePage({ params }: Props) {
                 </div>
               ))}
             </div>
+            {service.videoUrl && portraitVideo && (
+              <div className="reveal">
+                <ServiceVideo src={service.videoUrl} poster={videoPosterUrl} caption={service.videoCaption} />
+              </div>
+            )}
+            </div>
           </div>
           <style>{`
+            .included-video-grid { display: grid; grid-template-columns: 1fr 320px; gap: 48px; align-items: start; }
+            @media (max-width: 980px) { .included-video-grid { grid-template-columns: 1fr; } }
             .included-grid > *:hover { transform: translateY(-3px); box-shadow: 0 8px 32px rgba(0,0,0,0.07); }
             @media (max-width: 640px) { .included-grid { grid-template-columns: 1fr !important; } }
           `}</style>
@@ -727,10 +844,33 @@ export default async function ServicePage({ params }: Props) {
         </section>
       )}
 
-      {/* ─── FAQ ─── (skjult inntil videre) */}
-      {/* {faqs.length > 0 && <FaqSection faqs={faqs} />} */}
+      {/* ─── FAQ ─── */}
+      {showFaq && <FaqSection faqs={faqs} />}
 
-      {/* ─── CTA ─── */}
+      {/* ─── CTA / KONTAKTSKJEMA ─── */}
+      {formAtBottom ? (
+        <section id="kontaktskjema" style={{ background: 'var(--amber)', padding: '80px 5%' }}>
+          <div style={{ maxWidth: 640, margin: '0 auto' }}>
+            <div style={{ textAlign: 'center', marginBottom: 36 }}>
+              <h2
+                style={{
+                  fontFamily: 'Playfair Display, serif',
+                  fontSize: 'clamp(1.6rem, 3.5vw, 2.4rem)',
+                  fontWeight: 700,
+                  color: 'var(--ink)',
+                  marginBottom: 16,
+                }}
+              >
+                {service.contactFormTitle || `Interessert i ${service.title.toLowerCase()}?`}
+              </h2>
+              <p style={{ fontSize: '1.05rem', color: 'rgba(26,26,26,0.75)' }}>
+                {service.contactFormText || 'Vi gir en anbefaling basert på ditt anlegg og behov.'}
+              </p>
+            </div>
+            {formCard}
+          </div>
+        </section>
+      ) : (
       <section style={{ background: 'var(--amber)', padding: '80px 5%', textAlign: 'center' }}>
         <div style={{ maxWidth: 560, margin: '0 auto' }}>
           <h2
@@ -754,7 +894,7 @@ export default async function ServicePage({ params }: Props) {
             Vi gir en anbefaling basert på ditt anlegg og behov.
           </p>
           <Link
-            href="/kontakt"
+            href={ctaHref}
             style={{
               display: 'inline-block',
               background: 'var(--ink)',
@@ -769,10 +909,11 @@ export default async function ServicePage({ params }: Props) {
               transition: 'background 0.2s',
             }}
           >
-            Ta kontakt
+            {ctaLabel}
           </Link>
         </div>
       </section>
+      )}
     </>
   )
 }

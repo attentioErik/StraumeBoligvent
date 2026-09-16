@@ -162,6 +162,26 @@ export function contactPageJsonLd(opts: { phone: string; email: string; address:
   }
 }
 
+export function videoJsonLd(opts: {
+  name: string
+  description: string
+  contentUrl: string
+  thumbnailUrl?: string
+  uploadDate?: string
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'VideoObject',
+    name: opts.name,
+    description: opts.description,
+    contentUrl: opts.contentUrl,
+    thumbnailUrl: opts.thumbnailUrl,
+    uploadDate: opts.uploadDate,
+    inLanguage: 'nb-NO',
+    publisher: { '@id': ORG_ID },
+  }
+}
+
 export function jsonLdScript(data: unknown) {
   return { __html: JSON.stringify(data) }
 }

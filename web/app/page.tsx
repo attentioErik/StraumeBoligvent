@@ -19,7 +19,7 @@ import ServiceCard from '@/components/ServiceCard'
 import FaqSection from '@/components/FaqSection'
 import ContactForm from '@/components/ContactForm'
 import Link from 'next/link'
-import Script from 'next/script'
+import GoogleReviews from '@/components/GoogleReviews'
 import PricingSection from '@/components/PricingSection'
 import EnovaTeaser from '@/components/EnovaTeaser'
 
@@ -391,8 +391,7 @@ export default async function Home() {
           <div className="slabel reveal">{forside?.anmeldelserLabel ?? 'Erfaringer'}</div>
           <h2 className="stitle reveal">{forside?.anmeldelserTittel ?? 'Hva kundene i Bergen sier'}</h2>
           <div style={{ marginTop: 60 }}>
-            <Script src="https://elfsightcdn.com/platform.js" strategy="lazyOnload" />
-            <div className="elfsight-app-f72eef5c-9e8b-40c6-904b-dd6484fdcb3d" data-elfsight-app-lazy></div>
+            <GoogleReviews />
           </div>
         </div>
       </section>

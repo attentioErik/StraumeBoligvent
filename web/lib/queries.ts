@@ -10,7 +10,8 @@ export const siteSettingsQuery = groq`
     heroTitle,
     heroDescription,
     heroPill,
-    orgNumber
+    orgNumber,
+    trustItems[]{ tekst, logo }
   }
 `
 
@@ -56,6 +57,22 @@ export const serviceBySlugQuery = groq`
     benefitsText,
     benefitsList,
     practicalBlocks,
+    priceFrom,
+    priceNote,
+    ctaLabel,
+    showContactForm,
+    contactFormPlacement,
+    contactFormTitle,
+    contactFormText,
+    allowImageUpload,
+    showTrustBar,
+    showReviews,
+    showFaq,
+    "videoUrl": video.asset->url,
+    "videoUploadedAt": video.asset->_createdAt,
+    videoFormat,
+    videoPoster,
+    videoCaption,
     "relatedServices": relatedServices[]->{ _id, title, slug }
   }
 `
