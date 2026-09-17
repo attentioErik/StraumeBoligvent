@@ -37,7 +37,7 @@ export default function EnovaTeaser({ enova }: EnovaTeaserProps) {
           }}
         >
           <div style={{ maxWidth: 640 }}>
-            <div className="slabel" style={{ marginBottom: 14 }}>{label}</div>
+            <div className="slabel slabel--on-tint" style={{ marginBottom: 14 }}>{label}</div>
             <h2
               style={{
                 fontFamily: 'Playfair Display, serif',

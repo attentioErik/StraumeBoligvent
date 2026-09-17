@@ -300,7 +300,7 @@ export default async function OmOssPage() {
       {omOss?.sertifiseringer && omOss.sertifiseringer.length > 0 && (
         <section style={{ background: 'var(--off)', padding: '60px 5%' }}>
           <div className="inner">
-            <div className="slabel reveal" style={{ justifyContent: 'center' }}>{omOss?.sertifiseringerLabel ?? 'Kompetanse'}</div>
+            <div className="slabel slabel--center reveal">{omOss?.sertifiseringerLabel ?? 'Kompetanse'}</div>
             <h2 className="stitle reveal" style={{ textAlign: 'center' }}>{omOss?.sertifiseringerTittel ?? 'Sertifiseringer'}</h2>
             <div style={{ display: 'flex', justifyContent: 'center', gap: 32, flexWrap: 'wrap', marginTop: 40 }}>
               {omOss.sertifiseringer.map((s, i) => (
@@ -328,7 +328,7 @@ export default async function OmOssPage() {
       {/* ─── CTA ─── */}
       <section style={{ background: 'var(--warm)', padding: '80px 5%' }}>
         <div className="inner" style={{ maxWidth: 640, textAlign: 'center', margin: '0 auto' }}>
-          <div className="slabel reveal" style={{ justifyContent: 'center' }}>{omOss?.ctaLabel ?? 'Kom i gang'}</div>
+          <div className="slabel slabel--center reveal">{omOss?.ctaLabel ?? 'Kom i gang'}</div>
           <h2 className="stitle reveal" style={{ textAlign: 'center' }}>{omOss?.ctaTittel ?? 'Ta kontakt'}</h2>
           <p className="sdesc reveal" style={{ textAlign: 'center', marginBottom: 40 }}>
             {omOss?.ctaTekst ?? 'Vi er tilgjengelige for en uforpliktende prat om ditt anlegg.'}

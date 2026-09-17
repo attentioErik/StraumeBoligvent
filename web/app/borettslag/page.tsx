@@ -207,7 +207,7 @@ export default async function BorettslagPage() {
       {p.prosessSteg && p.prosessSteg.length > 0 && (
         <section style={{ background: '#1e1a12', padding: '80px 5%' }}>
           <div className="inner">
-            <div className="slabel reveal" style={{ color: 'var(--amid)' }}>Arbeidsmetode</div>
+            <div className="slabel slabel--dark reveal">Arbeidsmetode</div>
             <h2 className="stitle reveal" style={{ color: '#f5f0e8' }}>Slik samarbeider vi</h2>
             <div
               className="brl-prosess"
@@ -313,7 +313,7 @@ export default async function BorettslagPage() {
       {/* ─── CTA ─── */}
       <section style={{ background: 'var(--warm)', padding: '80px 5%' }}>
         <div className="inner" style={{ maxWidth: 640, textAlign: 'center', margin: '0 auto' }}>
-          <div className="slabel reveal" style={{ justifyContent: 'center' }}>Kom i gang</div>
+          <div className="slabel slabel--center reveal">Kom i gang</div>
           <h2 className="stitle reveal" style={{ textAlign: 'center' }}>Klar for en uforpliktende prat?</h2>
           <p className="sdesc reveal" style={{ textAlign: 'center', marginBottom: 40 }}>
             Ring oss eller send en forespørsel – vi hjelper styret med å finne riktig løsning.

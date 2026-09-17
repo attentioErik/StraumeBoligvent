@@ -520,7 +520,7 @@ export default async function ServicePage({ params }: Props) {
             {/* Left: why */}
             {hasWhySection && (
               <div className="reveal">
-                <div className="slabel" style={{ color: 'var(--amid)' }}>Hvorfor det er viktig</div>
+                <div className="slabel slabel--dark">Hvorfor det er viktig</div>
                 {service.whyTitle && (
                   <h2
                     style={{
@@ -641,7 +641,7 @@ export default async function ServicePage({ params }: Props) {
         <section style={{ background: 'var(--white)', padding: '80px 5%' }}>
           <div className="inner">
             <div style={{ textAlign: 'center', marginBottom: 56 }}>
-              <div className="slabel reveal" style={{ justifyContent: 'center' }}>Hva som er inkludert</div>
+              <div className="slabel slabel--center reveal">Hva som er inkludert</div>
               <h2 className="stitle reveal" style={{ textAlign: 'center' }}>
                 {service.includedTitle || 'Slik gjør vi det'}
               </h2>
@@ -737,7 +737,7 @@ export default async function ServicePage({ params }: Props) {
           >
             {/* Left: title + text */}
             <div className="reveal">
-              <div className="slabel" style={{ color: 'var(--amid)' }}>Fordeler</div>
+              <div className="slabel slabel--dark">Fordeler</div>
               <h2
                 style={{
                   fontFamily: 'Playfair Display, serif',
@@ -806,7 +806,7 @@ export default async function ServicePage({ params }: Props) {
       {hasPracticalSection && (
         <section style={{ background: 'var(--off)', padding: '80px 5%' }}>
           <div style={{ textAlign: 'center', marginBottom: 48 }}>
-            <div className="slabel reveal" style={{ justifyContent: 'center' }}>Praktisk informasjon</div>
+            <div className="slabel slabel--center reveal">Praktisk informasjon</div>
             <h2 className="stitle reveal" style={{ textAlign: 'center' }}>Et godt grunnlag for videre vedlikehold</h2>
           </div>
           <div

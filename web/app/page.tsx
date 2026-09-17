@@ -329,7 +329,7 @@ export default async function Home() {
       {/* ─── PROSESS ─── */}
       <section id="prosess" style={{ background: '#1e1a12', padding: '108px 5%' }}>
         <div className="inner">
-          <div className="slabel reveal" style={{ color: 'var(--amid)' }}>{forside?.prosessLabel ?? 'Arbeidsmetode'}</div>
+          <div className="slabel slabel--dark reveal">{forside?.prosessLabel ?? 'Arbeidsmetode'}</div>
           <h2 className="stitle reveal" style={{ color: '#f5f0e8' }}>{forside?.prosessTittel ?? 'Slik jobber vi'}</h2>
           <p className="sdesc reveal" style={{ color: '#a89e90' }}>
             {forside?.prosessBeskrivelse ?? 'Alle oppdrag gjennomføres etter en fast arbeidsmetode – fra kartlegging til oppfølging.'}

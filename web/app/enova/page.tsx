@@ -303,7 +303,7 @@ export default async function EnovaPage() {
       {p.prosessSteg && p.prosessSteg.length > 0 && (
         <section style={{ background: '#1e1a12', padding: '80px 5%' }}>
           <div className="inner">
-            <div className="slabel reveal" style={{ color: 'var(--amid)' }}>Søknadsprosess</div>
+            <div className="slabel slabel--dark reveal">Søknadsprosess</div>
             {p.prosessTittel && <h2 className="stitle reveal" style={{ color: '#f5f0e8' }}>{p.prosessTittel}</h2>}
             <div
               className="enova-prosess"
@@ -398,7 +398,7 @@ export default async function EnovaPage() {
       {/* ─── CTA ─── */}
       <section style={{ background: 'var(--warm)', padding: '80px 5%' }}>
         <div className="inner" style={{ maxWidth: 640, textAlign: 'center', margin: '0 auto' }}>
-          <div className="slabel reveal" style={{ justifyContent: 'center' }}>Kom i gang</div>
+          <div className="slabel slabel--center reveal">Kom i gang</div>
           <h2 className="stitle reveal" style={{ textAlign: 'center' }}>Vurderer du nytt ventilasjonsanlegg?</h2>
           <p className="sdesc reveal" style={{ textAlign: 'center', marginBottom: 40, margin: '0 auto 40px' }}>
             Vi hjelper deg å finne et anlegg som passer boligen – og som kan kvalifisere for Enova-støtte.
