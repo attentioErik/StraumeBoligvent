@@ -10,7 +10,7 @@ interface FooterProps {
 
 const services = [
   { label: 'Service og vedlikehold', href: '/#tjenester' },
-  { label: 'Kanalrens', href: '/#tjenester' },
+  { label: 'Kanalrens', href: '/tjenester/kanalrens' },
   { label: 'Innregulering', href: '/#tjenester' },
   { label: 'Montasje og utskifting', href: '/#tjenester' },
   { label: 'Serviceavtale', href: '/#tjenester' },

@@ -239,7 +239,8 @@ a, button, [role="button"], input, select, textarea, label, summary {
 
 /* ─── MOBILE OPTIMIZATIONS ─── */
 @media (max-width: 640px) {
-  section:not(#hero) {
+  /* Kanalrens-siden (.kr) har egne avstander */
+  section:not(#hero):not(.kr *) {
     padding-top: 64px !important;
     padding-bottom: 64px !important;
   }
