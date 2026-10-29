@@ -57,15 +57,44 @@ function readSource() {
   return kilde || (document.referrer ? `referrer=${document.referrer}` : 'direkte')
 }
 
-export default function OrderForm() {
+const MAX_TOTAL_BYTES = 10 * 1024 * 1024
+
+interface OrderFormProps {
+  /** Verdien som sendes i feltet «service» til Basin */
+  service: string
+  submitLabel: string
+  note: string
+  successTitle: string
+  successText: string
+  messagePlaceholder?: string
+  /** Vis «Ønsket uke» (kanalrens). Uten den står telefon og e-post side om side. */
+  showWeek?: boolean
+  /** Tillat opplasting av bilder (sendes som multipart) */
+  allowImages?: boolean
+  imagesLabel?: string
+}
+
+export default function OrderForm({
+  service,
+  submitLabel,
+  note,
+  successTitle,
+  successText,
+  messagePlaceholder = 'F.eks. type anlegg, eller når det passer best',
+  showWeek = false,
+  allowImages = false,
+  imagesLabel = 'Bilder',
+}: OrderFormProps) {
   const [values, setValues] = useState({ navn: '', telefon: '', adresse: '', epost: '', uke: 'Første ledige', melding: '' })
   const [invalid, setInvalid] = useState<Record<Field, boolean>>({ navn: false, telefon: false, adresse: false })
   const [weeks, setWeeks] = useState<string[]>([])
   const [kilde, setKilde] = useState('')
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+  const [files, setFiles] = useState<File[]>([])
+  const [fileError, setFileError] = useState('')
 
   useEffect(() => {
-    setWeeks(nextWeeks())
+    if (showWeek) setWeeks(nextWeeks())
     setKilde(readSource())
 
     // Bestill-knapper: flytt fokus til første felt etter scroll
@@ -79,7 +108,19 @@ export default function OrderForm() {
       document.removeEventListener('click', onClick)
       if (t) clearTimeout(t)
     }
-  }, [])
+  }, [showWeek])
+
+  const onFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = Array.from(e.target.files ?? [])
+    if (selected.reduce((sum, f) => sum + f.size, 0) > MAX_TOTAL_BYTES) {
+      setFileError('Bildene er for store (maks 10 MB totalt).')
+      setFiles([])
+      e.target.value = ''
+      return
+    }
+    setFileError('')
+    setFiles(selected)
+  }
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
@@ -105,20 +146,29 @@ export default function OrderForm() {
 
     setStatus('loading')
     try {
-      const res = await fetch(ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({
-          name: values.navn,
-          phone: values.telefon,
-          email: values.epost,
-          service: 'kanalrens',
-          address: values.adresse,
-          week: values.uke,
-          message: values.melding,
-          source: kilde,
-        }),
-      })
+      const payload: Record<string, string> = {
+        name: values.navn,
+        phone: values.telefon,
+        email: values.epost,
+        service,
+        address: values.adresse,
+        message: values.melding,
+        source: kilde,
+      }
+      if (showWeek) payload.week = values.uke
+      // Multipart når det er bilder, ellers JSON
+      let body: BodyInit
+      const headers: Record<string, string> = { Accept: 'application/json' }
+      if (files.length > 0) {
+        const data = new FormData()
+        Object.entries(payload).forEach(([k, v]) => data.append(k, v))
+        files.forEach((f) => data.append('bilder[]', f))
+        body = data
+      } else {
+        headers['Content-Type'] = 'application/json'
+        body = JSON.stringify(payload)
+      }
+      const res = await fetch(ENDPOINT, { method: 'POST', headers, body })
       setStatus(res.ok ? 'success' : 'error')
     } catch {
       setStatus('error')
@@ -128,14 +178,21 @@ export default function OrderForm() {
   if (status === 'success') {
     return (
       <div className="form-done" role="status">
-        <h3>Takk, vi har fått bestillingen!</h3>
-        <p>Vi ringer deg innen 1 virkedag for å avtale tidspunkt.</p>
+        <h3>{successTitle}</h3>
+        <p>{successText}</p>
       </div>
     )
   }
 
   const errProps = (f: Field) =>
     invalid[f] ? { 'aria-invalid': true, 'aria-describedby': `${f}-err` } : { 'aria-invalid': false }
+
+  const emailField = (
+    <div className="field">
+      <label htmlFor="epost">E-post <span className="opt">(valgfritt)</span></label>
+      <input id="epost" name="epost" type="email" autoComplete="email" value={values.epost} onChange={onChange} />
+    </div>
+  )
 
   return (
     <form className="form" id="order-form" onSubmit={onSubmit} noValidate>
@@ -150,38 +207,46 @@ export default function OrderForm() {
           <input id="telefon" name="telefon" type="tel" inputMode="tel" autoComplete="tel" required value={values.telefon} onChange={onChange} onBlur={onBlur} {...errProps('telefon')} />
           <span className="err" id="telefon-err">Skriv inn et telefonnummer med 8 siffer.</span>
         </div>
-        <div className="field">
-          <label htmlFor="uke">Ønsket uke</label>
-          <select id="uke" name="uke" value={values.uke} onChange={onChange}>
-            <option value="Første ledige">Første ledige tid</option>
-            {weeks.map((w) => (
-              <option key={w} value={w}>{w}</option>
-            ))}
-          </select>
-        </div>
+        {showWeek ? (
+          <div className="field">
+            <label htmlFor="uke">Ønsket uke</label>
+            <select id="uke" name="uke" value={values.uke} onChange={onChange}>
+              <option value="Første ledige">Første ledige tid</option>
+              {weeks.map((w) => (
+                <option key={w} value={w}>{w}</option>
+              ))}
+            </select>
+          </div>
+        ) : (
+          emailField
+        )}
       </div>
       <div className={`field${invalid.adresse ? ' invalid' : ''}`}>
         <label htmlFor="adresse">Adresse eller sted</label>
         <input id="adresse" name="adresse" type="text" autoComplete="street-address" placeholder="F.eks. Idrettsveien 1, Straume" required value={values.adresse} onChange={onChange} onBlur={onBlur} {...errProps('adresse')} />
         <span className="err" id="adresse-err">Skriv inn adresse eller sted.</span>
       </div>
-      <div className="field">
-        <label htmlFor="epost">E-post <span className="opt">(valgfritt)</span></label>
-        <input id="epost" name="epost" type="email" autoComplete="email" value={values.epost} onChange={onChange} />
-      </div>
+      {showWeek && emailField}
       <div className="field">
         <label htmlFor="melding">Melding <span className="opt">(valgfritt)</span></label>
-        <textarea id="melding" name="melding" placeholder="F.eks. type anlegg, eller når det passer best" value={values.melding} onChange={onChange} />
+        <textarea id="melding" name="melding" placeholder={messagePlaceholder} value={values.melding} onChange={onChange} />
       </div>
+      {allowImages && (
+        <div className="field">
+          <label htmlFor="bilder">{imagesLabel} <span className="opt">(valgfritt)</span></label>
+          <input id="bilder" name="bilder" type="file" accept="image/*" multiple onChange={onFiles} className="file" />
+          {fileError ? <span className="file-err">{fileError}</span> : <span className="file-hint">Maks 10 MB totalt.</span>}
+        </div>
+      )}
       <button className="btn btn-primary" id="cta-skjema" type="submit" disabled={status === 'loading'}>
-        {status === 'loading' ? 'Sender …' : 'Bestill kanalrens'}
+        {status === 'loading' ? 'Sender …' : submitLabel}
       </button>
       {status === 'error' && (
         <p className="form-error" role="alert">
           Noe gikk galt. Prøv igjen, eller ring oss på <a href="tel:56126800">56 12 68 00</a>.
         </p>
       )}
-      <p className="form-note">Fast pris før vi starter. Vi ringer deg innen 1 virkedag for å avtale tidspunkt.</p>
+      <p className="form-note">{note}</p>
     </form>
   )
 }

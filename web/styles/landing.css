@@ -1,4 +1,4 @@
-/* Kanalrens-landingsside. Alt er scopet under .kr så det ikke kolliderer med resten av nettstedet. */
+/* Felles stil for tjeneste-landingssider (kanalrens, montasje). Alt er scopet under .kr så det ikke kolliderer med resten av nettstedet. */
 .kr {
   --bg: #FDFCF9; --bg-alt: #F7F4EE; --dark: #1E1A12; --on-dark: #F5F0E8; --on-dark-muted: #C4B8A4;
   --text: #1E1A12; --text-2: #6B6258; --accent: #F0A500; --accent-hover: #B87800;
@@ -90,6 +90,15 @@ html:has(.kr) { scroll-padding-top: 84px; }
 .kr .text-link:hover { text-decoration-color: var(--dark); }
 .kr .incl-figure img { aspect-ratio: 1/1; object-fit: cover; }
 @media (min-width: 900px) { .kr .incl-grid { grid-template-columns: 1.3fr 1fr; gap: 48px; align-items: center; } }
+
+/* Tekstkolonne og video (montasje) */
+.kr .intro-text { display: grid; gap: 14px; color: var(--text-2); max-width: 60ch; }
+.kr .intro-text b { color: var(--text); font-weight: 600; }
+.kr .intro-text .fine { font-size: .875rem; }
+.kr .enova-cta { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 24px; margin-top: 8px; }
+.kr .price-card-head strong.card-title { font-size: 1.5rem; }
+.kr .video-figure { max-width: 380px; margin-inline: auto; width: 100%; }
+.kr .video-figure video { display: block; width: 100%; aspect-ratio: 9/16; object-fit: cover; border-radius: var(--r); box-shadow: var(--shadow); background: var(--dark); }
 
 /* Steg */
 .kr .steps { list-style: none; margin: 28px 0 0; padding: 0; display: grid; gap: 0; }
@@ -197,6 +206,10 @@ html:has(.kr) { scroll-padding-top: 84px; }
 .kr .form-done { background: #2A251B; border: 1.5px solid #4A4234; border-radius: var(--r); padding: 28px; display: grid; gap: 10px; }
 .kr .form-done h3 { font-size: 1.375rem; }
 .kr .form-done p { color: var(--on-dark-muted); }
+.kr .field input.file { min-height: 0; padding: 12px 14px; cursor: pointer; }
+.kr .field input.file::file-selector-button { font: 600 .9375rem var(--font); margin-right: 12px; padding: 8px 14px; border-radius: 8px; border: 0; background: var(--accent); color: var(--dark); cursor: pointer; }
+.kr .field .file-hint { color: var(--on-dark-muted); font-size: .875rem; }
+.kr .field .file-err { color: #FFC94D; font-size: .875rem; }
 .kr .form-error { color: #FFC94D; font-size: .9375rem; }
 .kr .order-aside { display: grid; gap: 14px; align-content: start; }
 .kr .order-aside li { display: flex; gap: 12px; align-items: flex-start; color: var(--on-dark-muted); }

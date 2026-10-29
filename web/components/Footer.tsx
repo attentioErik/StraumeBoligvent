@@ -12,7 +12,7 @@ const services = [
   { label: 'Service og vedlikehold', href: '/#tjenester' },
   { label: 'Kanalrens', href: '/tjenester/kanalrens' },
   { label: 'Innregulering', href: '/#tjenester' },
-  { label: 'Montasje og utskifting', href: '/#tjenester' },
+  { label: 'Montasje og utskifting', href: '/tjenester/montasje-og-utskifting' },
   { label: 'Serviceavtale', href: '/#tjenester' },
 ]
 

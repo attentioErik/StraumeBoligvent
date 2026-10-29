@@ -26,6 +26,7 @@ const BLOCKS = [
   '.sym-cta',
   '.sym-figure',
   '.price-card',
+  '.intro-text',
   '.incl-figure',
   '.done',
   '.ba-grid > *',
