@@ -4,7 +4,18 @@ import { client } from '@/lib/sanity'
 import { borettslagLandingQuery } from '@/lib/queries'
 import type { BorettslagLanding } from '@/lib/types'
 import type { Metadata } from 'next'
-import Link from 'next/link'
+import '@/styles/landing.css'
+import ScrollMotion from '@/components/landing/ScrollMotion'
+import {
+  Check,
+  ContactSection,
+  FaqList,
+  PhoneIcon,
+  ReviewsSection,
+  TeamSection,
+  TrustBar,
+  iconProps,
+} from '@/components/landing/parts'
 import { absUrl } from '@/lib/site'
 import { webPageJsonLd, breadcrumbJsonLd, faqJsonLd, jsonLdScript } from '@/lib/jsonld'
 
@@ -58,272 +69,131 @@ const FALLBACK: BorettslagLanding = {
   ],
 }
 
+// Ikon i listen over typiske utfordringer
+const alertIcon = (
+  <svg {...iconProps}>
+    <path d="M12 3l9.5 16.5h-19z" />
+    <path d="M12 10v4M12 17h.01" />
+  </svg>
+)
+
 export default async function BorettslagPage() {
   const data = await client.fetch<BorettslagLanding>(borettslagLandingQuery).catch(() => null)
   const p = data ?? FALLBACK
 
-  const webPage = webPageJsonLd({ path: PAGE_PATH, name: p.heroTittel || PAGE_TITLE, description: p.heroUnderTittel || PAGE_DESC })
-  const breadcrumb = breadcrumbJsonLd([
-    { name: 'Forside', path: '/' },
-    { name: 'Borettslag', path: PAGE_PATH },
-  ])
-  const faq = p.faq && p.faq.length > 0 ? faqJsonLd(p.faq.map((f) => ({ question: f.sporsmal, answer: f.svar }))) : null
+  const schemas: object[] = [
+    webPageJsonLd({ path: PAGE_PATH, name: p.heroTittel || PAGE_TITLE, description: p.heroUnderTittel || PAGE_DESC }),
+    breadcrumbJsonLd([
+      { name: 'Forside', path: '/' },
+      { name: 'Borettslag', path: PAGE_PATH },
+    ]),
+  ]
+  if (p.faq && p.faq.length > 0) schemas.push(faqJsonLd(p.faq.map((f) => ({ question: f.sporsmal, answer: f.svar }))))
 
   return (
-    <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(webPage)} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(breadcrumb)} />
-      {faq && <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(faq)} />}
-      {/* ─── HERO ─── */}
-      <section
-        style={{
-          background: '#1e1a12',
-          padding: '120px 5% 100px',
-          position: 'relative',
-          overflow: 'hidden',
-        }}
-      >
-        <div className="inner" style={{ position: 'relative', zIndex: 1 }}>
-          <div
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 8,
-              background: 'rgba(240,165,0,0.12)',
-              border: '1px solid rgba(240,165,0,0.35)',
-              borderRadius: 100,
-              padding: '6px 16px 6px 10px',
-              marginBottom: 28,
-            }}
-          >
-            <div style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--amber)', boxShadow: '0 0 0 3px rgba(240,165,0,0.2)' }} />
-            <span style={{ fontSize: '0.78rem', fontWeight: 700, letterSpacing: '0.06em', color: 'var(--amber)' }}>For borettslag og sameier</span>
-          </div>
-          <h1
-            style={{
-              fontFamily: 'Playfair Display, serif',
-              fontSize: 'clamp(2.4rem, 4.5vw, 4rem)',
-              fontWeight: 800,
-              lineHeight: 1.08,
-              color: '#f5f0e8',
-              letterSpacing: '-0.02em',
-              maxWidth: 760,
-              marginBottom: 24,
-            }}
-          >
-            {p.heroTittel}
-          </h1>
-          <p style={{ fontSize: '1.05rem', lineHeight: 1.78, color: '#a89e90', fontWeight: 300, maxWidth: 580, marginBottom: 48 }}>
-            {p.heroUnderTittel}
-          </p>
-          <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
-            <Link href="/kontakt" className="btn-amber">Få et tilbud</Link>
-            <a href="tel:56126800" className="btn-ghost" style={{ color: '#a09280', borderColor: '#3a3228' }}>Ring 561 26 800 →</a>
+    <div className="kr">
+      <ScrollMotion />
+      {schemas.map((s, i) => (
+        <script key={i} type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(s)} />
+      ))}
+
+      {/* Hero */}
+      <section className="hero" aria-labelledby="h1">
+        <div className="wrap hero-grid no-media">
+          <div>
+            <span className="hero-eyebrow">For borettslag og sameier</span>
+            <h1 id="h1">{p.heroTittel}</h1>
+            <p className="hero-sub">{p.heroUnderTittel}</p>
+            <div className="hero-ctas">
+              <a className="btn btn-primary btn-block-m" id="cta-hero" href="#bestill">Få et tilbud</a>
+              <a className="btn btn-secondary btn-block-m" id="cta-ring" href="tel:56126800"><PhoneIcon />Ring 56 12 68 00</a>
+            </div>
+            <p className="hero-note">Tydelig dokumentasjon til styret og fast oppfølging.</p>
           </div>
         </div>
       </section>
 
-      {/* ─── UTFORDRINGER ─── */}
+      <TrustBar />
+
+      {/* Typiske utfordringer */}
       {p.utfordringer && p.utfordringer.length > 0 && (
-        <section style={{ background: 'var(--warm)', padding: '80px 5%' }}>
-          <div className="inner">
-            <div className="slabel reveal">Typiske utfordringer</div>
-            <h2 className="stitle reveal">Kjenner du deg igjen?</h2>
-            <div
-              className="uf-grid"
-              style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginTop: 48 }}
-            >
-              {p.utfordringer.map((u, i) => (
-                <div
-                  key={i}
-                  className="reveal"
-                  style={{
-                    background: 'var(--white)',
-                    border: '1px solid var(--ll)',
-                    borderLeft: '3px solid var(--amber)',
-                    borderRadius: '0 6px 6px 0',
-                    padding: '20px 24px',
-                    fontSize: '0.9rem',
-                    color: 'var(--body)',
-                    lineHeight: 1.6,
-                  }}
-                >
-                  {u}
+        <section className="section" aria-labelledby="h-sym">
+          <div className="wrap">
+            <h2 id="h-sym">Kjenner du deg igjen?</h2>
+            <p className="lead">Dette er utfordringer mange styrer møter med felles ventilasjonsanlegg:</p>
+            <div className="sym-grid">
+              <ul className="sym-list">
+                {p.utfordringer.map((u) => (
+                  <li key={u}><span className="icon" aria-hidden="true">{alertIcon}</span>{u}</li>
+                ))}
+              </ul>
+              {p.hvordforOss && p.hvordforOss.length > 0 && (
+                <div className="price-card">
+                  <div className="price-card-head">
+                    <div><strong className="card-title">Derfor velger borettslag oss</strong></div>
+                  </div>
+                  <ul className="checks">
+                    {p.hvordforOss.map((t) => (<li key={t}><Check />{t}</li>))}
+                  </ul>
+                  <div className="price-card-foot">
+                    <a className="text-link" href="#bestill">Be om befaring</a>
+                  </div>
                 </div>
-              ))}
+              )}
             </div>
           </div>
-          <style>{`
-            @media (max-width: 980px) { .uf-grid { grid-template-columns: 1fr 1fr !important; } }
-            @media (max-width: 640px) { .uf-grid { grid-template-columns: 1fr !important; } }
-          `}</style>
         </section>
       )}
 
-      {/* ─── TJENESTER ─── */}
+      {/* Tjenester */}
       {p.tjenester && p.tjenester.length > 0 && (
-        <section style={{ background: 'var(--off)', padding: '80px 5%' }}>
-          <div className="inner">
-            <div className="slabel reveal">Hva vi tilbyr</div>
-            <h2 className="stitle reveal">Tjenester for borettslag</h2>
-            <div
-              className="brl-grid"
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(2, 1fr)',
-                gap: 1,
-                marginTop: 48,
-                border: '1px solid var(--ll)',
-                borderRadius: 4,
-                overflow: 'hidden',
-              }}
-            >
-              {p.tjenester.map((t, i) => (
-                <div
-                  key={i}
-                  className="reveal"
-                  style={{
-                    background: 'var(--white)',
-                    padding: '40px 36px',
-                    borderRight: i % 2 === 0 ? '1px solid var(--ll)' : undefined,
-                    borderBottom: i < (p.tjenester!.length - 2) ? '1px solid var(--ll)' : undefined,
-                  }}
-                >
-                  <div style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.05rem', fontWeight: 700, color: 'var(--ink)', marginBottom: 12 }}>
-                    {t.tittel}
-                  </div>
-                  <p style={{ fontSize: '0.875rem', color: 'var(--muted)', lineHeight: 1.7, fontWeight: 300 }}>{t.beskrivelse}</p>
+        <section className="section alt" aria-labelledby="h-svc">
+          <div className="wrap">
+            <h2 id="h-svc">Tjenester for borettslag</h2>
+            <div className="svc-grid svc-grid-2">
+              {p.tjenester.map((t) => (
+                <div key={t.tittel} className="svc-card static">
+                  <h3>{t.tittel}</h3>
+                  <p>{t.beskrivelse}</p>
                 </div>
               ))}
             </div>
           </div>
-          <style>{`
-            @media (max-width: 640px) { .brl-grid { grid-template-columns: 1fr !important; } }
-          `}</style>
         </section>
       )}
 
-      {/* ─── PROSESS ─── */}
+      {/* Slik samarbeider vi */}
       {p.prosessSteg && p.prosessSteg.length > 0 && (
-        <section style={{ background: '#1e1a12', padding: '80px 5%' }}>
-          <div className="inner">
-            <div className="slabel slabel--dark reveal">Arbeidsmetode</div>
-            <h2 className="stitle reveal" style={{ color: '#f5f0e8' }}>Slik samarbeider vi</h2>
-            <div
-              className="brl-prosess"
-              style={{ display: 'grid', gridTemplateColumns: `repeat(${p.prosessSteg.length}, 1fr)`, gap: 1, marginTop: 56, background: '#302a1e', borderRadius: 6, overflow: 'hidden' }}
-            >
-              {p.prosessSteg.map((steg, i) => (
-                <div
-                  key={i}
-                  className="reveal"
-                  style={{ background: '#272114', padding: '40px 32px' }}
-                >
-                  <div style={{ fontFamily: 'Playfair Display, serif', fontSize: '2.5rem', fontWeight: 700, color: 'var(--amber)', lineHeight: 1, marginBottom: 24 }}>
-                    {String(i + 1).padStart(2, '0')}
-                  </div>
-                  <div style={{ fontFamily: 'Playfair Display, serif', fontSize: '0.95rem', fontWeight: 700, color: '#f0e8d8', marginBottom: 12 }}>
-                    {steg.tittel}
-                  </div>
-                  <p style={{ fontSize: '0.845rem', color: '#a89e90', lineHeight: 1.65, fontWeight: 300 }}>{steg.beskrivelse}</p>
-                </div>
+        <section className="section after" aria-labelledby="h-steps">
+          <div className="wrap">
+            <div className="after-inner">
+              <h2 id="h-steps">Slik samarbeider vi</h2>
+            </div>
+            <ol className="steps steps-dark">
+              {p.prosessSteg.map((s, i) => (
+                <li key={s.tittel}>
+                  <span className="step-no" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+                  <h3>{s.tittel}</h3>
+                  <p>{s.beskrivelse}</p>
+                </li>
               ))}
-            </div>
+            </ol>
           </div>
-          <style>{`
-            @media (max-width: 980px) { .brl-prosess { grid-template-columns: 1fr 1fr !important; } }
-            @media (max-width: 640px) { .brl-prosess { grid-template-columns: 1fr !important; } }
-          `}</style>
         </section>
       )}
 
-      {/* ─── HVORFOR OSS ─── */}
-      {p.hvordforOss && p.hvordforOss.length > 0 && (
-        <section style={{ background: 'var(--white)', padding: '80px 5%' }}>
-          <div className="inner">
-            <div
-              className="split"
-              style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 80, alignItems: 'center' }}
-            >
-              <div className="reveal">
-                <div className="slabel">Vår fordel</div>
-                <h2 className="stitle">Derfor velger borettslag oss</h2>
-                <div className="checklist" style={{ marginTop: 32 }}>
-                  {p.hvordforOss.map((punkt, i) => (
-                    <div key={i} className="citem">
-                      <div className="cicon">✓</div>
-                      {punkt}
-                    </div>
-                  ))}
-                </div>
-                <div style={{ display: 'flex', gap: 16, marginTop: 40, flexWrap: 'wrap' }}>
-                  <Link href="/kontakt" className="btn-amber">Be om befaring</Link>
-                  <Link href="/referanser" className="btn-ghost">Se referanser →</Link>
-                </div>
-              </div>
-              <div className="reveal">
-                <div
-                  style={{
-                    background: 'var(--abg)',
-                    border: '1px solid var(--amid)',
-                    borderRadius: 8,
-                    padding: '40px',
-                  }}
-                >
-                  <div style={{ fontFamily: 'Playfair Display, serif', fontSize: '2.8rem', fontWeight: 800, color: 'var(--amber)', lineHeight: 1, marginBottom: 8 }}>100%</div>
-                  <div style={{ fontSize: '0.85rem', color: 'var(--adark)', fontWeight: 600, marginBottom: 28 }}>Dokumenterte oppdrag</div>
-                  <div style={{ borderTop: '1px solid var(--amid)', paddingTop: 24 }}>
-                    <div style={{ fontFamily: 'Playfair Display, serif', fontSize: '2rem', fontWeight: 800, color: 'var(--ink)', lineHeight: 1, marginBottom: 8 }}>1 dag</div>
-                    <div style={{ fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 300 }}>Responstid på henvendelser</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <style>{`
-            @media (max-width: 980px) { .split { grid-template-columns: 1fr !important; gap: 48px !important; } }
-          `}</style>
-        </section>
-      )}
+      <TeamSection />
+      <ReviewsSection />
 
-      {/* ─── FAQ ─── */}
       {p.faq && p.faq.length > 0 && (
-        <section style={{ background: 'var(--off)', padding: '80px 5%' }}>
-          <div className="inner" style={{ maxWidth: 800 }}>
-            <div className="slabel reveal">Spørsmål og svar</div>
-            <h2 className="stitle reveal">Vanlige spørsmål fra styret</h2>
-            <div style={{ marginTop: 48, display: 'flex', flexDirection: 'column', gap: 0 }}>
-              {p.faq.map((item, i) => (
-                <div
-                  key={i}
-                  className="reveal"
-                  style={{ borderBottom: '1px solid var(--ll)', padding: '28px 0' }}
-                >
-                  <div style={{ fontFamily: 'Playfair Display, serif', fontSize: '1rem', fontWeight: 700, color: 'var(--ink)', marginBottom: 12 }}>
-                    {item.sporsmal}
-                  </div>
-                  <p style={{ fontSize: '0.9rem', color: 'var(--muted)', lineHeight: 1.7, fontWeight: 300 }}>{item.svar}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+        <FaqList faqs={p.faq.map((f) => ({ q: f.sporsmal, a: f.svar }))} />
       )}
 
-      {/* ─── CTA ─── */}
-      <section style={{ background: 'var(--warm)', padding: '80px 5%' }}>
-        <div className="inner" style={{ maxWidth: 640, textAlign: 'center', margin: '0 auto' }}>
-          <div className="slabel slabel--center reveal">Kom i gang</div>
-          <h2 className="stitle reveal" style={{ textAlign: 'center' }}>Klar for en uforpliktende prat?</h2>
-          <p className="sdesc reveal" style={{ textAlign: 'center', marginBottom: 40 }}>
-            Ring oss eller send en forespørsel – vi hjelper styret med å finne riktig løsning.
-          </p>
-          <div className="reveal" style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link href="/kontakt" className="btn-amber">Send forespørsel</Link>
-            <a href="tel:56126800" className="btn-ghost">Ring 561 26 800 →</a>
-          </div>
-        </div>
-      </section>
-    </>
+      <ContactSection
+        title="Klar for en uforpliktende prat?"
+        lead="Fortell oss om bygget og anlegget, så kommer vi tilbake med forslag til befaring og et tydelig tilbud."
+        defaultService="borettslag-og-naering"
+      />
+    </div>
   )
 }

@@ -1,30 +1,38 @@
 export const revalidate = 60
 
+// Forsiden i samme stil som tjeneste-landingssidene (styles/landing.css).
+// Tekstene hentes fortsatt fra Sanity (forside, siteSettings, tjenester, priser, enova), med reservetekst når felt mangler.
 import { client, urlFor } from '@/lib/sanity'
 import {
   siteSettingsQuery,
   servicesQuery,
   referenceProjectsQuery,
-  faqQuery,
   forsideQuery,
   priserQuery,
   enovaQuery,
 } from '@/lib/queries'
-import type { SiteSettings, Service, ReferenceProject, FAQ, Forside, Priser, Enova } from '@/lib/types'
+import type { SiteSettings, Service, ReferenceProject, Forside, Priser, Enova } from '@/lib/types'
 import type { Metadata } from 'next'
-
+import type { ReactNode } from 'react'
 import Image from 'next/image'
-import Hero from '@/components/Hero'
-import ServiceCard from '@/components/ServiceCard'
-import FaqSection from '@/components/FaqSection'
-import ContactForm from '@/components/ContactForm'
 import Link from 'next/link'
-import GoogleReviews from '@/components/GoogleReviews'
-import PricingSection from '@/components/PricingSection'
-import EnovaTeaser from '@/components/EnovaTeaser'
-
-import { absUrl, SITE_URL } from '@/lib/site'
-import { websiteJsonLd, webPageJsonLd, faqJsonLd, jsonLdScript } from '@/lib/jsonld'
+import '@/styles/landing.css'
+import OrderForm from '@/components/landing/OrderForm'
+import ScrollMotion from '@/components/landing/ScrollMotion'
+import {
+  Check,
+  GoogleRating,
+  PhoneIcon,
+  ReviewsSection,
+  TeamSection,
+  TrustBar,
+  iconProps,
+  PriceCards,
+  EnovaBox,
+} from '@/components/landing/parts'
+import { FALLBACK_PRISKORT } from '@/lib/priser'
+import { SITE_URL } from '@/lib/site'
+import { websiteJsonLd, webPageJsonLd, jsonLdScript } from '@/lib/jsonld'
 
 export async function generateMetadata(): Promise<Metadata> {
   const forside = await client.fetch<Forside>(forsideQuery).catch(() => null)
@@ -45,616 +53,284 @@ export async function generateMetadata(): Promise<Metadata> {
       type: 'website',
       images: heroImage ? [{ url: heroImage, width: 1200, height: 630, alt: title }] : undefined,
     },
-    twitter: {
-      title,
-      description,
-      images: heroImage ? [heroImage] : undefined,
-    },
+    twitter: { title, description, images: heroImage ? [heroImage] : undefined },
   }
 }
 
-function portableTextToPlain(blocks?: unknown): string {
-  if (!Array.isArray(blocks)) return ''
-  return blocks
-    .map((b: { _type?: string; children?: { text?: string }[] }) =>
-      b._type === 'block' ? (b.children || []).map((c) => c.text || '').join('') : '',
-    )
-    .join(' ')
-    .trim()
-}
+const HERO_FALLBACK = 'https://ucarecdn.com/6cc61d81-b2bf-479a-9788-bd64ef95bda3/hf_20260224_115355_7dfea640c8064601919f0871635df4e8.jpeg'
+const BOLIG_FALLBACK = 'https://ucarecdn.com/dc624f56-8c72-4b43-8818-149be7a94947/hf_20260224_115140_8d1fc521c6fe470eabf2fe55099a1570.jpeg'
+const OMOSS_FALLBACK = 'https://ucarecdn.com/3cebd723-9ca8-4376-b03d-c3f0df6ebad4/DSC03897.jpg'
 
-// Static fallback projects
-const FALLBACK_PROJECTS: ReferenceProject[] = [
-  {
-    _id: '1',
-    title: 'Utskifting av aggregat – Enebolig',
-    slug: { current: 'utskifting-aggregat-enebolig' },
-  },
-  {
-    _id: '2',
-    title: 'Borettslag – Serviceavtale og oppfølging',
-    slug: { current: 'borettslag-serviceavtale' },
-  },
-  {
-    _id: '3',
-    title: 'Kanalrens og innregulering',
-    slug: { current: 'kanalrens-innregulering' },
-  },
+// Brukes når tjenestene ikke kan hentes fra Sanity
+const FALLBACK_SERVICES = [
+  { slug: 'service-og-vedlikehold', title: 'Service og vedlikehold', description: 'Filterbytte, kontroll av luftmengder, varmegjenvinner, vifter og styresystem.' },
+  { slug: 'kanalrens', title: 'Kanalrens', description: 'Rengjøring av ventilasjonskanaler for bedre luftkvalitet og riktig luftstrøm.' },
+  { slug: 'innregulering', title: 'Innregulering', description: 'Riktig luftmengde i alle rom. Optimalisering av tilluft og avtrekk for lavere energibruk.' },
+  { slug: 'montasje-og-utskifting', title: 'Montasje og utskifting', description: 'Montasje av aggregat, ventilasjonsanlegg og avtrekksvifter for bolig og næring.' },
+  { slug: 'serviceavtale', title: 'Serviceavtale', description: 'Fast avtale med oppfølging. Anbefalt for borettslag og sameier.' },
+  { slug: 'borettslag-og-naering', title: 'For borettslag og næring', description: 'Tilpassede løsninger for sameier, borettslag og mindre næringsbygg.' },
 ]
 
-// Static fallback FAQs
-const FALLBACK_FAQS: FAQ[] = [
-  {
-    _id: 'faq1',
-    question: 'Hvor ofte bør ventilasjonsanlegg ha service?',
-    answer: [
-      {
-        _type: 'block',
-        children: [
-          {
-            _type: 'span',
-            text: 'De fleste anlegg bør ha service én gang per år. Borettslag og næringsbygg med høy belastning kan ha behov for hyppigere oppfølging. Vi anbefaler konkret intervall etter første kartlegging av ditt anlegg.',
-          },
-        ],
-      },
-    ],
-  },
-  {
-    _id: 'faq2',
-    question: 'Hva koster service?',
-    answer: [
-      {
-        _type: 'block',
-        children: [
-          {
-            _type: 'span',
-            text: 'Prisen varierer etter anleggstype og størrelse. Vi gir alltid et tydelig tilbud etter kartlegging – ingen skjulte kostnader. Ta kontakt for en uforpliktende prat.',
-          },
-        ],
-      },
-    ],
-  },
-  {
-    _id: 'faq3',
-    question: 'Hvor lang tid tar et servicebesøk?',
-    answer: [
-      {
-        _type: 'block',
-        children: [
-          {
-            _type: 'span',
-            text: 'Et standard servicebesøk tar typisk 1–3 timer avhengig av anleggets størrelse og tilstand. Vi informerer om estimert tid ved bestilling.',
-          },
-        ],
-      },
-    ],
-  },
-  {
-    _id: 'faq4',
-    question: 'Må jeg være hjemme under besøket?',
-    answer: [
-      {
-        _type: 'block',
-        children: [
-          {
-            _type: 'span',
-            text: 'For private boliger foretrekker vi at noen er til stede, særlig ved første besøk. For borettslag og sameier avtaler vi adkomst med forvalter.',
-          },
-        ],
-      },
-    ],
-  },
-  {
-    _id: 'faq5',
-    question: 'Får jeg dokumentasjon etter besøket?',
-    answer: [
-      {
-        _type: 'block',
-        children: [
-          {
-            _type: 'span',
-            text: 'Ja, alltid. Du mottar en servicerapport med alle målinger, utførte tiltak og eventuelle anbefalinger. Borettslag og sameier får rapport tilpasset styret.',
-          },
-        ],
-      },
-    ],
-  },
-  {
-    _id: 'faq6',
-    question: 'Hva er forskjellen på service og innregulering?',
-    answer: [
-      {
-        _type: 'block',
-        children: [
-          {
-            _type: 'span',
-            text: 'Service innebærer rengjøring og kontroll av anleggets komponenter. Innregulering handler om å balansere luftmengdene i alle rom for optimal ytelse og energieffektivitet.',
-          },
-        ],
-      },
-    ],
-  },
+const SERVICE_ICONS: Record<string, ReactNode> = {
+  'service-og-vedlikehold': (<svg {...iconProps}><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z" /></svg>),
+  kanalrens: (<svg {...iconProps}><circle cx="12" cy="12" r="8" /><circle cx="12" cy="12" r="3.5" /><path d="M12 4v4.5M12 15.5V20M4 12h4.5M15.5 12H20" /></svg>),
+  innregulering: (<svg {...iconProps}><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0" /><circle cx="16" cy="6" r="2" /><circle cx="10" cy="12" r="2" /><circle cx="18" cy="18" r="2" /></svg>),
+  'montasje-og-utskifting': (<svg {...iconProps}><rect x="3" y="6" width="18" height="12" rx="2" /><circle cx="9" cy="12" r="3" /><path d="M15 10h3M15 14h3" /></svg>),
+  serviceavtale: (<svg {...iconProps}><rect x="4" y="3" width="16" height="18" rx="2" /><path d="M8 8h8M8 12h8M8 16h4" /><path d="M14 17l1.5 1.5L19 15" /></svg>),
+  'borettslag-og-naering': (<svg {...iconProps}><path d="M4 21V8l8-5 8 5v13" /><path d="M9 21v-6h6v6M9 10h.01M15 10h.01" /></svg>),
+}
+
+const FALLBACK_STEPS = [
+  { nummer: '01', tittel: 'Kartlegging', beskrivelse: 'Vi går gjennom anlegget og kartlegger behovet før vi starter arbeidet.' },
+  { nummer: '02', tittel: 'Utførelse', beskrivelse: 'Service, kanalrens eller montasje utføres etter avtalt arbeid.' },
+  { nummer: '03', tittel: 'Kontroll', beskrivelse: 'Vi kontrollerer resultatet av arbeidet og gir tilbakemelding på anleggets tilstand og eventuelle tiltak.' },
+  { nummer: '04', tittel: 'Oppfølging', beskrivelse: 'Vi følger opp kundene over tid og gir anbefalinger for videre vedlikehold.' },
 ]
 
 export default async function Home() {
-  const [settings, services, projects, faqs, forside, priser, enova] = await Promise.all([
+  const [settings, services, projects, forside, priser, enova] = await Promise.all([
     client.fetch<SiteSettings>(siteSettingsQuery).catch(() => null),
     client.fetch<Service[]>(servicesQuery).catch(() => []),
     client.fetch<ReferenceProject[]>(referenceProjectsQuery).catch(() => []),
-    client.fetch<FAQ[]>(faqQuery).catch(() => []),
     client.fetch<Forside>(forsideQuery).catch(() => null),
     client.fetch<Priser>(priserQuery).catch(() => null),
     client.fetch<Enova>(enovaQuery).catch(() => null),
   ])
 
-  const displayProjects = projects.length > 0 ? projects : FALLBACK_PROJECTS
-  const displayFaqs = faqs.length > 0 ? faqs : FALLBACK_FAQS
+  const serviceList =
+    services.length > 0
+      ? services.map((s) => ({ slug: s.slug.current, title: s.title, description: s.description }))
+      : FALLBACK_SERVICES
+  const prisKort = priser?.kort ?? FALLBACK_PRISKORT
+  const steps = forside?.prosessSteg ?? FALLBACK_STEPS
+  const gallery = projects
+    .flatMap((p) => (p.galleri || []).map((img) => ({ img, title: p.title })))
+    .slice(0, 6)
 
-  const homeWebSite = websiteJsonLd()
-  const homeWebPage = webPageJsonLd({
-    path: '/',
-    name: forside?.seoTittel || 'Straume Boligvent',
-    description: forside?.seoDescription,
-  })
-  const homeFaq =
-    displayFaqs.length > 0
-      ? faqJsonLd(
-          displayFaqs.map((f) => ({
-            question: f.question,
-            answer: portableTextToPlain(f.answer),
-          })),
-        )
-      : null
+  const phone = settings?.phone || '56 12 68 00'
+  const email = settings?.email || 'ordre@straumetekniske.no'
+  const heroImage = forside?.heroBilde ? urlFor(forside.heroBilde).width(1200).height(900).url() : HERO_FALLBACK
+  const boligImage = forside?.boligeierBilde ? urlFor(forside.boligeierBilde).width(1000).height(750).url() : BOLIG_FALLBACK
+  const omOssImage = forside?.omOssBilde ? urlFor(forside.omOssBilde).width(800).height(1000).url() : OMOSS_FALLBACK
+
+  const schemas = [
+    websiteJsonLd(),
+    webPageJsonLd({ path: '/', name: forside?.seoTittel || 'Straume Boligvent', description: forside?.seoDescription }),
+  ]
 
   return (
-    <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(homeWebSite)} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(homeWebPage)} />
-      {homeFaq && <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(homeFaq)} />}
-      <Hero settings={settings} forside={forside} />
+    <div className="kr home">
+      <ScrollMotion />
+      {schemas.map((s, i) => (
+        <script key={i} type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(s)} />
+      ))}
 
-      {/* ─── TJENESTER ─── */}
-      <section id="tjenester" style={{ background: 'var(--off)', padding: '108px 5%' }}>
-        <div className="inner">
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'flex-end',
-              marginBottom: 56,
-              gap: 32,
-            }}
-            className="stitle-row"
-          >
-            <div>
-              <div className="slabel">{forside?.tjenesterLabel ?? 'Hva vi gjør'}</div>
-              <h2 className="stitle">{forside?.tjenesterTittel ?? 'Tjenester for bolig og borettslag'}</h2>
-              <p className="sdesc">{forside?.tjenesterBeskrivelse ?? 'Fra enkelt filterbytte til full montasje og utskifting av anlegg.'}</p>
+      {/* 1. Hero */}
+      <section className="hero" aria-labelledby="h1">
+        <div className="wrap hero-grid">
+          <div>
+            <span className="hero-eyebrow">{settings?.heroPill || 'Bergen og omegn · Siden 2012'}</span>
+            <h1 id="h1">{settings?.heroTitle || 'Ventilasjonsservice for bolig i Bergen'}</h1>
+            <p className="hero-sub">
+              {settings?.heroDescription ||
+                'Vi hjelper deg med service, vedlikehold, rens, innregulering og montering med tydelig oppfølging fra befaring til ferdig utført arbeid.'}
+            </p>
+            <div className="hero-ctas">
+              <a className="btn btn-primary btn-block-m" id="cta-hero" href="#bestill">{forside?.heroCta1Tekst ?? 'Ta kontakt'}</a>
+              <a className="btn btn-secondary btn-block-m" id="cta-ring" href={`tel:${phone.replace(/\s/g, '')}`}>
+                <PhoneIcon />
+                Ring {phone}
+              </a>
             </div>
+            <ul className="hero-points">
+              {(forside?.trustItems ?? ['Tydelig pris før oppstart', 'Langsiktig oppfølging', 'Kun nødvendige tiltak', 'Svar innen 24 timer']).map((t) => (
+                <li key={t}><Check size={18} />{t}</li>
+              ))}
+            </ul>
+            <GoogleRating />
           </div>
 
-          {services.length > 0 ? (
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(3, 1fr)',
-                border: '1px solid var(--ll)',
-                borderRadius: 4,
-                overflow: 'hidden',
-              }}
-              className="services-grid"
-            >
-              {services.map((s, i) => (
-                <ServiceCard key={s._id} service={s} index={i} />
+          <figure className="hero-media">
+            <Image src={heroImage} width={1200} height={900} priority sizes="(min-width: 900px) 540px, 100vw" alt="Montør fra Straume Boligvent ved et ventilasjonsanlegg" />
+            <figcaption className="hero-stats">
+              {(forside?.heroStats ?? [{ verdi: '12+', label: 'År i bransjen' }, { verdi: '1 dag', label: 'Responstid' }]).map((s) => (
+                <div key={s.label}><strong>{s.verdi}</strong><span>{s.label}</span></div>
               ))}
-            </div>
-          ) : (
-            /* Fallback static grid */
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(3, 1fr)',
-                border: '1px solid var(--ll)',
-                borderRadius: 4,
-                overflow: 'hidden',
-              }}
-              className="services-grid"
-            >
-              {[
-                { icon: (<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>), name: 'Service og vedlikehold', desc: 'Filterbytte, kontroll av luftmengder, varmegjenvinner, vifter og styresystem.' },
-                { icon: (<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/><circle cx="12" cy="12" r="3"/></svg>), name: 'Kanalrens', desc: 'Rengjøring av vifte, motor, kanaler og kjøkkenavtrekk. Måling og justering.' },
-                { icon: (<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20V10m0 0l-3 3m3-3l3 3"/><path d="M12 4V2"/><path d="M4 14h16"/><rect x="2" y="6" width="20" height="12" rx="2"/></svg>), name: 'Innregulering', desc: 'Riktig luftmengde i alle rom. Optimalisering av tilluft og avtrekk for lavere energibruk.' },
-                { icon: (<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 6v12"/><path d="M2 12h20"/><path d="M6 2v4m12-4v4"/></svg>), name: 'Montasje og utskifting', desc: 'Montasje av aggregat, ventilasjonsanlegg og avtrekksvifter for bolig og næring.' },
-                { icon: (<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 12l2 2 4-4"/><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/><path d="M12 6v1m0 10v1"/></svg>), name: 'Serviceavtale', desc: 'Fast avtale med oppfølging. Anbefalt for borettslag og sameier.' },
-                { icon: (<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>), name: 'For borettslag og næring', desc: 'Tilpassede løsninger for sameier, borettslag og mindre næringsbygg.', hl: true },
-              ].map((s, i) => (
-                <div
-                  key={s.name}
-                  className={`scard reveal${s.hl ? ' hl' : ''}`}
-                  style={{
-                    padding: '40px 36px',
-                    borderRight: i % 3 !== 2 ? '1px solid var(--ll)' : undefined,
-                    borderBottom: i < 3 ? '1px solid var(--ll)' : undefined,
-                    background: s.hl ? 'var(--abg)' : 'var(--white)',
-                    position: 'relative',
-                    overflow: 'hidden',
-                    transition: 'background 0.25s',
-                  }}
-                >
-                  <div className="scard-bar" style={{ position: 'absolute', top: 0, left: 0, width: 3, height: 0, background: 'var(--amber)', transition: 'height 0.3s ease' }} />
-                  <div style={{ marginBottom: 20 }}>{s.icon}</div>
-                  <div style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.05rem', fontWeight: 700, color: 'var(--ink)', marginBottom: 12, lineHeight: 1.2 }}>{s.name}</div>
-                  <p style={{ fontSize: '0.855rem', color: 'var(--muted)', lineHeight: 1.7, fontWeight: 300 }}>{s.desc}</p>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-          <div style={{ textAlign: 'center', marginTop: 48 }}>
-            <Link href="/kontakt" className="btn-amber">
-              {forside?.tjenesterCtaTekst ?? 'Kontakt oss for tilbud'}
-            </Link>
-          </div>
-        <style>{`
-          .services-grid .scard:nth-child(3n) { border-right: none !important; }
-          .services-grid .scard:nth-child(n+4) { border-bottom: none !important; }
-          .scard:hover { background: var(--alight) !important; }
-          .scard.hl:hover { background: #fff3c0 !important; }
-          .scard:hover .scard-bar { height: 100% !important; }
-          @media (max-width: 980px) {
-            .services-grid { grid-template-columns: 1fr 1fr !important; }
-            .stitle-row { flex-direction: column; align-items: flex-start; }
-          }
-          @media (max-width: 640px) {
-            .services-grid { grid-template-columns: 1fr !important; }
-          }
-        `}</style>
-      </section>
-
-      {/* ─── PRISER ─── */}
-      <section id="priser" style={{ background: 'var(--white)', padding: '108px 5%' }}>
-        <div className="inner">
-          <div className="slabel reveal">{priser?.tittel ? 'Våre priser' : 'Våre priser'}</div>
-          <h2 className="stitle reveal">{priser?.tittel ?? 'Tjenester for ventilasjon i bolig'}</h2>
-          <p className="sdesc reveal" style={{ marginBottom: 60 }}>
-            {priser?.beskrivelse ?? 'Vi hjelper deg med service, kanalrens og utskifting av ventilasjonsaggregat – tilpasset anlegget og behovet i boligen din.'}
-          </p>
-          <PricingSection priser={priser} compact />
+            </figcaption>
+          </figure>
         </div>
       </section>
 
-      {/* ─── ENOVA-STØTTE ─── */}
-      <EnovaTeaser enova={enova} />
+      {/* 2. Tillitslinje og leverandører */}
+      <TrustBar />
+      <div className="partners" aria-label={forside?.partnerLabel ?? 'Samarbeidspartnere'}>
+        <div className="wrap">
+          <span>{forside?.partnerLabel ?? 'Samarbeidspartnere'}:</span>
+          {(forside?.partnere ?? ['Swegon', 'Flexit', 'Ventistål', 'Systemair']).map((p) => (<b key={p}>{p}</b>))}
+        </div>
+      </div>
 
-      {/* ─── PROSESS ─── */}
-      <section id="prosess" style={{ background: '#1e1a12', padding: '108px 5%' }}>
-        <div className="inner">
-          <div className="slabel slabel--dark reveal">{forside?.prosessLabel ?? 'Arbeidsmetode'}</div>
-          <h2 className="stitle reveal" style={{ color: '#f5f0e8' }}>{forside?.prosessTittel ?? 'Slik jobber vi'}</h2>
-          <p className="sdesc reveal" style={{ color: '#a89e90' }}>
-            {forside?.prosessBeskrivelse ?? 'Alle oppdrag gjennomføres etter en fast arbeidsmetode – fra kartlegging til oppfølging.'}
-          </p>
-          <div
-            className="process-grid"
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(4, 1fr)',
-              gap: 1,
-              marginTop: 60,
-              background: '#302a1e',
-              borderRadius: 6,
-              overflow: 'hidden',
-            }}
-          >
-            {(forside?.prosessSteg ?? [
-              { nummer: '01', tittel: 'Kartlegging', beskrivelse: 'Vi kontrollerer resultatet av arbeidet og gir tilbakemelding på anleggets tilstand og eventuelle tiltak.' },
-              { nummer: '02', tittel: 'Utførelse', beskrivelse: 'Service, kanalrens eller montasje utføres etter avtalt arbeid.' },
-              { nummer: '03', tittel: 'Kontroll', beskrivelse: 'Vi kontrollerer resultatet av arbeidet og gir tilbakemelding på anleggets tilstand og eventuelle tiltak.' },
-              { nummer: '04', tittel: 'Oppfølging', beskrivelse: 'Vi følger opp kundene over tid og gir anbefalinger for videre vedlikehold.' },
-            ]).map((step) => (
-              <div
-                key={step.nummer}
-                className="pstep reveal"
-                style={{
-                  background: '#272114',
-                  padding: '48px 36px',
-                  position: 'relative',
-                  transition: 'background 0.25s',
-                }}
-              >
-                <div style={{ fontFamily: 'Playfair Display, serif', fontSize: '3rem', fontWeight: 700, color: 'var(--amber)', lineHeight: 1, marginBottom: 28, opacity: 0.9 }}>{step.nummer}</div>
-                <div style={{ fontFamily: 'Playfair Display, serif', fontSize: '1rem', fontWeight: 700, color: '#f0e8d8', marginBottom: 14 }}>{step.tittel}</div>
-                <p style={{ fontSize: '0.845rem', color: '#a89e90', lineHeight: 1.7, fontWeight: 300 }}>{step.beskrivelse}</p>
-              </div>
+      {/* 3. Tjenester */}
+      <section className="section" id="tjenester" aria-labelledby="h-svc">
+        <div className="wrap">
+          <h2 id="h-svc">{forside?.tjenesterTittel ?? 'Tjenester for bolig og borettslag'}</h2>
+          <p className="lead">{forside?.tjenesterBeskrivelse ?? 'Fra enkelt filterbytte til full montasje og utskifting av anlegg.'}</p>
+          <div className="svc-grid">
+            {serviceList.map((s) => (
+              <Link key={s.slug} className="svc-card" href={`/tjenester/${s.slug}`}>
+                <span className="icon" aria-hidden="true">{SERVICE_ICONS[s.slug] ?? SERVICE_ICONS['service-og-vedlikehold']}</span>
+                <h3>{s.title}</h3>
+                {s.description && <p>{s.description}</p>}
+                <span className="more">Les mer <span aria-hidden="true">→</span></span>
+              </Link>
             ))}
           </div>
-          <div style={{ textAlign: 'center', marginTop: 48 }}>
-            <Link href="/kontakt" className="btn-amber">
-              {forside?.prosessCtaTekst ?? 'Ta kontakt'}
-            </Link>
-          </div>
-        </div>
-        <style>{`
-          .pstep:hover { background: #322a1c !important; }
-          @media (max-width: 980px) {
-            .process-grid { grid-template-columns: 1fr 1fr !important; }
-          }
-          @media (max-width: 640px) {
-            .process-grid { grid-template-columns: 1fr !important; }
-          }
-        `}</style>
-      </section>
-
-      {/* ─── ANMELDELSER ─── */}
-      <section id="anmeldelser" style={{ background: 'var(--white)', padding: '108px 5%' }}>
-        <div className="inner">
-          <div className="slabel reveal">{forside?.anmeldelserLabel ?? 'Erfaringer'}</div>
-          <h2 className="stitle reveal">{forside?.anmeldelserTittel ?? 'Hva kundene i Bergen sier'}</h2>
-          <div style={{ marginTop: 60 }}>
-            <GoogleReviews />
-          </div>
         </div>
       </section>
 
-      {/* ─── BOLIGEIERE ─── */}
-      <section id="boligeiere" style={{ background: 'var(--warm)', padding: '108px 5%' }}>
-        <div className="inner">
-          <div
-            className="split"
-            style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 80, alignItems: 'center' }}
-          >
-            <div className="reveal">
-              <div className="slabel">{forside?.boligeierLabel ?? 'Boligeiere'}</div>
-              <h2 className="stitle">{forside?.boligeierTittel ?? 'For deg som eier bolig'}</h2>
-              <p className="sdesc">{forside?.boligeierBeskrivelse ?? 'Ventilasjonsanlegget går hver dag. Regelmessig service gir:'}</p>
-              <div className="checklist">
-                {(forside?.boligeierSjekkpunkter ?? ['Bedre inneklima', 'Stabil temperatur', 'Lavere energibruk', 'Lengre levetid på anlegget']).map((item) => (
-                  <div key={item} className="citem">
-                    <div className="cicon">✓</div>
-                    {item}
-                  </div>
+      {/* 4. Priser */}
+      <section className="section alt" id="priser" aria-labelledby="h-pris">
+        <div className="wrap">
+          <h2 id="h-pris">{priser?.tittel ?? 'Priser for ventilasjon i bolig'}</h2>
+          <p className="lead">{priser?.beskrivelse ?? 'Vi hjelper deg med service, kanalrens og utskifting av ventilasjonsaggregat – tilpasset anlegget og behovet i boligen din.'}</p>
+          <PriceCards kort={prisKort} />
+          <p className="price-foot">
+            {priser?.fotnoteTekst ?? 'Usikker på hva ventilasjonen trenger? Vi hjelper deg å vurdere anlegget.'}{' '}
+            <a className="text-link" href="#bestill">{priser?.fotnoteCtaTekst ?? 'Ta kontakt'}</a>
+          </p>
+        </div>
+      </section>
+
+      {/* 5. Enova-støtte */}
+      <section className="section" aria-labelledby="h-enova">
+        <div className="wrap">
+          <EnovaBox enova={enova} />
+        </div>
+      </section>
+
+      {/* 6. Slik jobber vi */}
+      <section className="section after" id="prosess" aria-labelledby="h-steps">
+        <div className="wrap">
+          <div className="after-inner">
+            <h2 id="h-steps">{forside?.prosessTittel ?? 'Slik jobber vi'}</h2>
+            <p className="lead">{forside?.prosessBeskrivelse ?? 'Alle oppdrag gjennomføres etter en fast arbeidsmetode – fra kartlegging til oppfølging.'}</p>
+          </div>
+          <ol className="steps steps-dark">
+            {steps.map((s) => (
+              <li key={s.nummer}>
+                <span className="step-no" aria-hidden="true">{s.nummer}</span>
+                <h3>{s.tittel}</h3>
+                <p>{s.beskrivelse}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* 7. For boligeiere */}
+      <section className="section" id="boligeiere" aria-labelledby="h-bolig">
+        <div className="wrap">
+          <div className="incl-grid">
+            <div className="split-text">
+              <h2 id="h-bolig">{forside?.boligeierTittel ?? 'For deg som eier bolig'}</h2>
+              <p className="lead">{forside?.boligeierBeskrivelse ?? 'Ventilasjonsanlegget går hver dag. Regelmessig service gir:'}</p>
+              <ul className="checks flush">
+                {(forside?.boligeierSjekkpunkter ?? ['Bedre inneklima', 'Stabil temperatur', 'Lavere energibruk', 'Lengre levetid på anlegget']).map((t) => (
+                  <li key={t}><Check />{t}</li>
                 ))}
-              </div>
-              <div className="note">
-                {forside?.boligeierNotat ?? 'Vi tilpasser tiltaket etter boligens behov – ikke mer enn nødvendig.'}
-              </div>
+              </ul>
+              <p className="note">{forside?.boligeierNotat ?? 'Vi tilpasser tiltaket etter boligens behov – ikke mer enn nødvendig.'}</p>
             </div>
-            <div className="reveal" style={{ position: 'relative' }}>
-              <div
-                style={{
-                  width: '100%',
-                  aspectRatio: '4/3',
-                  borderRadius: 6,
-                  overflow: 'hidden',
-                  boxShadow: '0 16px 48px rgba(20,16,8,0.1)',
-                  position: 'relative',
-                }}
-              >
-                <Image
-                  src={forside?.boligeierBilde
-                    ? urlFor(forside.boligeierBilde).width(800).height(600).url()
-                    : 'https://ucarecdn.com/dc624f56-8c72-4b43-8818-149be7a94947/hf_20260224_115140_8d1fc521c6fe470eabf2fe55099a1570.jpeg'}
-                  alt="For deg som eier bolig"
-                  fill
-                  style={{ objectFit: 'cover' }}
-                />
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: 20,
-                    left: 20,
-                    background: 'var(--amber)',
-                    color: 'var(--ink)',
-                    fontSize: '0.67rem',
-                    fontWeight: 700,
-                    letterSpacing: '0.14em',
-                    textTransform: 'uppercase',
-                    padding: '6px 12px',
-                    borderRadius: 2,
-                  }}
-                >
-                  {forside?.boligeierBadge ?? 'For boligeiere'}
-                </div>
-              </div>
-            </div>
+            <figure className="split-figure">
+              <Image src={boligImage} width={1000} height={750} sizes="(min-width: 900px) 460px, 100vw" alt="Ventilasjonsanlegg i en bolig" />
+              <figcaption className="split-badge">{forside?.boligeierBadge ?? 'For boligeiere'}</figcaption>
+            </figure>
           </div>
         </div>
-        <style>{`
-          @media (max-width: 980px) { .split { grid-template-columns: 1fr !important; gap: 48px !important; } }
-        `}</style>
       </section>
 
-      {/* ─── OM OSS ─── */}
-      <section id="om-oss" style={{ background: 'var(--off)', padding: '108px 5%' }}>
-        <div className="inner">
-          <div
-            className="split"
-            style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 80, alignItems: 'center' }}
-          >
-            <div className="reveal" style={{ position: 'relative' }}>
-              <div
-                style={{
-                  width: '100%',
-                  aspectRatio: '4/5',
-                  borderRadius: 6,
-                  overflow: 'hidden',
-                  boxShadow: '0 16px 48px rgba(20,16,8,0.1)',
-                  position: 'relative',
-                }}
-              >
-                <Image
-                  src={forside?.omOssBilde
-                    ? urlFor(forside.omOssBilde).width(800).height(1000).url()
-                    : 'https://ucarecdn.com/3cebd723-9ca8-4376-b03d-c3f0df6ebad4/DSC03897.jpg'}
-                  alt="Om Straume Boligvent"
-                  fill
-                  style={{ objectFit: 'cover' }}
-                />
-                <div
-                  style={{
-                    position: 'absolute',
-                    bottom: 0,
-                    right: 0,
-                    background: 'var(--amber)',
-                    padding: '22px 28px',
-                    borderRadius: '6px 0 6px 0',
-                  }}
-                >
-                  <div style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.5rem', fontWeight: 700, color: 'var(--ink)' }}>{forside?.omOssBadgeTittel ?? 'Boligvent'}</div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--adark)', marginTop: 5, fontWeight: 700, letterSpacing: '0.04em' }}>{forside?.omOssBadgeTekst ?? 'Del av Straume Tekniske AS'}</div>
-                </div>
-              </div>
-            </div>
-            <div className="reveal">
-              <div className="slabel">{forside?.omOssLabel ?? 'Om oss'}</div>
-              <h2 className="stitle" dangerouslySetInnerHTML={{ __html: (forside?.omOssTittel ?? 'Lokal fagkunnskap.<br />Langsiktige relasjoner.').replace(/\n/g, '<br />') }} />
-              <p style={{ fontSize: '0.925rem', color: 'var(--muted)', lineHeight: 1.8, marginBottom: 16, fontWeight: 300 }}>
-                {forside?.omOssAvsnitt1 ?? 'Spesialisert ventilasjon siden 2012 – del av Straume Tekniske AS.'}
-              </p>
-              <p style={{ fontSize: '0.925rem', color: 'var(--muted)', lineHeight: 1.8, marginBottom: 16, fontWeight: 300 }}>
-                {forside?.omOssAvsnitt2 ?? 'Én kontaktperson, fullt ansvar, bredt fagmiljø i ryggen.'}
-              </p>
-              <div className="checklist">
+      {/* 8. Montører */}
+      <TeamSection />
+
+      {/* 9. Kundeomtaler */}
+      <ReviewsSection title={forside?.anmeldelserTittel ?? 'Hva kundene i Bergen sier'} />
+
+      {/* 10. Om oss */}
+      <section className="section" id="om-oss" aria-labelledby="h-om">
+        <div className="wrap">
+          <div className="incl-grid om-grid">
+            <figure className="split-figure tall">
+              <Image src={omOssImage} width={800} height={1000} sizes="(min-width: 900px) 440px, 100vw" alt="Straume Boligvent" />
+              <figcaption className="split-badge bottom">
+                {forside?.omOssBadgeTittel ?? 'Boligvent'}
+                <small>{forside?.omOssBadgeTekst ?? 'Del av Straume Tekniske AS'}</small>
+              </figcaption>
+            </figure>
+            <div className="split-text">
+              <h2 id="h-om">{forside?.omOssTittel ?? 'Lokal fagkunnskap. Langsiktige relasjoner.'}</h2>
+              <p className="lead">{forside?.omOssAvsnitt1 ?? 'Spesialisert ventilasjon siden 2012 – del av Straume Tekniske AS.'}</p>
+              <p className="lead">{forside?.omOssAvsnitt2 ?? 'Én kontaktperson, fullt ansvar, bredt fagmiljø i ryggen.'}</p>
+              <ul className="checks flush">
                 {(forside?.omOssSjekkpunkter ?? [
                   'Sertifiserte teknikere med dokumentert kompetanse',
                   'Erfaring med Flexit, Systemair og Ventiståhl',
                   'Komplett leveranse – service til montasje',
                   'Tilpasset oppfølging for borettslag og sameier',
                   'Langsiktig oppfølging – ikke engangsoppdrag',
-                ]).map((item) => (
-                  <div key={item} className="citem">
-                    <div className="cicon">✓</div>
-                    {item}
-                  </div>
-                ))}
-              </div>
-              <Link href="/kontakt" className="btn-amber" style={{ marginTop: 16, display: 'inline-flex' }}>
-                {forside?.omOssCtaTekst ?? 'Ta kontakt'}
-              </Link>
+                ]).map((t) => (<li key={t}><Check />{t}</li>))}
+              </ul>
+              <Link className="text-link" href="/om-oss">Les mer om oss</Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ─── GALLERI ─── */}
-      <section id="galleri" style={{ background: 'var(--warm)', padding: '108px 5%' }}>
-        <div className="inner">
-          <div className="slabel reveal">{forside?.galleriLabel ?? 'Galleri'}</div>
-          <h2 className="stitle reveal">{forside?.galleriTittel ?? 'Bilder fra oppdrag i Bergen og omegn'}</h2>
-          <p className="sdesc reveal">
-            {forside?.galleriBeskrivelse ?? 'Et utvalg bilder fra arbeid vi har utført for boligeiere og borettslag i Bergen og omegn.'}
-          </p>
-          <div
-            className="gallery-home-grid"
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
-              gap: 16,
-              marginTop: 60,
-            }}
-          >
-            {displayProjects
-              .flatMap((p) => (p.galleri || []).map((img) => ({ img, title: p.title, id: p._id })))
-              .slice(0, 6)
-              .map((item, idx) => (
-              <Link
-                key={`${item.id}-${idx}`}
-                href="/galleri"
-                className="gallery-home-item reveal"
-                style={{
-                  position: 'relative',
-                  aspectRatio: '4/3',
-                  borderRadius: 6,
-                  overflow: 'hidden',
-                  display: 'block',
-                }}
-              >
-                <Image
-                  src={urlFor(item.img).width(640).height(480).url()}
-                  alt={item.img.alt || item.title}
-                  fill
-                  style={{ objectFit: 'cover', transition: 'transform 0.3s' }}
-                />
-              </Link>
-            ))}
-          </div>
-          <div style={{ textAlign: 'center', marginTop: 40 }}>
-            <Link href="/galleri" className="btn-ghost">
-              {forside?.galleriCtaTekst ?? 'Se hele galleriet →'}
-            </Link>
-          </div>
-        </div>
-        <style>{`
-          .gallery-home-item:hover img { transform: scale(1.05); }
-          @media (max-width: 980px) { .gallery-home-grid { grid-template-columns: 1fr 1fr !important; } }
-          @media (max-width: 640px) { .gallery-home-grid { grid-template-columns: 1fr !important; } }
-        `}</style>
-      </section>
-
-      {/* ─── FAQ ─── (skjult inntil videre) */}
-      {/* <FaqSection faqs={displayFaqs} /> */}
-
-      {/* ─── KONTAKT ─── */}
-      <section id="kontakt" style={{ background: 'var(--warm)', padding: '108px 5%' }}>
-        <div className="inner">
-          <div className="slabel reveal">{forside?.kontaktLabel ?? 'Kom i gang'}</div>
-          <div
-            className="contact-grid"
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1.4fr',
-              gap: 80,
-              marginTop: 60,
-              alignItems: 'start',
-            }}
-          >
-            <div className="reveal">
-              <h2
-                style={{
-                  fontFamily: 'Playfair Display, serif',
-                  fontSize: 'clamp(1.9rem, 3vw, 2.8rem)',
-                  fontWeight: 700,
-                  color: 'var(--ink)',
-                  lineHeight: 1.15,
-                  marginBottom: 20,
-                }}
-              >
-                {(forside?.kontaktTittel ?? 'Ta kontakt – vi svarer innen én virkedag').split('\n').map((line, i, arr) => (
-                  <span key={i}>{line}{i < arr.length - 1 && <br />}</span>
-                ))}
-              </h2>
-              <p style={{ fontSize: '0.9rem', color: 'var(--muted)', lineHeight: 1.8, marginBottom: 40, fontWeight: 300 }}>
-                {forside?.kontaktBeskrivelse ?? 'Fyll ut skjemaet, eller ring oss direkte. Vi stiller gjerne spørsmål om anlegget ditt for å gi deg riktig tilbud.'}
-              </p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-                {[
-                  { lbl: 'Telefon', val: settings?.phone || '561 26 800', href: `tel:${(settings?.phone || '561 26 800').replace(/\s/g, '')}` },
-                  { lbl: 'E-post', val: settings?.email || 'ordre@straumetekniske.no', href: `mailto:${settings?.email || 'ordre@straumetekniske.no'}` },
-                  { lbl: 'Adresse', val: settings?.address || 'Idrettsveien 93, 5353 Straume', href: undefined },
-                  { lbl: 'Åpent', val: forside?.kontaktApningstider || 'Man–Fre 08:00–16:00 · Lør 09:00–15:00', href: undefined },
-                ].map((row) => (
-                  <div key={row.lbl} style={{ display: 'flex', gap: 18, alignItems: 'flex-start' }}>
-                    <span style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--sec)', width: 64, flexShrink: 0, paddingTop: 3 }}>
-                      {row.lbl}
-                    </span>
-                    {row.href ? (
-                      <a href={row.href} style={{ fontSize: '0.875rem', color: 'var(--adark)', fontWeight: 700, textDecoration: 'none', lineHeight: 1.6 }}>{row.val}</a>
-                    ) : (
-                      <span style={{ fontSize: '0.875rem', color: 'var(--body)', lineHeight: 1.6 }}>{row.val}</span>
-                    )}
-                  </div>
-                ))}
-              </div>
+      {/* 11. Galleri */}
+      {gallery.length > 0 && (
+        <section className="section alt" id="galleri" aria-labelledby="h-gal">
+          <div className="wrap">
+            <h2 id="h-gal">{forside?.galleriTittel ?? 'Bilder fra oppdrag i Bergen og omegn'}</h2>
+            <p className="lead">{forside?.galleriBeskrivelse ?? 'Et utvalg bilder fra arbeid vi har utført for boligeiere og borettslag i Bergen og omegn.'}</p>
+            <div className="gallery-grid">
+              {gallery.map((g, i) => (
+                <Link key={i} href="/galleri">
+                  <Image src={urlFor(g.img).width(640).height(480).url()} width={640} height={480} sizes="(min-width: 900px) 360px, 50vw" alt={g.img.alt || g.title} />
+                </Link>
+              ))}
             </div>
-            <div className="reveal">
-              <ContactForm services={services} />
-            </div>
+            <p className="reviews-more"><Link className="text-link" href="/galleri">{(forside?.galleriCtaTekst ?? 'Se hele galleriet').replace(/\s*→$/, '')}</Link></p>
           </div>
+        </section>
+      )}
+
+      {/* 12. Kontakt */}
+      <section className="order" id="bestill" aria-labelledby="h-order">
+        <div className="wrap order-grid">
+          <div className="order-aside">
+            <h2 id="h-order">{forside?.kontaktTittel ?? 'Ta kontakt – vi svarer innen én virkedag'}</h2>
+            <p className="lead">{forside?.kontaktBeskrivelse ?? 'Fyll ut skjemaet, eller ring oss direkte. Vi stiller gjerne spørsmål om anlegget ditt for å gi deg riktig tilbud.'}</p>
+            <ul className="contact-rows">
+              <li><span>Telefon</span><a href={`tel:${phone.replace(/\s/g, '')}`}>{phone}</a></li>
+              <li><span>E-post</span><a href={`mailto:${email}`}>{email}</a></li>
+              <li><span>Adresse</span><span>{settings?.address || 'Idrettsveien 93, 5353 Straume'}</span></li>
+              <li><span>Åpent</span><span>{forside?.kontaktApningstider || 'Man–Fre 08:00–16:00 · Lør 09:00–15:00'}</span></li>
+            </ul>
+          </div>
+          <OrderForm
+            service="generell"
+            serviceOptions={[
+              ...serviceList.map((s) => ({ value: s.slug, label: s.title })),
+              { value: 'annet', label: 'Annet / vet ikke' },
+            ]}
+            submitLabel="Send forespørsel"
+            note="Vi svarer innen 1 virkedag."
+            successTitle="Takk, vi har fått forespørselen!"
+            successText="Vi tar kontakt innen 1 virkedag."
+            allowImages
+            imagesLabel="Bilde av anlegget"
+          />
         </div>
-        <style>{`
-          @media (max-width: 980px) { .contact-grid { grid-template-columns: 1fr !important; gap: 48px !important; } }
-        `}</style>
       </section>
-    </>
+    </div>
   )
 }

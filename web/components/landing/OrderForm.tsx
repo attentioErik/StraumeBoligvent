@@ -72,6 +72,8 @@ interface OrderFormProps {
   /** Tillat opplasting av bilder (sendes som multipart) */
   allowImages?: boolean
   imagesLabel?: string
+  /** Vis et valg av tjeneste (forsiden). Valgt verdi sendes i «service». */
+  serviceOptions?: { value: string; label: string }[]
 }
 
 export default function OrderForm({
@@ -84,12 +86,14 @@ export default function OrderForm({
   showWeek = false,
   allowImages = false,
   imagesLabel = 'Bilder',
+  serviceOptions,
 }: OrderFormProps) {
   const [values, setValues] = useState({ navn: '', telefon: '', adresse: '', epost: '', uke: 'Første ledige', melding: '' })
   const [invalid, setInvalid] = useState<Record<Field, boolean>>({ navn: false, telefon: false, adresse: false })
   const [weeks, setWeeks] = useState<string[]>([])
   const [kilde, setKilde] = useState('')
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+  const [chosenService, setChosenService] = useState(serviceOptions?.[0]?.value ?? service)
   const [files, setFiles] = useState<File[]>([])
   const [fileError, setFileError] = useState('')
 
@@ -150,7 +154,7 @@ export default function OrderForm({
         name: values.navn,
         phone: values.telefon,
         email: values.epost,
-        service,
+        service: serviceOptions ? chosenService : service,
         address: values.adresse,
         message: values.melding,
         source: kilde,
@@ -201,6 +205,16 @@ export default function OrderForm({
         <input id="navn" name="navn" type="text" autoComplete="name" required value={values.navn} onChange={onChange} onBlur={onBlur} {...errProps('navn')} />
         <span className="err" id="navn-err">Skriv inn navnet ditt.</span>
       </div>
+      {serviceOptions && (
+        <div className="field">
+          <label htmlFor="tjeneste">Hva gjelder det?</label>
+          <select id="tjeneste" name="tjeneste" value={chosenService} onChange={(e) => setChosenService(e.target.value)}>
+            {serviceOptions.map((o) => (
+              <option key={o.value} value={o.value}>{o.label}</option>
+            ))}
+          </select>
+        </div>
+      )}
       <div className="row2">
         <div className={`field${invalid.telefon ? ' invalid' : ''}`}>
           <label htmlFor="telefon">Telefon</label>

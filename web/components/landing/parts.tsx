@@ -1,7 +1,9 @@
 // Felles byggeklosser for tjeneste-landingssidene (kanalrens, montasje). Stilene ligger i styles/landing.css.
 import Image from 'next/image'
 import Link from 'next/link'
+import OrderForm from './OrderForm'
 import type { ReactNode } from 'react'
+import type { Enova, PrisKort } from '@/lib/types'
 
 export const GOOGLE_URL = 'https://www.google.com/search?q=Straume+Boligvent'
 
@@ -127,11 +129,11 @@ const reviews = [
   { text: 'Super fornøyd med Isac Skutle so var å skiftet filter 14.feb 2026. Hyggelig, rask og veldig kunnskapsrik. Den beste som har har skiftet…', name: 'Mona Solberg' },
 ]
 
-export function ReviewsSection() {
+export function ReviewsSection({ title = 'Hva kundene sier' }: { title?: string }) {
   return (
     <section className="section alt" aria-labelledby="h-rev">
       <div className="wrap">
-        <h2 id="h-rev">Hva kundene sier</h2>
+        <h2 id="h-rev">{title}</h2>
         <p className="lead">4,9 av 5 på Google, basert på 22 anmeldelser.</p>
         <div className="reviews">
           {reviews.map((r) => (
@@ -168,11 +170,11 @@ export function PromiseSection({ items }: { items: ReactNode[] }) {
   )
 }
 
-export type Faq = { q: string; a: string; link?: { href: string; label: string } }
+export type Faq = { q: string; a: string; body?: ReactNode; link?: { href: string; label: string } }
 
-export function FaqList({ faqs }: { faqs: Faq[] }) {
+export function FaqList({ faqs, alt = true }: { faqs: Faq[]; alt?: boolean }) {
   return (
-    <section className="section alt" aria-labelledby="h-faq">
+    <section className={`section${alt ? ' alt' : ''}`} aria-labelledby="h-faq">
       <div className="wrap">
         <h2 id="h-faq">Vanlige spørsmål</h2>
         <div className="faq">
@@ -180,12 +182,110 @@ export function FaqList({ faqs }: { faqs: Faq[] }) {
             <details key={f.q}>
               <summary>{f.q}<span className="plus" aria-hidden="true" /></summary>
               <div className="ans">
-                <p>{f.a}</p>
+                {f.body ?? <p>{f.a}</p>}
                 {f.link && <p><Link className="text-link" href={f.link.href}>{f.link.label}</Link></p>}
               </div>
             </details>
           ))}
         </div>
+      </div>
+    </section>
+  )
+}
+
+export function PriceCards({ kort, ctaHref = '#bestill' }: { kort: PrisKort[]; ctaHref?: string }) {
+  return (
+    <div className="price-grid">
+      {kort.map((k) => (
+        <div key={k._key} className={`price-card${k.featured ? ' featured' : ''}`}>
+          {k.badge && <span className="badge">{k.badge}</span>}
+          <div className="price-card-head">
+            <div><p>{k.tittel}</p><strong>{k.prisLabel ? `${k.prisLabel} ${k.pris}` : k.pris}</strong></div>
+          </div>
+          {k.beskrivelse && <p className="desc">{k.beskrivelse}</p>}
+          {k.inkludert && k.inkludert.length > 0 && (
+            <ul className="checks">{k.inkludert.map((t) => (<li key={t}><Check />{t}</li>))}</ul>
+          )}
+          <div className="price-ctas">
+            <a className="btn btn-primary" href={ctaHref}>{k.cta1Tekst ?? 'Be om vurdering'}</a>
+            {k.cta2Lenke && <Link className="text-link" href={k.cta2Lenke}>{k.cta2Tekst ?? 'Les mer'}</Link>}
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+export function EnovaBox({ enova }: { enova?: Enova | null }) {
+  return (
+    <div className="enova-box">
+      <div>
+        <h2 id="h-enova">{enova?.teaserTittel ?? 'Få opptil 15 000 kr i Enova-støtte'}</h2>
+        <p className="lead">
+          {enova?.teaserTekst ??
+            'Velger du balansert ventilasjon med varmegjenvinning, kan du søke Enova om økonomisk støtte. Vi leverer anlegg som kvalifiserer – og hjelper deg med dokumentasjonen.'}
+        </p>
+      </div>
+      <Link className="btn btn-primary btn-block-m" href="/enova">{enova?.teaserCtaTekst ?? 'Les om Enova-støtte'}</Link>
+    </div>
+  )
+}
+
+// Kontaktseksjon med tjenestevalg (forsiden og de generelle sidene)
+const FALLBACK_SERVICE_OPTIONS = [
+  { value: 'service-og-vedlikehold', label: 'Service og vedlikehold' },
+  { value: 'kanalrens', label: 'Kanalrens' },
+  { value: 'innregulering', label: 'Innregulering' },
+  { value: 'montasje-og-utskifting', label: 'Montasje og utskifting' },
+  { value: 'serviceavtale', label: 'Serviceavtale' },
+  { value: 'borettslag-og-naering', label: 'For borettslag og næring' },
+]
+
+export function ContactSection({
+  title = 'Ta kontakt – vi svarer innen én virkedag',
+  lead = 'Fyll ut skjemaet, eller ring oss direkte. Vi stiller gjerne spørsmål om anlegget ditt for å gi deg riktig tilbud.',
+  services,
+  defaultService,
+  aside,
+}: {
+  title?: string
+  lead?: string
+  services?: { slug: { current: string }; title: string }[]
+  defaultService?: string
+  aside?: ReactNode
+}) {
+  const options = [
+    ...(services && services.length > 0
+      ? services.map((s) => ({ value: s.slug.current, label: s.title }))
+      : FALLBACK_SERVICE_OPTIONS),
+    { value: 'annet', label: 'Annet / vet ikke' },
+  ]
+  // Valgt tjeneste først i listen
+  if (defaultService) options.sort((a, b) => (a.value === defaultService ? -1 : b.value === defaultService ? 1 : 0))
+  return (
+    <section className="order" id="bestill" aria-labelledby="h-order">
+      <div className="wrap order-grid">
+        <div className="order-aside">
+          <h2 id="h-order">{title}</h2>
+          <p className="lead">{lead}</p>
+          {aside ?? (
+            <ul className="contact-rows">
+              <li><span>Telefon</span><a href="tel:56126800">56 12 68 00</a></li>
+              <li><span>E-post</span><a href="mailto:ordre@straumetekniske.no">ordre@straumetekniske.no</a></li>
+              <li><span>Adresse</span><span>Idrettsveien 93, 5353 Straume</span></li>
+            </ul>
+          )}
+        </div>
+        <OrderForm
+          service="generell"
+          serviceOptions={options}
+          submitLabel="Send forespørsel"
+          note="Vi svarer innen 1 virkedag."
+          successTitle="Takk, vi har fått forespørselen!"
+          successText="Vi tar kontakt innen 1 virkedag."
+          allowImages
+          imagesLabel="Bilde av anlegget"
+        />
       </div>
     </section>
   )

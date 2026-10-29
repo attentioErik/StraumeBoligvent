@@ -5,6 +5,9 @@ import { referenceProjectsQuery } from '@/lib/queries'
 import type { ReferenceProject } from '@/lib/types'
 import type { Metadata } from 'next'
 import GalleryGrid from './GalleryGrid'
+import '@/styles/landing.css'
+import ScrollMotion from '@/components/landing/ScrollMotion'
+import { ContactSection } from '@/components/landing/parts'
 import { absUrl } from '@/lib/site'
 
 const PAGE_PATH = '/galleri'
@@ -24,51 +27,25 @@ export default async function GalleriPage() {
   const projects = await client.fetch<ReferenceProject[]>(referenceProjectsQuery).catch(() => [])
 
   return (
-    <>
-      {/* ─── HERO ─── */}
-      <section style={{ background: 'var(--off)', padding: '120px 5% 80px', borderBottom: '1px solid var(--ll)' }}>
-        <div className="inner">
-          <div
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 8,
-              background: 'var(--abg)',
-              border: '1px solid var(--amid)',
-              borderRadius: 100,
-              padding: '6px 16px 6px 10px',
-              marginBottom: 24,
-            }}
-          >
-            <div style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--amber)', boxShadow: '0 0 0 3px rgba(240,165,0,0.2)' }} />
-            <span style={{ fontSize: '0.78rem', fontWeight: 700, letterSpacing: '0.06em', color: 'var(--adark)' }}>Bilder fra oppdrag</span>
+    <div className="kr">
+      <ScrollMotion />
+      <section className="hero" aria-labelledby="h1">
+        <div className="wrap hero-grid no-media">
+          <div>
+            <span className="hero-eyebrow">Bilder fra oppdrag</span>
+            <h1 id="h1">Galleri</h1>
+            <p className="hero-sub">Et utvalg bilder fra oppdrag vi har utført for boligeiere, borettslag og sameier i Bergen og omegn.</p>
           </div>
-          <h1
-            style={{
-              fontFamily: 'Playfair Display, serif',
-              fontSize: 'clamp(2.4rem, 4vw, 3.6rem)',
-              fontWeight: 800,
-              lineHeight: 1.08,
-              color: 'var(--ink)',
-              letterSpacing: '-0.02em',
-              maxWidth: 720,
-              marginBottom: 24,
-            }}
-          >
-            Galleri
-          </h1>
-          <p style={{ fontSize: '1.05rem', lineHeight: 1.78, color: 'var(--muted)', fontWeight: 300, maxWidth: 560 }}>
-            Et utvalg bilder fra oppdrag vi har utført for boligeiere, borettslag og sameier i Bergen og omegn.
-          </p>
         </div>
       </section>
 
-      {/* ─── GALLERI ─── */}
-      <section style={{ background: 'var(--white)', padding: '80px 5%' }}>
-        <div className="inner">
+      <section className="section alt galleri" aria-label="Bilder">
+        <div className="wrap">
           <GalleryGrid projects={projects} />
         </div>
       </section>
-    </>
+
+      <ContactSection title="Vil du ha et lignende resultat?" lead="Fortell oss om anlegget ditt, så gir vi deg en anbefaling og et tydelig tilbud." />
+    </div>
   )
 }

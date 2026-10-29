@@ -1,0 +1,45 @@
+import type { PrisKort } from '@/lib/types'
+
+// Prisene som vises når Sanity-dokumentet «priser» mangler (brukes på /priser og forsiden)
+export const FALLBACK_PRISKORT: PrisKort[] = [
+  {
+    _key: '1',
+    tittel: 'Ventilasjonsservice',
+    beskrivelse: 'Vi kontrollerer ventilasjonsanlegget og gir deg en tydelig vurdering av tilstand, drift og eventuelle tiltak for å sikre godt inneklima i boligen.',
+    prisLabel: 'Fra',
+    pris: '2 600,–',
+    inkludertLabel: 'Inkludert:',
+    inkludert: ['Kontroll av ventilasjonsaggregat', 'Gjennomgang av drift og alarmer', 'Vurdering av anleggets tilstand', 'Veiledning om drift, vedlikehold og eventuelle tiltak'],
+    cta1Tekst: 'Be om vurdering',
+    cta1Lenke: '/kontakt',
+    cta2Tekst: 'Les mer',
+    cta2Lenke: '/tjenester/service-og-vedlikehold',
+  },
+  {
+    _key: '2',
+    tittel: 'Kanalrens',
+    beskrivelse: 'Rens av ventilasjonskanaler og ventiler som gir bedre luftstrøm og et sunnere inneklima i boligen.',
+    prisLabel: 'Fra',
+    pris: '4 250,–',
+    featured: true,
+    badge: 'Mest valgt',
+    inkludertLabel: 'Inkludert:',
+    inkludert: ['Rens av ventilasjonskanaler', 'Rengjøring av ventiler', 'Kontroll av luftstrøm', 'Tilbakemelding på anleggets tilstand'],
+    cta1Tekst: 'Be om vurdering',
+    cta1Lenke: '/kontakt',
+    cta2Tekst: 'Les mer',
+    cta2Lenke: '/tjenester/kanalrens',
+  },
+  {
+    _key: '3',
+    tittel: 'Nytt ventilasjonsaggregat',
+    beskrivelse: 'Utskifting av gammelt ventilasjonsaggregat eller installasjon av nytt ventilasjonsanlegg tilpasset boligen din.',
+    pris: 'Pris etter befaring',
+    inkludertLabel: 'Inkludert:',
+    inkludert: ['Befaring og vurdering av løsning', 'Levering av nytt ventilasjonsaggregat', 'Montering og tilkobling', 'Gjennomgang av anlegget etter installasjon'],
+    cta1Tekst: 'Be om vurdering',
+    cta1Lenke: '/kontakt',
+    cta2Tekst: 'Les mer',
+    cta2Lenke: '/tjenester/montasje-og-utskifting',
+  },
+]

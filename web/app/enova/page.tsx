@@ -5,6 +5,9 @@ import { enovaQuery } from '@/lib/queries'
 import type { Enova } from '@/lib/types'
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import '@/styles/landing.css'
+import ScrollMotion from '@/components/landing/ScrollMotion'
+import { Check, ContactSection, FaqList, TrustBar } from '@/components/landing/parts'
 import { absUrl } from '@/lib/site'
 import { faqJsonLd, webPageJsonLd, breadcrumbJsonLd, jsonLdScript } from '@/lib/jsonld'
 
@@ -118,297 +121,138 @@ export default async function EnovaPage() {
   const enovaUrl = p.enovaLenke || 'https://www.enova.no/privat/'
   const enovaTekst = p.enovaLenkeTekst || 'Enova.no'
 
-  const webPage = webPageJsonLd({
-    path: PAGE_PATH,
-    name: p.heroTittel || 'Enova-støtte til balansert ventilasjon',
-    description: p.heroUnderTittel,
-  })
-  const breadcrumb = breadcrumbJsonLd([
-    { name: 'Forside', path: '/' },
-    { name: 'Enova-støtte', path: PAGE_PATH },
-  ])
-  const faq = p.faq && p.faq.length > 0 ? faqJsonLd(p.faq.map((f) => ({ question: f.sporsmal, answer: f.svar }))) : null
+  const schemas: object[] = [
+    webPageJsonLd({ path: PAGE_PATH, name: p.heroTittel || 'Enova-støtte', description: p.heroUnderTittel }),
+    breadcrumbJsonLd([
+      { name: 'Forside', path: '/' },
+      { name: 'Enova-støtte', path: PAGE_PATH },
+    ]),
+  ]
+  if (p.faq && p.faq.length > 0) schemas.push(faqJsonLd(p.faq.map((f) => ({ question: f.sporsmal, answer: f.svar }))))
 
   return (
-    <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(webPage)} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(breadcrumb)} />
-      {faq && <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(faq)} />}
-      {/* ─── HERO ─── */}
-      <section style={{ background: '#1e1a12', padding: '120px 5% 100px', position: 'relative', overflow: 'hidden' }}>
-        <div className="inner" style={{ position: 'relative', zIndex: 1 }}>
-          <div
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 8,
-              background: 'rgba(240,165,0,0.12)',
-              border: '1px solid rgba(240,165,0,0.35)',
-              borderRadius: 100,
-              padding: '6px 16px 6px 10px',
-              marginBottom: 28,
-            }}
-          >
-            <div style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--amber)', boxShadow: '0 0 0 3px rgba(240,165,0,0.2)' }} />
-            <span style={{ fontSize: '0.78rem', fontWeight: 700, letterSpacing: '0.06em', color: 'var(--amber)' }}>Enova-støtte</span>
-          </div>
-          <h1
-            style={{
-              fontFamily: 'Playfair Display, serif',
-              fontSize: 'clamp(2.4rem, 4.5vw, 4rem)',
-              fontWeight: 800,
-              lineHeight: 1.08,
-              color: '#f5f0e8',
-              letterSpacing: '-0.02em',
-              maxWidth: 760,
-              marginBottom: 24,
-            }}
-          >
-            {p.heroTittel}
-          </h1>
-          <p style={{ fontSize: '1.05rem', lineHeight: 1.78, color: '#a89e90', fontWeight: 300, maxWidth: 600, marginBottom: 48 }}>
-            {p.heroUnderTittel}
-          </p>
-          <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
-            <Link href="/kontakt" className="btn-amber">Be om vurdering</Link>
-            <a href={enovaUrl} target="_blank" rel="noopener noreferrer" className="btn-ghost" style={{ color: '#a09280' }}>
-              Les mer hos {enovaTekst} →
-            </a>
+    <div className="kr">
+      <ScrollMotion />
+      {schemas.map((s, i) => (
+        <script key={i} type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(s)} />
+      ))}
+
+      {/* Hero */}
+      <section className="hero" aria-labelledby="h1">
+        <div className="wrap hero-grid no-media">
+          <div>
+            <span className="hero-eyebrow">Enova-støtte</span>
+            <h1 id="h1">{p.heroTittel}</h1>
+            <p className="hero-sub">{p.heroUnderTittel}</p>
+            <div className="hero-ctas">
+              <a className="btn btn-primary btn-block-m" id="cta-hero" href="#bestill">Be om vurdering</a>
+              <a className="btn btn-secondary btn-block-m" href={enovaUrl} target="_blank" rel="noopener noreferrer">Les mer på {enovaTekst}</a>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ─── INTRO ─── */}
-      {(p.introTittel || p.introTekst) && (
-        <section style={{ background: 'var(--white)', padding: '80px 5%' }}>
-          <div className="inner" style={{ maxWidth: 760 }}>
-            <div className="slabel reveal">Om ordningen</div>
-            {p.introTittel && <h2 className="stitle reveal">{p.introTittel}</h2>}
-            {p.introTekst && (
-              <p className="reveal" style={{ fontSize: '1.02rem', color: 'var(--body)', lineHeight: 1.85, fontWeight: 300, marginTop: 8 }}>
-                {p.introTekst}
+      <TrustBar />
+
+      {/* Hva er Enova-støtte + støtteordninger */}
+      <section className="section" aria-labelledby="h-intro">
+        <div className="wrap">
+          {p.introTittel && <h2 id="h-intro">{p.introTittel}</h2>}
+          <div className="incl-grid">
+            <div className="intro-text">
+              {p.introTekst && <p>{p.introTekst}</p>}
+              <p>
+                Les mer om ordningen på{' '}
+                <a className="text-link" href={enovaUrl} target="_blank" rel="noopener noreferrer">{enovaTekst}</a>.
               </p>
-            )}
-            <p className="reveal" style={{ fontSize: '0.9rem', color: 'var(--muted)', lineHeight: 1.7, marginTop: 20 }}>
-              Du finner oppdatert informasjon og søknadsskjema på{' '}
-              <a href={enovaUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--adark)', textDecoration: 'underline', fontWeight: 600 }}>
-                {enovaTekst}
-              </a>
-              .
-            </p>
-          </div>
-        </section>
-      )}
-
-      {/* ─── STØTTE OG VILKÅR ─── */}
-      {((p.stotteordninger && p.stotteordninger.length > 0) || (p.vilkar && p.vilkar.length > 0)) && (
-        <section style={{ background: 'var(--off)', padding: '80px 5%' }}>
-          <div className="inner">
-            <div className="slabel reveal">Støtte og vilkår</div>
-            <div
-              className="enova-merge"
-              style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 56, marginTop: 40, alignItems: 'start' }}
-            >
-              {/* Støtteordning(er) */}
-              {p.stotteordninger && p.stotteordninger.length > 0 && (
-                <div className="reveal">
-                  {p.stotteTittel && (
-                    <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.6rem', fontWeight: 700, color: 'var(--ink)', lineHeight: 1.15, marginBottom: 12 }}>
-                      {p.stotteTittel}
-                    </h2>
-                  )}
-                  {p.stotteIntro && (
-                    <p style={{ fontSize: '0.92rem', color: 'var(--muted)', lineHeight: 1.7, fontWeight: 300, marginBottom: 28 }}>{p.stotteIntro}</p>
-                  )}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-                    {p.stotteordninger.map((s, i) => (
-                      <div
-                        key={i}
-                        style={{
-                          background: 'var(--white)',
-                          border: '1px solid var(--ll)',
-                          borderTop: '3px solid var(--amber)',
-                          borderRadius: '0 0 8px 8px',
-                          padding: '32px 30px',
-                          display: 'flex',
-                          flexDirection: 'column',
-                        }}
-                      >
-                        <div style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.25rem', fontWeight: 700, color: 'var(--ink)', marginBottom: 12 }}>
-                          {s.tittel}
-                        </div>
-                        {s.beskrivelse && (
-                          <p style={{ fontSize: '0.9rem', color: 'var(--muted)', lineHeight: 1.7, fontWeight: 300, marginBottom: 24 }}>{s.beskrivelse}</p>
-                        )}
-                        {s.belop && (
-                          <div style={{ marginBottom: 24 }}>
-                            {s.belopLabel && (
-                              <div style={{ fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--sec)', marginBottom: 4 }}>
-                                {s.belopLabel}
-                              </div>
-                            )}
-                            <div style={{ fontFamily: 'Playfair Display, serif', fontSize: '2.2rem', fontWeight: 800, color: 'var(--amber)', lineHeight: 1 }}>
-                              {s.belop}
-                            </div>
-                            {s.belopNote && (
-                              <div style={{ fontSize: '0.82rem', color: 'var(--muted)', fontWeight: 400, marginTop: 8, lineHeight: 1.5 }}>
-                                {s.belopNote}
-                              </div>
-                            )}
-                          </div>
-                        )}
-                        {s.kriterier && s.kriterier.length > 0 && (
-                          <div className="checklist" style={{ margin: 'auto 0 0', borderTop: '1px solid var(--ll)', paddingTop: 8 }}>
-                            {s.kriterier.map((k, ki) => (
-                              <div key={ki} className="citem" style={{ fontSize: '0.875rem' }}>
-                                <div className="cicon">✓</div>
-                                {k}
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Vilkår */}
-              {p.vilkar && p.vilkar.length > 0 && (
-                <div className="reveal">
-                  {p.vilkarTittel && (
-                    <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.6rem', fontWeight: 700, color: 'var(--ink)', lineHeight: 1.15, marginBottom: 12 }}>
-                      {p.vilkarTittel}
-                    </h2>
-                  )}
-                  <div className="checklist" style={{ marginTop: 16 }}>
-                    {p.vilkar.map((v, i) => (
-                      <div key={i} className="citem">
-                        <div className="cicon">✓</div>
-                        {v}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
             </div>
-          </div>
-          <style>{`
-            @media (max-width: 860px) { .enova-merge { grid-template-columns: 1fr !important; gap: 48px !important; } }
-          `}</style>
-        </section>
-      )}
-
-      {/* ─── SØKNADSPROSESS ─── */}
-      {p.prosessSteg && p.prosessSteg.length > 0 && (
-        <section style={{ background: '#1e1a12', padding: '80px 5%' }}>
-          <div className="inner">
-            <div className="slabel slabel--dark reveal">Søknadsprosess</div>
-            {p.prosessTittel && <h2 className="stitle reveal" style={{ color: '#f5f0e8' }}>{p.prosessTittel}</h2>}
-            <div
-              className="enova-prosess"
-              style={{ display: 'grid', gridTemplateColumns: `repeat(${p.prosessSteg.length}, 1fr)`, gap: 1, marginTop: 56, background: '#302a1e', borderRadius: 6, overflow: 'hidden' }}
-            >
-              {p.prosessSteg.map((steg, i) => (
-                <div key={i} className="reveal" style={{ background: '#272114', padding: '40px 32px' }}>
-                  <div style={{ fontFamily: 'Playfair Display, serif', fontSize: '2.5rem', fontWeight: 700, color: 'var(--amber)', lineHeight: 1, marginBottom: 24 }}>
-                    {String(i + 1).padStart(2, '0')}
+            {p.stotteordninger?.map((s) => (
+              <div key={s.tittel} className="price-card">
+                <div className="price-card-head">
+                  <div>
+                    <p>{s.tittel}</p>
+                    <strong>{[s.belopLabel, s.belop].filter(Boolean).join(' ')}</strong>
                   </div>
-                  <div style={{ fontFamily: 'Playfair Display, serif', fontSize: '0.95rem', fontWeight: 700, color: '#f0e8d8', marginBottom: 12 }}>
-                    {steg.tittel}
-                  </div>
-                  <p style={{ fontSize: '0.845rem', color: '#a89e90', lineHeight: 1.65, fontWeight: 300 }}>{steg.beskrivelse}</p>
+                  {s.belopNote && <p>{s.belopNote}</p>}
                 </div>
-              ))}
-            </div>
-          </div>
-          <style>{`
-            @media (max-width: 980px) { .enova-prosess { grid-template-columns: 1fr 1fr !important; } }
-            @media (max-width: 640px) { .enova-prosess { grid-template-columns: 1fr !important; } }
-          `}</style>
-        </section>
-      )}
-
-      {/* ─── SLIK HJELPER VI ─── */}
-      {p.hjelpPunkter && p.hjelpPunkter.length > 0 && (
-        <section style={{ background: 'var(--off)', padding: '80px 5%' }}>
-          <div className="inner">
-            <div className="split" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 80, alignItems: 'center' }}>
-              <div className="reveal">
-                <div className="slabel">Vår rolle</div>
-                {p.hjelpTittel && <h2 className="stitle">{p.hjelpTittel}</h2>}
-                {p.hjelpTekst && <p className="sdesc" style={{ marginTop: 8 }}>{p.hjelpTekst}</p>}
-                <div style={{ display: 'flex', gap: 16, marginTop: 36, flexWrap: 'wrap' }}>
-                  <Link href="/kontakt" className="btn-amber">Be om befaring</Link>
-                  <Link href="/priser" className="btn-ghost">Se priser →</Link>
-                </div>
+                {s.beskrivelse && <p className="desc">{s.beskrivelse}</p>}
+                {s.kriterier && s.kriterier.length > 0 && (
+                  <ul className="checks">{s.kriterier.map((k) => (<li key={k}><Check />{k}</li>))}</ul>
+                )}
               </div>
-              <div className="reveal">
-                <div className="checklist" style={{ margin: 0 }}>
-                  {p.hjelpPunkter.map((punkt, i) => (
-                    <div key={i} className="citem">
-                      <div className="cicon">✓</div>
-                      {punkt}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
-          <style>{`
-            @media (max-width: 980px) { .split { grid-template-columns: 1fr !important; gap: 40px !important; } }
-          `}</style>
-        </section>
-      )}
-
-      {/* ─── FAQ ─── */}
-      {p.faq && p.faq.length > 0 && (
-        <section style={{ background: 'var(--white)', padding: '80px 5%' }}>
-          <div className="inner" style={{ maxWidth: 800 }}>
-            <div className="slabel reveal">Spørsmål og svar</div>
-            <h2 className="stitle reveal">Vanlige spørsmål om Enova-støtte</h2>
-            <div style={{ marginTop: 48 }}>
-              {p.faq.map((item, i) => (
-                <div key={i} className="reveal" style={{ borderBottom: '1px solid var(--ll)', padding: '28px 0' }}>
-                  <div style={{ fontFamily: 'Playfair Display, serif', fontSize: '1rem', fontWeight: 700, color: 'var(--ink)', marginBottom: 12 }}>
-                    {item.sporsmal}
-                  </div>
-                  <p style={{ fontSize: '0.9rem', color: 'var(--muted)', lineHeight: 1.7, fontWeight: 300 }}>{item.svar}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* ─── DISCLAIMER / ENOVA-REFERANSE ─── */}
-      {p.disclaimer && (
-        <section style={{ background: 'var(--off)', padding: '0 5% 64px' }}>
-          <div className="inner" style={{ maxWidth: 800 }}>
-            <div className="note reveal" style={{ fontStyle: 'normal' }}>
-              {p.disclaimer}{' '}
-              <a href={enovaUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--adark)', textDecoration: 'underline', fontWeight: 600 }}>
-                {enovaTekst}
-              </a>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* ─── CTA ─── */}
-      <section style={{ background: 'var(--warm)', padding: '80px 5%' }}>
-        <div className="inner" style={{ maxWidth: 640, textAlign: 'center', margin: '0 auto' }}>
-          <div className="slabel slabel--center reveal">Kom i gang</div>
-          <h2 className="stitle reveal" style={{ textAlign: 'center' }}>Vurderer du nytt ventilasjonsanlegg?</h2>
-          <p className="sdesc reveal" style={{ textAlign: 'center', marginBottom: 40, margin: '0 auto 40px' }}>
-            Vi hjelper deg å finne et anlegg som passer boligen – og som kan kvalifisere for Enova-støtte.
-          </p>
-          <div className="reveal" style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link href="/kontakt" className="btn-amber">Send forespørsel</Link>
-            <a href="tel:56126800" className="btn-ghost">Ring 561 26 800 →</a>
-          </div>
+          {p.stotteIntro && <p className="fine-note">{p.stotteIntro}</p>}
         </div>
       </section>
-    </>
+
+      {/* Hvem kan søke */}
+      {p.vilkar && p.vilkar.length > 0 && (
+        <section className="section alt" aria-labelledby="h-vilkar">
+          <div className="wrap">
+            <h2 id="h-vilkar">{p.vilkarTittel || 'Hvem kan søke?'}</h2>
+            <ul className="sym-list vilkar">
+              {p.vilkar.map((v) => (<li key={v}><span className="icon" aria-hidden="true"><Check /></span>{v}</li>))}
+            </ul>
+          </div>
+        </section>
+      )}
+
+      {/* Slik søker du */}
+      {p.prosessSteg && p.prosessSteg.length > 0 && (
+        <section className="section after" aria-labelledby="h-steps">
+          <div className="wrap">
+            <div className="after-inner">
+              <h2 id="h-steps">{p.prosessTittel || 'Slik søker du'}</h2>
+            </div>
+            <ol className="steps steps-dark">
+              {p.prosessSteg.map((s, i) => (
+                <li key={s.tittel}>
+                  <span className="step-no" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+                  <h3>{s.tittel}</h3>
+                  <p>{s.beskrivelse}</p>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
+      )}
+
+      {/* Slik hjelper vi deg */}
+      {p.hjelpPunkter && p.hjelpPunkter.length > 0 && (
+        <section className="section" aria-labelledby="h-help">
+          <div className="wrap">
+            <div className="incl-grid">
+              <div className="split-text">
+                <h2 id="h-help">{p.hjelpTittel || 'Slik hjelper vi deg'}</h2>
+                {p.hjelpTekst && <p className="lead">{p.hjelpTekst}</p>}
+                <div className="enova-cta">
+                  <a className="btn btn-primary btn-block-m" href="#bestill">Be om befaring</a>
+                  <Link className="text-link" href="/priser">Se priser</Link>
+                </div>
+              </div>
+              <div className="price-card">
+                <ul className="checks">{p.hjelpPunkter.map((t) => (<li key={t}><Check />{t}</li>))}</ul>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {p.faq && p.faq.length > 0 && <FaqList faqs={p.faq.map((f) => ({ q: f.sporsmal, a: f.svar }))} />}
+
+      {p.disclaimer && (
+        <p className="wrap updated">
+          {p.disclaimer}{' '}
+          <a className="text-link" href={enovaUrl} target="_blank" rel="noopener noreferrer">{enovaTekst}</a>
+        </p>
+      )}
+
+      <ContactSection
+        title="Vurderer du nytt ventilasjonsanlegg?"
+        lead="Vi anbefaler et anlegg som kvalifiserer for støtte, og gir deg et tydelig tilbud."
+        defaultService="montasje-og-utskifting"
+      />
+    </div>
   )
 }

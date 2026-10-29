@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import type { Priser } from '@/lib/types'
+import { FALLBACK_PRISKORT } from '@/lib/priser'
 
 const CheckIcon = () => (
   <svg viewBox="0 0 24 24" style={{ width: 16, height: 16, stroke: 'var(--amber)', fill: 'none', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round', flexShrink: 0, marginTop: 2 }}>
@@ -22,48 +23,7 @@ interface PricingSectionProps {
 }
 
 export default function PricingSection({ priser, compact }: PricingSectionProps) {
-  const kort = priser?.kort ?? [
-    {
-      _key: '1',
-      tittel: 'Ventilasjonsservice',
-      beskrivelse: 'Vi kontrollerer ventilasjonsanlegget og gir deg en tydelig vurdering av tilstand, drift og eventuelle tiltak for å sikre godt inneklima i boligen.',
-      prisLabel: 'Fra',
-      pris: '2 600,–',
-      inkludertLabel: 'Inkludert:',
-      inkludert: ['Kontroll av ventilasjonsaggregat', 'Gjennomgang av drift og alarmer', 'Vurdering av anleggets tilstand', 'Veiledning om drift, vedlikehold og eventuelle tiltak'],
-      cta1Tekst: 'Be om vurdering',
-      cta1Lenke: '/kontakt',
-      cta2Tekst: 'Les mer',
-      cta2Lenke: '/tjenester/service-og-vedlikehold',
-    },
-    {
-      _key: '2',
-      tittel: 'Kanalrens',
-      beskrivelse: 'Rens av ventilasjonskanaler og ventiler som gir bedre luftstrøm og et sunnere inneklima i boligen.',
-      prisLabel: 'Fra',
-      pris: '4 250,–',
-      featured: true,
-      badge: 'Mest valgt',
-      inkludertLabel: 'Inkludert:',
-      inkludert: ['Rens av ventilasjonskanaler', 'Rengjøring av ventiler', 'Kontroll av luftstrøm', 'Tilbakemelding på anleggets tilstand'],
-      cta1Tekst: 'Be om vurdering',
-      cta1Lenke: '/kontakt',
-      cta2Tekst: 'Les mer',
-      cta2Lenke: '/tjenester/kanalrens',
-    },
-    {
-      _key: '3',
-      tittel: 'Nytt ventilasjonsaggregat',
-      beskrivelse: 'Utskifting av gammelt ventilasjonsaggregat eller installasjon av nytt ventilasjonsanlegg tilpasset boligen din.',
-      pris: 'Pris etter befaring',
-      inkludertLabel: 'Inkludert:',
-      inkludert: ['Befaring og vurdering av løsning', 'Levering av nytt ventilasjonsaggregat', 'Montering og tilkobling', 'Gjennomgang av anlegget etter installasjon'],
-      cta1Tekst: 'Be om vurdering',
-      cta1Lenke: '/kontakt',
-      cta2Tekst: 'Les mer',
-      cta2Lenke: '/tjenester/montasje-og-utskifting',
-    },
-  ]
+  const kort = priser?.kort ?? FALLBACK_PRISKORT
 
   const fotnoteTekst = priser?.fotnoteTekst ?? 'Usikker på hva ventilasjonen trenger? Vi hjelper deg å vurdere anlegget.'
   const fotnoteCtaTekst = priser?.fotnoteCtaTekst ?? 'Ta kontakt'
