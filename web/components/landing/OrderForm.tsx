@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { pushFormSubmitSuccess } from '@/lib/tracking'
 
 // Samme mottak som ContactForm
 const ENDPOINT = 'https://usebasin.com/f/a4f5a134dfe9'
@@ -173,7 +174,12 @@ export default function OrderForm({
         body = JSON.stringify(payload)
       }
       const res = await fetch(ENDPOINT, { method: 'POST', headers, body })
-      setStatus(res.ok ? 'success' : 'error')
+      if (res.ok) {
+        pushFormSubmitSuccess('order-form')
+        setStatus('success')
+      } else {
+        setStatus('error')
+      }
     } catch {
       setStatus('error')
     }

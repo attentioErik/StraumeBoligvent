@@ -23,6 +23,7 @@ const company = [
   { label: 'Galleri', href: '/galleri' },
   { label: 'Artikler', href: '/blog' },
   { label: 'Kontakt', href: '/kontakt' },
+  { label: 'Personvern', href: '/personvern' },
 ]
 
 const suppliers = ['Systemair', 'Flexit', 'Swegon', 'Ventiståhl']
@@ -263,6 +264,9 @@ export default function Footer({ settings }: FooterProps) {
           borderTop: '1px solid var(--ll)',
           display: 'flex',
           justifyContent: 'space-between',
+          alignItems: 'center',
+          gap: 16,
+          flexWrap: 'wrap',
           fontSize: '0.75rem',
           color: 'var(--sec)',
           fontWeight: 300,
@@ -270,7 +274,26 @@ export default function Footer({ settings }: FooterProps) {
         className="footer-bottom"
       >
         <span>© {year} Straume Tekniske AS</span>
-        <span>{settings?.orgNumber ? `Org.nr ${settings.orgNumber}` : 'Org.nr 998 766 834'}</span>
+        <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'center' }}>
+          <Link
+            href="/personvern"
+            style={{ color: 'var(--sec)', textDecoration: 'none' }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--ink)')}
+            onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--sec)')}
+          >
+            Personvern
+          </Link>
+          {/* Åpner Attentio Consent igjen (#att-consent, CMP lastes via GTM). */}
+          <a
+            href="#att-consent"
+            style={{ color: 'var(--sec)', textDecoration: 'none' }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--ink)')}
+            onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--sec)')}
+          >
+            Cookie-innstillinger
+          </a>
+          <span>{settings?.orgNumber ? `Org.nr ${settings.orgNumber}` : 'Org.nr 998 766 834'}</span>
+        </div>
       </div>
 
       <style>{`

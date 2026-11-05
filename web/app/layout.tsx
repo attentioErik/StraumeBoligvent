@@ -8,6 +8,7 @@ import { siteSettingsQuery } from '@/lib/queries'
 import type { SiteSettings } from '@/lib/types'
 import Script from 'next/script'
 import { SITE_URL, SITE_NAME, DEFAULT_DESCRIPTION, DEFAULT_OG_IMAGE } from '@/lib/site'
+import { GTM_ID, consentDefaultsScript, gtmScript } from '@/lib/tracking'
 import { organizationJsonLd, jsonLdScript } from '@/lib/jsonld'
 
 export const metadata: Metadata = {
@@ -87,21 +88,26 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="no">
       <head>
-        <Script id="gtm" strategy="afterInteractive">{`
-          (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-          new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-          j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-          'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-          })(window,document,'script','dataLayer','GTM-MP923ZMV');
-        `}</Script>
+        {/* Consent Mode v2-standard: MÅ kjøre før GTM. Attentio Consent lastes via GTM. */}
+        <Script
+          id="consent-default"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: consentDefaultsScript }}
+        />
+        <Script
+          id="gtm"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: gtmScript(GTM_ID) }}
+        />
       </head>
       <body>
         <noscript>
           <iframe
-            src="https://www.googletagmanager.com/ns.html?id=GTM-MP923ZMV"
+            src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
             height="0"
             width="0"
             style={{ display: 'none', visibility: 'hidden' }}
+            title="Google Tag Manager"
           />
         </noscript>
         <script

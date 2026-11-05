@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import type { Service } from '@/lib/types'
+import { pushFormSubmitSuccess } from '@/lib/tracking'
 
 interface ContactFormProps {
   services?: Service[]
@@ -71,6 +72,7 @@ export default function ContactForm({
         body,
       })
       if (res.ok) {
+        pushFormSubmitSuccess('kontakt-oss')
         setStatus('success')
         setForm({ name: '', phone: '', email: '', service: defaultService ?? '', message: '' })
         setFiles([])
