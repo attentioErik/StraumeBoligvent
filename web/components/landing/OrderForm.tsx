@@ -73,6 +73,10 @@ interface OrderFormProps {
   /** Tillat opplasting av bilder (sendes som multipart) */
   allowImages?: boolean
   imagesLabel?: string
+  /** Filtyper opplastingsfeltet godtar (standard: bare bilder) */
+  filesAccept?: string
+  /** Hjelpetekst under opplastingsfeltet */
+  filesHint?: string
   /** Vis et valg av tjeneste (forsiden). Valgt verdi sendes i «service». */
   serviceOptions?: { value: string; label: string }[]
 }
@@ -87,6 +91,8 @@ export default function OrderForm({
   showWeek = false,
   allowImages = false,
   imagesLabel = 'Bilder',
+  filesAccept = 'image/*',
+  filesHint = 'Maks 10 MB totalt.',
   serviceOptions,
 }: OrderFormProps) {
   const [values, setValues] = useState({ navn: '', telefon: '', adresse: '', epost: '', uke: 'Første ledige', melding: '' })
@@ -118,7 +124,7 @@ export default function OrderForm({
   const onFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = Array.from(e.target.files ?? [])
     if (selected.reduce((sum, f) => sum + f.size, 0) > MAX_TOTAL_BYTES) {
-      setFileError('Bildene er for store (maks 10 MB totalt).')
+      setFileError(`${filesAccept === 'image/*' ? 'Bildene' : 'Filene'} er for store (maks 10 MB totalt).`)
       setFiles([])
       e.target.value = ''
       return
@@ -254,8 +260,8 @@ export default function OrderForm({
       {allowImages && (
         <div className="field">
           <label htmlFor="bilder">{imagesLabel} <span className="opt">(valgfritt)</span></label>
-          <input id="bilder" name="bilder" type="file" accept="image/*" multiple onChange={onFiles} className="file" />
-          {fileError ? <span className="file-err">{fileError}</span> : <span className="file-hint">Maks 10 MB totalt.</span>}
+          <input id="bilder" name="bilder" type="file" accept={filesAccept} multiple onChange={onFiles} className="file" />
+          {fileError ? <span className="file-err">{fileError}</span> : <span className="file-hint">{filesHint}</span>}
         </div>
       )}
       <button className="btn btn-primary" id="cta-skjema" type="submit" disabled={status === 'loading'}>

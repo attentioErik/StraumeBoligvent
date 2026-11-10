@@ -29,6 +29,7 @@ export default function Navigation() {
   return (
     <>
     <nav
+      className="site-nav"
       style={{
         position: 'fixed',
         top: 0,
@@ -49,7 +50,7 @@ export default function Navigation() {
     >
       {/* Logo */}
       <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
-        <span style={{ fontFamily: 'Lato, sans-serif', fontWeight: 700, fontSize: '0.95rem', letterSpacing: '0.01em', color: 'var(--ink)', whiteSpace: 'nowrap' }}>
+        <span style={{ fontWeight: 700, fontSize: '1rem', letterSpacing: '-0.01em', color: 'var(--ink)', whiteSpace: 'nowrap' }}>
           Straume <span style={{ color: 'var(--amber)' }}>Boligvent</span>
         </span>
         <span className="nav-partner" style={{ color: 'var(--lm)', fontSize: '1rem', fontWeight: 300, lineHeight: 1, flexShrink: 0 }}>|</span>
@@ -71,11 +72,11 @@ export default function Navigation() {
             key={link.href}
             href={link.href}
             style={{
-              fontSize: '0.84rem',
+              fontSize: '0.9rem',
               fontWeight: 400,
               color: 'var(--muted)',
               textDecoration: 'none',
-              letterSpacing: '0.01em',
+              letterSpacing: 0,
               transition: 'color 0.2s',
             }}
             onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--ink)')}

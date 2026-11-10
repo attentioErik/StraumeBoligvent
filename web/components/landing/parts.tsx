@@ -99,22 +99,24 @@ export function TrustBar() {
 }
 
 const team = [
-  { name: 'Patrick Tøgard', src: '/images/team/patrick.webp' },
-  { name: 'Isac Skutle', src: '/images/team/isac.webp' },
-  { name: 'Daniel Tøgard', src: '/images/team/daniel.webp' },
+  { name: 'Isac Skutle', role: 'Servicetekniker', src: 'https://ucarecdn.com/a350afc1-4eee-47bf-8646-cb85168f8a87/-/preview/960x1200/' },
+  { name: 'Daniel Tøgard', role: 'Montør ventilasjon', src: 'https://ucarecdn.com/bcb1aa3d-be2f-43dc-9df4-f16c27b0aebe/-/preview/960x1200/' },
+  { name: 'Alex', role: 'Servicetekniker', src: 'https://ucarecdn.com/7c58dff1-4a8c-42ac-bc9b-52f9e8cc05be/-/preview/960x1200/' },
+  { name: 'Emil', role: 'Ventilasjonsmontør', src: 'https://ucarecdn.com/f862021b-ac7b-496d-aba2-88a932c65e68/-/preview/960x1200/' },
+  { name: 'Jacob', role: 'Servicetekniker', src: 'https://ucarecdn.com/3c3d1da9-9811-4eed-b57b-908ef42267bf/-/preview/960x1200/' },
 ]
 
-export function TeamSection() {
+export function TeamSection({ alt = false }: { alt?: boolean }) {
   return (
-    <section className="section" aria-labelledby="h-team">
+    <section className={`section${alt ? ' alt' : ''}`} aria-labelledby="h-team">
       <div className="wrap">
         <h2 id="h-team">Møt montørene</h2>
         <p className="lead">Det er en av disse som kommer hjem til deg.</p>
         <div className="team">
           {team.map((m) => (
             <figure key={m.name}>
-              <Image src={m.src} width={480} height={600} sizes="(min-width: 900px) 240px, 33vw" alt={`Portrett av montør ${m.name}`} />
-              <figcaption>{m.name}<span className="role">Montør ventilasjon</span></figcaption>
+              <Image src={m.src} width={480} height={600} sizes="(min-width: 900px) 220px, 33vw" alt={`Portrett av ${m.name}, ${m.role.toLowerCase()}`} />
+              <figcaption>{m.name}<span className="role">{m.role}</span></figcaption>
             </figure>
           ))}
         </div>
@@ -129,9 +131,9 @@ const reviews = [
   { text: 'Super fornøyd med Isac Skutle so var å skiftet filter 14.feb 2026. Hyggelig, rask og veldig kunnskapsrik. Den beste som har har skiftet…', name: 'Mona Solberg' },
 ]
 
-export function ReviewsSection({ title = 'Hva kundene sier' }: { title?: string }) {
+export function ReviewsSection({ title = 'Hva kundene sier', alt = true }: { title?: string; alt?: boolean }) {
   return (
-    <section className="section alt" aria-labelledby="h-rev">
+    <section className={`section${alt ? ' alt' : ''}`} aria-labelledby="h-rev">
       <div className="wrap">
         <h2 id="h-rev">{title}</h2>
         <p className="lead">4,9 av 5 på Google, basert på 22 anmeldelser.</p>

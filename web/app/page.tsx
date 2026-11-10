@@ -71,7 +71,16 @@ const FALLBACK_SERVICES = [
   { slug: 'borettslag-og-naering', title: 'For borettslag og næring', description: 'Tilpassede løsninger for sameier, borettslag og mindre næringsbygg.' },
 ]
 
+// Midlertidig erstatning for Innregulering i tjenesteoversikten
+const BALANSERT_SERVICE = {
+  slug: 'balansert-ventilasjon',
+  title: 'Balansert ventilasjon',
+  description: 'Friskere luft og mindre varmetap med varmegjenvinning – også i eldre boliger.',
+  href: '/balansert-ventilasjon-bergen',
+}
+
 const SERVICE_ICONS: Record<string, ReactNode> = {
+  'balansert-ventilasjon': (<svg {...iconProps}><path d="M3 8h13a3 3 0 1 0-3-3" /><path d="M3 12h17" /><path d="M3 16h11a3 3 0 1 1-3 3" /></svg>),
   'service-og-vedlikehold': (<svg {...iconProps}><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z" /></svg>),
   kanalrens: (<svg {...iconProps}><circle cx="12" cy="12" r="8" /><circle cx="12" cy="12" r="3.5" /><path d="M12 4v4.5M12 15.5V20M4 12h4.5M15.5 12H20" /></svg>),
   innregulering: (<svg {...iconProps}><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0" /><circle cx="16" cy="6" r="2" /><circle cx="10" cy="12" r="2" /><circle cx="18" cy="18" r="2" /></svg>),
@@ -97,10 +106,14 @@ export default async function Home() {
     client.fetch<Enova>(enovaQuery).catch(() => null),
   ])
 
-  const serviceList =
+  const serviceList = (
     services.length > 0
       ? services.map((s) => ({ slug: s.slug.current, title: s.title, description: s.description }))
       : FALLBACK_SERVICES
+  ).map((s): { slug: string; title: string; description?: string; href?: string } =>
+    // Midlertidig: Innregulering byttes ut med Balansert ventilasjon (egen landingsside)
+    s.slug === 'innregulering' ? BALANSERT_SERVICE : s,
+  )
   const prisKort = priser?.kort ?? FALLBACK_PRISKORT
   const steps = forside?.prosessSteg ?? FALLBACK_STEPS
   const gallery = projects
@@ -177,7 +190,7 @@ export default async function Home() {
           <p className="lead">{forside?.tjenesterBeskrivelse ?? 'Fra enkelt filterbytte til full montasje og utskifting av anlegg.'}</p>
           <div className="svc-grid">
             {serviceList.map((s) => (
-              <Link key={s.slug} className="svc-card" href={`/tjenester/${s.slug}`}>
+              <Link key={s.slug} className="svc-card" href={s.href ?? `/tjenester/${s.slug}`}>
                 <span className="icon" aria-hidden="true">{SERVICE_ICONS[s.slug] ?? SERVICE_ICONS['service-og-vedlikehold']}</span>
                 <h3>{s.title}</h3>
                 {s.description && <p>{s.description}</p>}
