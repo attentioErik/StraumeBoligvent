@@ -1,7 +1,8 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { pushFormSubmitSuccess } from '@/lib/tracking'
+import { compressFiles, MAX_FILES, MAX_TOTAL_BYTES, totalSize } from '@/lib/compressImages'
 
 // Samme mottak som ContactForm
 const ENDPOINT = 'https://usebasin.com/f/a4f5a134dfe9'
@@ -58,8 +59,6 @@ function readSource() {
   return kilde || (document.referrer ? `referrer=${document.referrer}` : 'direkte')
 }
 
-const MAX_TOTAL_BYTES = 10 * 1024 * 1024
-
 interface OrderFormProps {
   /** Verdien som sendes i feltet «service» til Basin */
   service: string
@@ -92,7 +91,7 @@ export default function OrderForm({
   allowImages = false,
   imagesLabel = 'Bilder',
   filesAccept = 'image/*',
-  filesHint = 'Maks 10 MB totalt.',
+  filesHint = 'Bilder komprimeres automatisk. Maks 15 filer og 7 MB totalt.',
   serviceOptions,
 }: OrderFormProps) {
   const [values, setValues] = useState({ navn: '', telefon: '', adresse: '', epost: '', uke: 'Første ledige', melding: '' })
@@ -103,6 +102,9 @@ export default function OrderForm({
   const [chosenService, setChosenService] = useState(serviceOptions?.[0]?.value ?? service)
   const [files, setFiles] = useState<File[]>([])
   const [fileError, setFileError] = useState('')
+  const [preparing, setPreparing] = useState(false)
+  const prepareId = useRef(0)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     if (showWeek) setWeeks(nextWeeks())
@@ -121,16 +123,55 @@ export default function OrderForm({
     }
   }, [showWeek])
 
+  const clearFiles = () => {
+    prepareId.current += 1
+    setFiles([])
+    setFileError('')
+    setPreparing(false)
+    if (fileInputRef.current) fileInputRef.current.value = ''
+  }
+
   const onFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = Array.from(e.target.files ?? [])
-    if (selected.reduce((sum, f) => sum + f.size, 0) > MAX_TOTAL_BYTES) {
-      setFileError(`${filesAccept === 'image/*' ? 'Bildene' : 'Filene'} er for store (maks 10 MB totalt).`)
+    if (selected.length === 0) {
+      clearFiles()
+      return
+    }
+    if (selected.length > MAX_FILES) {
+      setFileError(`Du kan laste opp maks ${MAX_FILES} filer. Velg færre, eller fjern filene og send uten.`)
       setFiles([])
       e.target.value = ''
       return
     }
+
+    const id = ++prepareId.current
     setFileError('')
-    setFiles(selected)
+    setFiles([])
+    setPreparing(true)
+
+    void (async () => {
+      try {
+        const compressed = await compressFiles(selected)
+        if (id !== prepareId.current) return
+        setFiles(compressed)
+        if (totalSize(compressed) > MAX_TOTAL_BYTES) {
+          const kind = filesAccept === 'image/*' ? 'Bildene' : 'Filene'
+          setFileError(
+            `${kind} er fortsatt for store etter komprimering (maks 7 MB totalt). Velg færre eller mindre filer, eller fjern dem og send uten.`,
+          )
+        }
+      } catch {
+        if (id !== prepareId.current) return
+        // compressFiles already falls back per file; this is a last resort
+        setFiles(selected)
+        if (totalSize(selected) > MAX_TOTAL_BYTES) {
+          const kind = filesAccept === 'image/*' ? 'Bildene' : 'Filene'
+          setFileError(`${kind} er for store (maks 7 MB totalt). Velg færre eller mindre filer.`)
+        }
+      } finally {
+        if (id === prepareId.current) setPreparing(false)
+      }
+    })()
   }
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -147,6 +188,7 @@ export default function OrderForm({
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    if (preparing || fileError) return
     const next = { navn: !rules.navn(values.navn), telefon: !rules.telefon(values.telefon), adresse: !rules.adresse(values.adresse) }
     setInvalid(next)
     const first = (Object.keys(next) as Field[]).find((k) => next[k])
@@ -260,12 +302,21 @@ export default function OrderForm({
       {allowImages && (
         <div className="field">
           <label htmlFor="bilder">{imagesLabel} <span className="opt">(valgfritt)</span></label>
-          <input id="bilder" name="bilder" type="file" accept={filesAccept} multiple onChange={onFiles} className="file" />
-          {fileError ? <span className="file-err">{fileError}</span> : <span className="file-hint">{filesHint}</span>}
+          <input id="bilder" name="bilder" ref={fileInputRef} type="file" accept={filesAccept} multiple onChange={onFiles} className="file" />
+          {preparing && <span className="file-hint">Forbereder bilder…</span>}
+          {!preparing && fileError && <span className="file-err" role="alert">{fileError}</span>}
+          {!preparing && !fileError && <span className="file-hint">{filesHint}</span>}
+          {!preparing && files.length > 0 && (
+            <span className="file-hint">
+              {files.map((f) => f.name).join(', ')}
+              {' · '}
+              <button type="button" className="file-clear" onClick={clearFiles}>Fjern</button>
+            </span>
+          )}
         </div>
       )}
-      <button className="btn btn-primary" id="cta-skjema" type="submit" disabled={status === 'loading'}>
-        {status === 'loading' ? 'Sender …' : submitLabel}
+      <button className="btn btn-primary" id="cta-skjema" type="submit" disabled={status === 'loading' || preparing || !!fileError}>
+        {preparing ? 'Forbereder bilder…' : status === 'loading' ? 'Sender …' : submitLabel}
       </button>
       {status === 'error' && (
         <p className="form-error" role="alert">

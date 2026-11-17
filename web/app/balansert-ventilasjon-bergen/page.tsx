@@ -473,7 +473,7 @@ export default function BalansertVentilasjonPage() {
             allowImages
             imagesLabel="Plantegning (anbefalt) og bilder av boligen"
             filesAccept="image/*,application/pdf,.pdf"
-            filesHint="PDF eller bilder. Maks 10 MB totalt."
+            filesHint="PDF eller bilder, bilder komprimeres automatisk. Maks 15 filer og 7 MB totalt."
           />
         </div>
       </section>
