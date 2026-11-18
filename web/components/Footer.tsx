@@ -26,7 +26,7 @@ const company = [
   { label: 'Personvern', href: '/personvern' },
 ]
 
-const suppliers = ['Systemair', 'Flexit', 'Swegon', 'Ventiståhl']
+const suppliers = ['Systemair', 'Flexit', 'Swegon', 'Ventistål']
 
 const certifications = ['Miljøsertifisert', 'EKOM Autorisasjon', 'Sentral Godkjent']
 

@@ -286,7 +286,7 @@ export default async function Home() {
               <ul className="checks flush">
                 {(forside?.omOssSjekkpunkter ?? [
                   'Sertifiserte teknikere med dokumentert kompetanse',
-                  'Erfaring med Flexit, Systemair og Ventiståhl',
+                  'Erfaring med Flexit, Systemair og Ventistål',
                   'Komplett leveranse – service til montasje',
                   'Tilpasset oppfølging for borettslag og sameier',
                   'Langsiktig oppfølging – ikke engangsoppdrag',

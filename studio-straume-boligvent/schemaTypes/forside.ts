@@ -248,7 +248,7 @@ export const forside = defineType({
       of: [{ type: 'string' }],
       initialValue: [
         'Sertifiserte teknikere med dokumentert kompetanse',
-        'Erfaring med Flexit, Systemair og Ventiståhl',
+        'Erfaring med Flexit, Systemair og Ventistål',
         'Komplett leveranse – service til montasje',
         'Tilpasset oppfølging for borettslag og sameier',
         'Langsiktig oppfølging – ikke engangsoppdrag',
