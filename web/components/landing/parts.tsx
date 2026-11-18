@@ -5,7 +5,7 @@ import OrderForm from './OrderForm'
 import type { ReactNode } from 'react'
 import type { Enova, PrisKort } from '@/lib/types'
 
-export const GOOGLE_URL = 'https://www.google.com/search?q=Straume+Boligvent'
+export const GOOGLE_URL = 'https://www.google.com/search?q=Straume+Tekniske+AS'
 
 function Star() {
   return (
